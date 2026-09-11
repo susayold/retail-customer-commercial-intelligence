@@ -21,7 +21,10 @@ warehouse:
 validate:
 	$(PYTHON) -m src.validate --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT"
 
+stats:
+	$(PYTHON) -m src.statistical_validation --database "$$RETAIL_ARTIFACT_ROOT/03_duckdb_and_marts/retail_intelligence.duckdb" --artifact-root "$$RETAIL_ARTIFACT_ROOT"
+
 powerbi:
 	$(PYTHON) -m src.export_powerbi --artifact-root "$$RETAIL_ARTIFACT_ROOT" --format parquet
 
-all: schema inventory profile parquet warehouse validate powerbi test
+all: schema inventory profile parquet warehouse validate stats powerbi test
