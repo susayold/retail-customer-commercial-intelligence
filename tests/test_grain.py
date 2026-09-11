@@ -15,6 +15,8 @@ def test_grain_contract_documented_for_core_facts():
         assert phrase in text
 
 
-def test_basket_mart_does_not_join_line_grain():
+def test_basket_metrics_are_aggregated_before_line_level_private_label_join():
     sql = (ROOT / "sql/06_marts/01_mart_panel_weekly.sql").read_text()
-    assert "fct_transaction_line" not in sql
+    basket_cte = sql.split("private_label_weekly AS", maxsplit=1)[0]
+    assert "FROM fct_basket" in basket_cte
+    assert "fct_transaction_line" not in basket_cte
