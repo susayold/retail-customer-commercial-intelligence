@@ -3,6 +3,9 @@ PYTHON ?= python
 test:
 	$(PYTHON) -m pytest -q
 
+schema:
+	$(PYTHON) -m src.schema_contracts --input "$$RETAIL_DATA_ROOT" --contracts config/source_contracts.yaml --output "$$RETAIL_ARTIFACT_ROOT/04_qa_reports/schema_validation.csv"
+
 inventory:
 	$(PYTHON) -m src.inventory --input "$$RETAIL_DATA_ROOT" --output "$$RETAIL_ARTIFACT_ROOT/04_qa_reports/raw_file_inventory.csv"
 
@@ -18,4 +21,7 @@ warehouse:
 validate:
 	$(PYTHON) -m src.validate --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT"
 
-all: inventory profile parquet warehouse validate test
+powerbi:
+	$(PYTHON) -m src.export_powerbi --artifact-root "$$RETAIL_ARTIFACT_ROOT" --format parquet
+
+all: schema inventory profile parquet warehouse validate powerbi test
