@@ -4,13 +4,19 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 
+EXPECTED_SOURCES = {
+    "transaction_data", "causal_data", "coupon", "coupon_redempt",
+    "campaign_table", "campaign_desc", "product", "hh_demographic",
+}
+
 
 def test_expected_source_contracts_are_present():
     settings = yaml.safe_load((ROOT / "config/settings.yaml").read_text())
-    assert set(settings["sources"]) == {
-        "transaction_data", "causal_data", "coupon", "coupon_redempt",
-        "campaign_table", "campaign_desc", "product", "hh_demographic",
-    }
+    assert set(settings["sources"]) == EXPECTED_SOURCES
+
+    contracts = yaml.safe_load((ROOT / "config/source_contracts.yaml").read_text())
+    assert set(contracts["sources"]) == EXPECTED_SOURCES
+    assert all(item["required_columns"] for item in contracts["sources"].values())
 
 
 def test_storage_policy_disallows_local_workspace_data():

@@ -6,6 +6,9 @@ test:
 inventory:
 	$(PYTHON) -m src.inventory --input "$$RETAIL_DATA_ROOT" --output "$$RETAIL_ARTIFACT_ROOT/04_qa_reports/raw_file_inventory.csv"
 
+profile:
+	$(PYTHON) -m src.profile_sources --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT"
+
 parquet:
 	$(PYTHON) -m src.build_parquet --input "$$RETAIL_DATA_ROOT" --output "$$RETAIL_ARTIFACT_ROOT/02_curated_parquet"
 
@@ -14,3 +17,5 @@ warehouse:
 
 validate:
 	$(PYTHON) -m src.validate --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT"
+
+all: inventory profile parquet warehouse validate test

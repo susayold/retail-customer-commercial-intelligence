@@ -19,7 +19,7 @@ A retail commercial team needs to know:
 - Which categories and brands explain the movement?
 - Where is private-label activity broad or concentrated?
 - Which display/mailer states are associated with stronger panel activity?
-- Which campaigns and coupons show stronger observed response?
+- Which campaigns and coupons show higher observed response?
 - What actions should be monitored next?
 
 The final product is a six-page Power BI decision surface plus reproducible SQL/Python lineage.
@@ -96,6 +96,7 @@ python -m pip install -r requirements.txt
 $env:RETAIL_DATA_ROOT = "D:\path\to\Drive\Retail DA - Customer & Commercial Intelligence\01_raw_source"
 $env:RETAIL_ARTIFACT_ROOT = "D:\path\to\Drive\Retail DA - Customer & Commercial Intelligence"
 python -m src.inventory --input $env:RETAIL_DATA_ROOT --output "$env:RETAIL_ARTIFACT_ROOT\04_qa_reports\raw_file_inventory.csv"
+python -m src.profile_sources --data-root $env:RETAIL_DATA_ROOT --artifact-root $env:RETAIL_ARTIFACT_ROOT
 python -m src.build_parquet --input $env:RETAIL_DATA_ROOT --output "$env:RETAIL_ARTIFACT_ROOT\02_curated_parquet"
 python -m src.build_warehouse --data-root $env:RETAIL_DATA_ROOT --artifact-root $env:RETAIL_ARTIFACT_ROOT
 python -m src.validate --data-root $env:RETAIL_DATA_ROOT --artifact-root $env:RETAIL_ARTIFACT_ROOT
@@ -109,8 +110,9 @@ The D path above is a runtime mount example; the persistent source of truth rema
 ~~~text
 config/                 contracts, metrics, thresholds
 data/                   storage policy only; no raw files
-src/                    inventory, Parquet, DuckDB, QA, reconciliation
+src/                    inventory, profiling, Parquet, DuckDB, QA, reconciliation
 sql/                    staging, dimensions, facts, bridges, marts, QA, analysis
+notebooks/              statistical validation scaffold
 docs/                   business, grain, KPI, methodology, decisions, UAT, interview
 tests/                  contract tests and synthetic fixtures
 powerbi/                semantic model, UAT and export instructions
@@ -120,7 +122,7 @@ powerbi/                semantic model, UAT and export instructions
 
 | Milestone | Scope | Status |
 |---|---|---|
-| M1 | inventory, contracts, profiling, warehouse, QA | scaffolded; run against Drive data |
+| M1 | inventory, source contracts, profiling, warehouse, QA | scaffolded; run against Drive data |
 | M2 | engagement, segmentation, basket/category analytics | SQL contracts ready; findings pending data run |
 | M3 | promotion, campaign, coupon analytics | SQL contracts ready; findings pending data run |
 | M4 | Power BI, UAT, decisions, interview story | design ready; verified outputs pending data run |
