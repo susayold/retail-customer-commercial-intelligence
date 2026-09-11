@@ -13,4 +13,5 @@ def test_key_and_grain_audits_exist():
         "05_q05_quantity_audit.sql",
         "06_q06_campaign_observability.sql",
         "07_q07_demographic_coverage.sql",
+        "08_q08_reference_coverage.sql",
     ]

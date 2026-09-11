@@ -16,6 +16,7 @@ QA_TABLES = (
     "qa_quantity_audit",
     "qa_campaign_observability",
     "qa_demographic_coverage",
+    "qa_reference_coverage",
 )
 
 
