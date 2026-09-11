@@ -1,5 +1,7 @@
 # Power BI delivery
 
+The data-free semantic contract is versioned in [`semantic_model.yaml`](semantic_model.yaml), and the governed measure definitions are versioned in [`measures.dax`](measures.dax). These files are reviewable before a real-data refresh; PBIX/PDF remain Drive-only outputs after the source run.
+
 Power BI is the presentation layer, not the raw 36M-row transformation engine.
 
 ## Curated inputs

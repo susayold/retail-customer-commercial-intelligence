@@ -1,0 +1,40 @@
+-- Governed core measures for the curated Power BI model.
+-- Import only curated exports from Drive 05_powerbi_exports.
+-- Panel terminology and observational guardrails are intentional.
+
+Panel Net Spend = SUM('Mart_Basket'[basket_net_spend])
+Panel Gross Spend = SUM('Mart_Basket'[basket_gross_spend])
+Recorded Discount = SUM('Mart_Basket'[basket_discount_value])
+Discount Rate = DIVIDE([Recorded Discount], [Panel Gross Spend])
+
+Baskets = DISTINCTCOUNT('Mart_Basket'[basket_id])
+Active Households = DISTINCTCOUNT('Mart_Basket'[household_key])
+Spend per Basket = DIVIDE([Panel Net Spend], [Baskets])
+Trips per Household = DIVIDE([Baskets], [Active Households])
+Spend per Household = DIVIDE([Panel Net Spend], [Active Households])
+Spend Driver Check = [Active Households] * [Trips per Household] * [Spend per Basket]
+
+Private Label Spend = SUM('Mart_Panel_Weekly'[private_label_spend])
+Private Label Share = DIVIDE(
+    [Private Label Spend],
+    SUM('Mart_Panel_Weekly'[panel_net_spend])
+)
+
+Coupon Baskets =
+CALCULATE(
+    [Baskets],
+    'Mart_Basket'[has_coupon_discount] = TRUE()
+)
+Coupon Basket Rate = DIVIDE([Coupon Baskets], [Baskets])
+
+Campaign Recipients =
+DISTINCTCOUNT('Mart_Campaign_Household'[household_key])
+Campaign Redeemers =
+CALCULATE(
+    [Campaign Recipients],
+    'Mart_Campaign_Household'[redeemed_coupon_flag] = TRUE()
+)
+Campaign Redemption Rate =
+DIVIDE([Campaign Redeemers], [Campaign Recipients])
+
+Decision Alert Count = COUNTROWS('Mart_Decision_Alerts')

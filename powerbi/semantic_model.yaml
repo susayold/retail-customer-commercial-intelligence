@@ -1,0 +1,118 @@
+model_name: Retail Customer & Commercial Intelligence
+storage_policy: Drive-only
+source_folder: 05_powerbi_exports
+raw_source_allowed: false
+
+tables:
+  - name: Dim_Day
+    role: dimension
+    source_file: Dim_Day.parquet
+    key: day_key
+  - name: Dim_Week
+    role: dimension
+    source_file: Dim_Week.parquet
+    key: week_number
+  - name: Dim_Household
+    role: dimension
+    source_file: Dim_Household.parquet
+    key: household_key
+  - name: Dim_Product
+    role: dimension
+    source_file: Dim_Product.parquet
+    key: product_id
+  - name: Dim_Campaign
+    role: dimension
+    source_file: Dim_Campaign.parquet
+    key: campaign_id
+  - name: Mart_Panel_Weekly
+    role: aggregate
+    source_file: Mart_Panel_Weekly.parquet
+    grain: week_number
+  - name: Mart_Household_Summary
+    role: aggregate
+    source_file: Mart_Household_Summary.parquet
+    grain: household_key
+  - name: Mart_Customer_Segment
+    role: aggregate
+    source_file: Mart_Customer_Segment.parquet
+    grain: household_key
+  - name: Mart_Basket
+    role: fact
+    source_file: Mart_Basket.parquet
+    grain: basket_id
+  - name: Mart_Category_Weekly
+    role: aggregate
+    source_file: Mart_Category_Weekly.parquet
+    grain: week_number, department, commodity_desc
+  - name: Mart_Brand_Category
+    role: aggregate
+    source_file: Mart_Brand_Category.parquet
+    grain: department, commodity_desc, brand_type
+  - name: Mart_Promotion_Category_Week
+    role: aggregate
+    source_file: Mart_Promotion_Category_Week.parquet
+    grain: week_number, product_id, store_id, department, commodity_desc
+  - name: Mart_Campaign_Household
+    role: factless_event
+    source_file: Mart_Campaign_Household.parquet
+    grain: household_key, campaign_id
+  - name: Mart_Campaign_Summary
+    role: aggregate
+    source_file: Mart_Campaign_Summary.parquet
+    grain: campaign_id
+  - name: Mart_Cross_Category_Pair
+    role: aggregate
+    source_file: Mart_Cross_Category_Pair.parquet
+    grain: category_a, category_b
+  - name: Mart_Decision_Alerts
+    role: aggregate
+    source_file: Mart_Decision_Alerts.parquet
+    grain: alert_id
+
+relationships:
+  - from: Dim_Week[week_number]
+    to: Mart_Panel_Weekly[week_number]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Day[day_key]
+    to: Mart_Basket[day_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Household[household_key]
+    to: Mart_Basket[household_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Household[household_key]
+    to: Mart_Household_Summary[household_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Household[household_key]
+    to: Mart_Customer_Segment[household_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Household[household_key]
+    to: Mart_Campaign_Household[household_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Mart_Campaign_Household[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Mart_Campaign_Summary[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+
+pages:
+  - name: Executive Customer & Commercial Health
+    source_tables: [Mart_Panel_Weekly, Mart_Basket, Mart_Decision_Alerts]
+  - name: Customer Engagement & Segmentation
+    source_tables: [Mart_Household_Summary, Mart_Customer_Segment]
+  - name: Basket & Category Intelligence
+    source_tables: [Mart_Basket, Mart_Category_Weekly, Mart_Cross_Category_Pair]
+  - name: Category, Brand & Private Label
+    source_tables: [Mart_Category_Weekly, Mart_Brand_Category, Mart_Panel_Weekly]
+  - name: Promotion & Merchandising
+    source_tables: [Mart_Promotion_Category_Week, Mart_Brand_Category]
+  - name: Campaign & Coupon Intelligence
+    source_tables: [Mart_Campaign_Household, Mart_Campaign_Summary]

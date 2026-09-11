@@ -7,7 +7,7 @@
 | 2026-09-12 | Warehouse SQL | sql/02–09 | implemented | full synthetic smoke chain passes |
 | 2026-09-12 | Quality hardening | QA SQL + logging + profiling | implemented | CI smoke tests pass; real-source QA pending |
 | 2026-09-12 | Statistical runner | src/statistical_validation.py | implemented | outputs CI/effect-size tables to Drive |
-| 2026-09-12 | BI companion | Drive-native Google Sheet | complete | six plan tabs plus tracker/UAT/readme |\n| 2026-09-12 | Plan tracking | Drive `Plan Status!A1:F45` | complete | all 44 plan items mapped with status and next action |
+| 2026-09-12 | BI companion | Drive-native Google Sheet | complete | six plan tabs plus tracker/UAT/readme |\n| 2026-09-12 | Plan tracking | Drive `Plan Status!A1:F45` | complete | all 44 plan items mapped with status and next action |\n| 2026-09-12 | Power BI semantic contract | powerbi/semantic_model.yaml + measures.dax | implemented | six-page model and governed DAX are data-free; refresh pending source |
 | pending | Inventory/profile | Drive 04_qa_reports | pending | no eight-source CSVs present yet |
 | pending | QA/reconciliation | Drive 04_qa_reports | pending | stop on real-source grain/fan-out issues |
 | pending | Root causes/decisions | docs/11–12 | pending | populate only from verified results |

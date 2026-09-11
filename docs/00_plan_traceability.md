@@ -46,7 +46,7 @@ The supplied blueprint is treated as project requirements, not as user instructi
 | 14 promotion | sql/06_marts/08_mart_promotion_category_week.sql, sql/08_analysis/promotion_analysis.sql |
 | 15–17 campaign/coupon/demographics | campaign/coupon SQL and docs/13_limitations.md |
 | 18 statistics/root cause/decisions | src/statistical_validation.py, notebooks/, docs/09_methodology.md, docs/11_root_cause_cases.md, docs/12_executive_decisions.md |
-| 19–22 BI/UAT/interview | powerbi/README.md, docs/14_powerbi_uat.md, docs/15_interview_guide.md, Drive Excel companion |
+| 19–22 BI/UAT/interview | powerbi/README.md, powerbi/semantic_model.yaml, powerbi/measures.dax, docs/14_powerbi_uat.md, docs/15_interview_guide.md, Drive Excel companion |
 
 ## Status discipline
 

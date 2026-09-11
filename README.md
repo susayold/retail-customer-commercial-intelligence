@@ -85,7 +85,7 @@ Drive subfolders:
 - 05_powerbi_exports: PBIX/PDF/Excel exports.
 - 06_source_docs: source notes and evidence.
 
-GitHub stores code, configuration, SQL, documentation, tests and small synthetic fixtures only. Raw source data is never committed to this public repository. The pipeline requires explicit Drive-backed input/output paths; it does not default to the repository or Codex workspace for data artifacts. The [Drive-native Excel companion](https://docs.google.com/spreadsheets/d/16Iz47jiHM2nl5gGuhP5Py_xbNjLVLO5FaFpiL-_dR4k/edit) includes Metric Dictionary, Decision Tracker, UAT Checklist, Plan Status for all 44 plan steps, and the six planned output tabs.
+GitHub stores code, configuration, SQL, documentation, tests and small synthetic fixtures only. Raw source data is never committed to this public repository. The pipeline requires explicit Drive-backed input/output paths; it does not default to the repository or Codex workspace for data artifacts. The [Drive-native Excel companion](https://docs.google.com/spreadsheets/d/16Iz47jiHM2nl5gGuhP5Py_xbNjLVLO5FaFpiL-_dR4k/edit) includes Metric Dictionary, Decision Tracker, UAT Checklist, Plan Status for all 44 plan steps, and the six planned output tabs. Power BI semantic structure and governed measures are versioned in `powerbi/semantic_model.yaml` and `powerbi/measures.dax`.
 
 ## 7. Reproducibility
 
@@ -115,7 +115,7 @@ sql/                    staging, dimensions, facts, bridges, marts, QA, analysis
 notebooks/              statistical validation scaffold
 docs/                   business, grain, KPI, methodology, decisions, UAT, interview
 tests/                  contract tests and synthetic fixtures
-powerbi/                semantic model, UAT and export instructions
+powerbi/                semantic model, DAX measures, UAT and export instructions
 ~~~
 
 ## 9. Build status
