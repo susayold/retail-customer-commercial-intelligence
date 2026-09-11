@@ -18,8 +18,13 @@ def test_full_sql_chain_runs_on_synthetic_fixture():
         qa_paths = sorted((sql_root / "07_quality").glob("*.sql"))
         for sql_path in model_paths + qa_paths:
             connection.execute(sql_path.read_text(encoding="utf-8"))
+        export_paths = sorted((sql_root / "09_exports").glob("*.sql"))
+        for sql_path in export_paths:
+            connection.execute(sql_path.read_text(encoding="utf-8"))
         assert connection.execute("SELECT COUNT(*) FROM mart_panel_weekly").fetchone()[0] > 0
         assert connection.execute("SELECT COUNT(*) FROM mart_campaign_summary").fetchone()[0] > 0
         assert connection.execute("SELECT COUNT(*) FROM qa_grain_audit").fetchone()[0] == 3
+        assert connection.execute("SELECT COUNT(*) FROM export_powerbi_metric_reconciliation").fetchone()[0] == 8
+        assert connection.execute("SELECT COUNT(*) FROM export_powerbi_decision_alerts").fetchone()[0] >= 0
     finally:
         connection.close()

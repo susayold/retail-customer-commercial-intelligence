@@ -30,6 +30,29 @@ POWERBI_TABLES = (
     "export_powerbi_decision_alerts",
 )
 
+# Physical filenames intentionally match the semantic-model contract and DAX names.
+POWERBI_OUTPUT_NAMES = {
+    "dim_day": "Dim_Day",
+    "dim_week": "Dim_Week",
+    "dim_household": "Dim_Household",
+    "dim_product": "Dim_Product",
+    "dim_campaign": "Dim_Campaign",
+    "mart_panel_weekly": "Mart_Panel_Weekly",
+    "mart_household_summary": "Mart_Household_Summary",
+    "mart_customer_segment": "Mart_Customer_Segment",
+    "mart_basket": "Mart_Basket",
+    "mart_category_weekly": "Mart_Category_Weekly",
+    "mart_brand_category": "Mart_Brand_Category",
+    "mart_promotion_category_week": "Mart_Promotion_Category_Week",
+    "mart_campaign_household": "Mart_Campaign_Household",
+    "mart_campaign_summary": "Mart_Campaign_Summary",
+    "mart_coupon_summary": "Mart_Coupon_Summary",
+    "mart_cross_category_pair": "Mart_Cross_Category_Pair",
+    "mart_decision_alerts": "Mart_Decision_Alerts",
+    "export_powerbi_metric_reconciliation": "PowerBI_Metric_Reconciliation",
+    "export_powerbi_decision_alerts": "PowerBI_Decision_Alerts",
+}
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -50,7 +73,7 @@ def main() -> None:
             connection.execute(sql_path.read_text(encoding="utf-8"))
         for table_name in POWERBI_TABLES:
             extension = "parquet" if args.format == "parquet" else "csv"
-            output_path = output_dir / f"{table_name}.{extension}"
+            output_path = output_dir / f"{POWERBI_OUTPUT_NAMES[table_name]}.{extension}"
             if args.format == "parquet":
                 connection.execute(
                     f"COPY (SELECT * FROM {table_name}) TO ? (FORMAT PARQUET, COMPRESSION ZSTD)",

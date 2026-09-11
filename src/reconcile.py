@@ -7,10 +7,28 @@ import csv
 import math
 from pathlib import Path
 
+VALUE_COLUMNS = ("value", "sql_value", "powerbi_value")
+
 
 def load(path: Path) -> dict[str, float]:
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
-        return {row["metric"]: float(row["value"]) for row in csv.DictReader(handle)}
+        reader = csv.DictReader(handle)
+        fieldnames = set(reader.fieldnames or [])
+        value_column = next((name for name in VALUE_COLUMNS if name in fieldnames), None)
+        if value_column is None or "metric" not in fieldnames:
+            raise ValueError(
+                f"{path} must contain metric and one of {', '.join(VALUE_COLUMNS)}"
+            )
+        values: dict[str, float] = {}
+        for row in reader:
+            metric = row.get("metric")
+            if not metric:
+                raise ValueError(f"{path} contains a row without metric")
+            if metric in values:
+                raise ValueError(f"{path} contains duplicate metric: {metric}")
+            raw_value = row.get(value_column)
+            values[metric] = math.nan if raw_value in (None, "") else float(raw_value)
+        return values
 
 
 def main() -> None:

@@ -1,11 +1,13 @@
 from pathlib import Path
 
-import yaml
+from src.export_powerbi import POWERBI_OUTPUT_NAMES
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_powerbi_model_contract_is_curated_and_six_pages():
+    import yaml
+
     contract = yaml.safe_load(
         (ROOT / "powerbi" / "semantic_model.yaml").read_text(encoding="utf-8")
     )
@@ -28,3 +30,10 @@ def test_powerbi_dax_contract_contains_governed_measures():
         "Campaign Redemption Rate",
     ):
         assert measure in dax
+
+
+def test_powerbi_export_names_match_semantic_contract():
+    assert POWERBI_OUTPUT_NAMES["dim_day"] == "Dim_Day"
+    assert POWERBI_OUTPUT_NAMES["mart_basket"] == "Mart_Basket"
+    assert POWERBI_OUTPUT_NAMES["mart_campaign_household"] == "Mart_Campaign_Household"
+    assert len(POWERBI_OUTPUT_NAMES) == 19
