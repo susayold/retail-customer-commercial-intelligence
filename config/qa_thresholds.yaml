@@ -1,0 +1,14 @@
+row_count_tolerance: 0
+numeric_sum_tolerance: 0.000001
+key_duplicate_tolerance: 0
+campaign_observability:
+  post_14d_min_days: 14
+  post_28d_min_days: 28
+promotion:
+  required_states:
+    - none
+    - display_only
+    - mailer_only
+    - display_and_mailer
+demographics:
+  coverage_is_descriptive_only: true

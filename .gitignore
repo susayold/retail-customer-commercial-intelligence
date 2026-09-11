@@ -1,0 +1,28 @@
+# Local/runtime secrets
+.env
+*.key
+*.pem
+
+# Never commit retail source data or warehouse artifacts
+data/raw/
+data/parquet/
+data/marts/
+data/**/*.csv
+data/**/*.parquet
+*.duckdb
+*.db
+*.sqlite
+*.pbix
+*.pbit
+*.xlsx
+*.pdf
+
+# Generated reports and caches
+reports/qa/*
+reports/tables/*
+reports/charts/*
+reports/statistics/*
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/

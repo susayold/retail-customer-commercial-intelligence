@@ -1,0 +1,46 @@
+metrics:
+  panel_net_spend:
+    name: Panel Net Spend
+    formula: SUM(fct_transaction_line.sales_value)
+    grain: selected period
+    limitation: observed panel spend; not retailer revenue
+  active_panel_households:
+    name: Active Panel Households
+    formula: COUNT(DISTINCT household_key) with >=1 basket in selected period
+    grain: selected period
+  baskets:
+    name: Baskets / Trips
+    formula: COUNT(DISTINCT basket_id)
+    grain: selected period
+  spend_per_basket:
+    name: Spend per Basket
+    formula: panel_net_spend / baskets
+    grain: selected period
+  trips_per_active_household:
+    name: Trips per Active Household
+    formula: baskets / active_panel_households
+    grain: selected period
+  spend_per_active_household:
+    name: Spend per Active Household
+    formula: panel_net_spend / active_panel_households
+    grain: selected period
+  total_recorded_discount:
+    name: Total Recorded Discount
+    formula: retail_discount_value + coupon_discount_value + coupon_match_discount_value
+    grain: transaction line
+  discount_rate:
+    name: Discount Rate
+    formula: total_recorded_discount / gross_spend_before_recorded_discounts
+    grain: selected period
+  category_household_penetration:
+    name: Category Household Penetration
+    formula: buying households / active panel households
+    grain: category and selected period
+  private_label_share:
+    name: Private Label Spend Share
+    formula: private_label_spend / panel_net_spend
+    grain: selected period
+  campaign_redemption_rate:
+    name: Campaign Redemption Rate
+    formula: campaign_redeemer_households / campaign_recipient_households
+    grain: campaign

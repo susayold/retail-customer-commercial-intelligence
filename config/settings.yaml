@@ -1,0 +1,34 @@
+project_name: retail-customer-commercial-intelligence
+dataset: dunnhumby_the_complete_journey
+storage:
+  drive_root_env: RETAIL_ARTIFACT_ROOT
+  raw_folder: 01_raw_source
+  curated_folder: 02_curated_parquet
+  warehouse_folder: 03_duckdb_and_marts
+  qa_folder: 04_qa_reports
+  powerbi_folder: 05_powerbi_exports
+  docs_folder: 06_source_docs
+  local_workspace_data_allowed: false
+sources:
+  transaction_data: transaction_data.csv
+  causal_data: causal_data.csv
+  coupon: coupon.csv
+  coupon_redempt: coupon_redempt.csv
+  campaign_table: campaign_table.csv
+  campaign_desc: campaign_desc.csv
+  product: product.csv
+  hh_demographic: hh_demographic.csv
+time:
+  min_day: 1
+  max_day: 711
+  min_week: 1
+  max_week: 102
+  synthetic_date_allowed_for_bi_mechanics: true
+  synthetic_date_label: synthetic_date
+analysis:
+  trajectory_window_weeks: 13
+  campaign_pre_days: 28
+  campaign_post_14_days: 14
+  campaign_post_28_days: 28
+  category_pair_min_support: 0.01
+  category_pair_min_baskets: 100

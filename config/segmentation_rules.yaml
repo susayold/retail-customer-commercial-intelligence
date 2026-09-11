@@ -1,0 +1,20 @@
+segment_version: v1_deterministic
+rules:
+  - name: High-Value Declining
+    condition: monetary_quintile >= 4 and trajectory = Declining
+  - name: High-Value Engaged
+    condition: monetary_quintile >= 4 and trajectory in [Growing, Stable]
+  - name: Frequent Core
+    condition: frequency_quintile >= 4 and monetary_quintile < 4
+  - name: Promotion-Responsive
+    condition: coupon_basket_rate >= 0.30 or discount_share >= 0.20
+  - name: Private-Label Loyal
+    condition: private_label_share >= 0.60
+  - name: Occasional
+    condition: frequency_quintile <= 2 and active_weeks <= 8
+  - name: Low-Engagement
+    condition: all other observed households
+assignment_policy:
+  exactly_one_segment: true
+  precedence: listed order
+  insufficient_history_label: Insufficient History
