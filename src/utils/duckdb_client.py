@@ -26,9 +26,8 @@ def connect(database: str | Path = ":memory:", threads: int = 4) -> duckdb.DuckD
 
 def register_raw_views(connection: duckdb.DuckDBPyConnection, raw_dir: Path) -> None:
     for name, filename in RAW_SOURCES.items():
-        path = (raw_dir / filename).as_posix()
+        path = (raw_dir / filename).as_posix().replace("'", "''")
         connection.execute(
             f"CREATE OR REPLACE VIEW raw_{name} AS "
-            "SELECT * FROM read_csv_auto(?, header=true, union_by_name=true)",
-            [path],
+            f"SELECT * FROM read_csv_auto('{path}', header=true, union_by_name=true)"
         )
