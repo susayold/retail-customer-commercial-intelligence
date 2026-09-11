@@ -25,7 +25,7 @@ This checklist separates implemented repository work from outputs that require t
 | 34 | Build Power BI | Spec ready; binary pending | powerbi/README.md; create PBIX after data refresh |
 | 35 | Reconcile SQL/DAX | Implemented method; pending result | docs/14_powerbi_uat.md + Drive QA output |
 | 36 | Complete UAT | Checklist ready; pending result | Drive companion UAT_Checklist |
-| 37 | Excel companion | Done as Drive-native workbook | Google Sheet with six plan tabs plus tracker/readme |
+| 37 | Excel companion | Done as Drive-native workbook | Google Sheet with six plan tabs plus tracker/readme + Plan Status |
 | 38 | Create diagrams | Done | assets/architecture.svg, assets/star_schema.svg |
 | 39 | Finalize README | Done | README.md |
 | 40 | Finalize limitations | Done | docs/13_limitations.md |
@@ -33,6 +33,10 @@ This checklist separates implemented repository work from outputs that require t
 | 42 | Verified CV bullets | Pending by design | Only write after real-data QA |
 | 43 | Clean rebuild from raw | Pending by design | Run after Drive source upload |
 | 44 | Tag v1.0.0 | Pending by design | Tag only after all gates pass |
+
+## Live Drive tracker
+
+The Drive-native workbook contains a `Plan Status` tab covering all 44 steps in `Plan Status!A1:F45`, with current status, evidence, next action and real-source dependency.
 
 ## Definition of 100% completion
 
