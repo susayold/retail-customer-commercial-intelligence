@@ -31,6 +31,7 @@ The supplied blueprint is treated as project requirements, not as user instructi
 - State campaign targeting bias, censoring and demographic coverage.
 - Use association wording for promotion findings.
 - Do not publish unsupported claims about margin, ROI, inventory or causal lift.
+- Run business-facing statistical validation with sample size, uncertainty and effect size.
 
 ## Traceability map
 
@@ -44,7 +45,7 @@ The supplied blueprint is treated as project requirements, not as user instructi
 | 11–13 basket/category/private label | sql/06_marts/, sql/08_analysis/basket_category.sql, sql/08_analysis/category_analysis.sql, sql/08_analysis/private_label.sql |
 | 14 promotion | sql/06_marts/08_mart_promotion_category_week.sql, sql/08_analysis/promotion_analysis.sql |
 | 15–17 campaign/coupon/demographics | campaign/coupon SQL and docs/13_limitations.md |
-| 18 statistics/root cause/decisions | notebooks/, docs/09_methodology.md, docs/11_root_cause_cases.md, docs/12_executive_decisions.md |
+| 18 statistics/root cause/decisions | src/statistical_validation.py, notebooks/, docs/09_methodology.md, docs/11_root_cause_cases.md, docs/12_executive_decisions.md |
 | 19–22 BI/UAT/interview | powerbi/README.md, docs/14_powerbi_uat.md, docs/15_interview_guide.md, Drive Excel companion |
 
 ## Status discipline

@@ -26,6 +26,8 @@ POWERBI_TABLES = (
     "mart_coupon_summary",
     "mart_cross_category_pair",
     "mart_decision_alerts",
+    "export_powerbi_metric_reconciliation",
+    "export_powerbi_decision_alerts",
 )
 
 
@@ -33,6 +35,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--database", type=Path, default=None)
+    parser.add_argument("--sql-dir", type=Path, default=Path("sql"))
     parser.add_argument("--format", choices=("parquet", "csv"), default="parquet")
     args = parser.parse_args()
 
@@ -42,6 +45,9 @@ def main() -> None:
 
     connection = connect(database, threads=2)
     try:
+        export_sql_dir = args.sql_dir / "09_exports"
+        for sql_path in sorted(export_sql_dir.glob("*.sql")):
+            connection.execute(sql_path.read_text(encoding="utf-8"))
         for table_name in POWERBI_TABLES:
             extension = "parquet" if args.format == "parquet" else "csv"
             output_path = output_dir / f"{table_name}.{extension}"

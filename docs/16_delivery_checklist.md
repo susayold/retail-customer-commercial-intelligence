@@ -8,7 +8,7 @@ This checklist separates implemented repository work from outputs that require t
 | 02 | Download data | Blocked by source availability | Put licensed CSVs in Drive 01_raw_source |
 | 03 | Inventory files | Implemented | src/inventory.py; run to Drive QA |
 | 04 | Validate schemas | Implemented | src/schema_contracts.py + config/source_contracts.yaml |
-| 05 | Profile sources | Implemented | src/profile_sources.py |
+| 05 | Profile sources | Implemented | src/profile_sources.py; row/type/null/distinct/range outputs |
 | 06 | Document grain | Done | docs/04_grain_and_join_contracts.md, docs/05_data_model.md |
 | 07 | Document join risks | Done | docs/04_grain_and_join_contracts.md |
 | 08 | Convert CSV to Parquet | Implemented | src/build_parquet.py; Drive output only |
@@ -18,10 +18,10 @@ This checklist separates implemented repository work from outputs that require t
 | 18 | Reconcile totals | Implemented | src/reconcile.py + sql/09_exports |
 | 19 | Metric dictionary | Done | config/metric_definitions.yaml + Drive companion |
 | 20–29 | Build marts and analysis | Implemented and smoke-tested | sql/06_marts, sql/08_analysis |
-| 30 | Run statistics | Scaffold ready | notebook; requires real Drive DuckDB |
+| 30 | Run statistics | Implemented | src/statistical_validation.py + notebook; requires real Drive DuckDB |
 | 31 | Root-cause cases | Template ready | docs/11_root_cause_cases.md; requires verified output |
 | 32 | Executive decisions | Template ready | docs/12_executive_decisions.md; requires verified output |
-| 33 | Export BI marts | Implemented | src/export_powerbi.py |
+| 33 | Export BI marts | Implemented | src/export_powerbi.py now executes sql/09_exports |
 | 34 | Build Power BI | Spec ready; binary pending | powerbi/README.md; create PBIX after data refresh |
 | 35 | Reconcile SQL/DAX | Implemented method; pending result | docs/14_powerbi_uat.md + Drive QA output |
 | 36 | Complete UAT | Checklist ready; pending result | Drive companion UAT_Checklist |
