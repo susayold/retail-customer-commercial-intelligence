@@ -2,6 +2,8 @@ CREATE OR REPLACE TABLE qa_campaign_observability AS
 SELECT
     campaign_id,
     COUNT(*) AS recipient_rows,
+    SUM(CASE WHEN pre_28d_observable THEN 1 ELSE 0 END) AS pre_28d_observable_rows,
+    SUM(CASE WHEN during_observable THEN 1 ELSE 0 END) AS during_observable_rows,
     SUM(CASE WHEN post_14d_observable THEN 1 ELSE 0 END) AS post_14d_observable_rows,
     SUM(CASE WHEN post_28d_observable THEN 1 ELSE 0 END) AS post_28d_observable_rows,
     MIN(start_day) AS start_day,

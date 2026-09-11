@@ -21,10 +21,21 @@
 
 - tooltips show numerator/denominator where relevant;
 - drill-through keeps the declared grain;
-- blank post-campaign windows stay blank;
+- blank pre/during/post campaign windows stay blank when unobservable;
 - promotion state shows sample sizes;
 - association disclaimer is visible;
 - no synthetic month/seasonality claim.
+
+## Campaign observability
+
+Verify the four fields for every campaign:
+
+- pre_28d_observable;
+- during_observable;
+- post_14d_observable;
+- post_28d_observable.
+
+Unobservable periods must be NULL in the household mart and excluded from averages.
 
 ## Reconciliation file
 

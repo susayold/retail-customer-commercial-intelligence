@@ -5,19 +5,22 @@ This report is completed from Drive outputs after the source run. The planning c
 ## Required evidence
 
 - raw_file_inventory.csv: eight files, size, rows, columns, header hash and load status;
-- source_profile_summary.csv: types, nulls, distinct counts, numeric ranges;
+- schema_validation.csv: required columns, missing columns and contract status;
+- source_profile_summary.csv: types, row counts and column counts;
+- source_null_profile.csv: null/blank rate, distinct count and min/max profile;
 - qa_source_reconciliation.csv: source counts and distinct keys;
 - qa_key_audit.csv: duplicate counts at model grain;
 - qa_grain_audit.csv: basket consistency checks;
 - qa_discount_audit.csv: sign and value audit;
 - qa_quantity_audit.csv: range, percentiles and outlier flags;
 - qa_campaign_observability.csv: pre/during/post window availability;
-- qa_demographic_coverage.csv: coverage and covered/uncovered comparison;
-- powerbi_reconciliation.csv: SQL/DAX metric differences.
+- qa_demographic_coverage.csv: coverage and covered/uncovered behavior comparison;
+- powerbi_reconciliation.csv: SQL/DAX metric differences;
+- pipeline_run.log: run_id, timestamp, file, rows read/written, duration, warnings and errors.
 
 ## Stop conditions
 
-Business analysis stops when a source is missing, required columns drift, a mandatory key duplicates unexpectedly, a basket maps to multiple household/day/store values, campaign post-period is treated as zero without observability, or SQL/BI reconciliation exceeds tolerance.
+Business analysis stops when a source is missing, required columns drift, a mandatory key duplicates unexpectedly, a basket maps to multiple household/day/store values, campaign pre/during/post is treated as zero without observability, or SQL/BI reconciliation exceeds tolerance.
 
 ## Interpretation
 
