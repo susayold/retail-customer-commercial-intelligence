@@ -48,5 +48,7 @@ LEFT JOIN transaction_windows t
 LEFT JOIN redemptions r
     ON r.household_key = e.household_key
    AND r.campaign_id = e.campaign_id
-LEFT JOIN mart_customer_segment s USING (household_key)
-LEFT JOIN dim_household h USING (household_key);
+LEFT JOIN mart_customer_segment s
+    ON s.household_key = e.household_key
+LEFT JOIN dim_household h
+    ON h.household_key = e.household_key;
