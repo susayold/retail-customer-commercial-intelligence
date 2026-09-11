@@ -8,6 +8,10 @@ from pathlib import Path
 from src.utils.duckdb_client import RAW_SOURCES, connect, register_raw_views
 
 
+def quote_identifier(name: str) -> str:
+    return '"' + name.replace('"', '""') + '"'
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=Path, required=True)
@@ -24,43 +28,73 @@ def main() -> None:
             CREATE OR REPLACE TABLE source_profile_summary (
                 source_name VARCHAR,
                 source_filename VARCHAR,
-                row_count BIGINT
+                row_count BIGINT,
+                column_count INTEGER
             )
             """
-        )
-        summary_rows = []
-        column_rows = []
-        for source_name, source_filename in RAW_SOURCES.items():
-            row_count = connection.execute(
-                f"SELECT COUNT(*) FROM raw_{source_name}"
-            ).fetchone()[0]
-            summary_rows.append((source_name, source_filename, row_count))
-            columns = connection.execute(
-                f"DESCRIBE SELECT * FROM raw_{source_name}"
-            ).fetchall()
-            column_rows.extend(
-                (source_name, ordinal, column_name, column_type)
-                for ordinal, (column_name, column_type, *_rest) in enumerate(columns, start=1)
-            )
-        connection.executemany(
-            "INSERT INTO source_profile_summary VALUES (?, ?, ?)",
-            summary_rows,
         )
         connection.execute(
             """
-            CREATE OR REPLACE TABLE source_profile_columns (
+            CREATE OR REPLACE TABLE source_null_profile (
                 source_name VARCHAR,
-                ordinal INTEGER,
                 column_name VARCHAR,
-                column_type VARCHAR
+                column_type VARCHAR,
+                row_count BIGINT,
+                null_or_blank_count BIGINT,
+                null_or_blank_pct DOUBLE,
+                distinct_count BIGINT,
+                min_value VARCHAR,
+                max_value VARCHAR
             )
             """
         )
-        connection.executemany(
-            "INSERT INTO source_profile_columns VALUES (?, ?, ?, ?)",
-            column_rows,
-        )
-        for table_name in ("source_profile_summary", "source_profile_columns"):
+
+        for source_name, source_filename in RAW_SOURCES.items():
+            columns = connection.execute(
+                f"DESCRIBE SELECT * FROM raw_{source_name}"
+            ).fetchall()
+            quoted_columns = [(quote_identifier(row[0]), row[0], row[1]) for row in columns]
+            expressions = ["COUNT(*) AS row_count"]
+            for ordinal, (identifier, _name, _type) in enumerate(quoted_columns):
+                expressions.extend(
+                    [
+                        f"SUM(CASE WHEN {identifier} IS NULL OR TRIM(CAST({identifier} AS VARCHAR)) = '' THEN 1 ELSE 0 END) AS null_{ordinal}",
+                        f"COUNT(DISTINCT {identifier}) AS distinct_{ordinal}",
+                        f"MIN(CAST({identifier} AS VARCHAR)) AS min_{ordinal}",
+                        f"MAX(CAST({identifier} AS VARCHAR)) AS max_{ordinal}",
+                    ]
+                )
+            row = connection.execute(
+                f"SELECT {', '.join(expressions)} FROM raw_{source_name}"
+            ).fetchone()
+            row_count = int(row[0] or 0)
+            connection.execute(
+                "INSERT INTO source_profile_summary VALUES (?, ?, ?, ?)",
+                [source_name, source_filename, row_count, len(columns)],
+            )
+            for ordinal, (_identifier, column_name, column_type) in enumerate(quoted_columns):
+                offset = 1 + ordinal * 4
+                null_count = int(row[offset] or 0)
+                distinct_count = int(row[offset + 1] or 0)
+                min_value = row[offset + 2]
+                max_value = row[offset + 3]
+                null_pct = null_count / row_count if row_count else None
+                connection.execute(
+                    "INSERT INTO source_null_profile VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    [
+                        source_name,
+                        column_name,
+                        column_type,
+                        row_count,
+                        null_count,
+                        null_pct,
+                        distinct_count,
+                        None if min_value is None else str(min_value),
+                        None if max_value is None else str(max_value),
+                    ],
+                )
+
+        for table_name in ("source_profile_summary", "source_null_profile"):
             output_path = qa_dir / f"{table_name}.csv"
             connection.execute(
                 f"COPY (SELECT * FROM {table_name}) TO ? (HEADER, DELIMITER ',')",

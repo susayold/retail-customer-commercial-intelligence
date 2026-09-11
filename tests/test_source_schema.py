@@ -3,6 +3,7 @@ from pathlib import Path
 import yaml
 
 from src.schema_contracts import validate_headers
+from src.utils.duckdb_client import RAW_SOURCES
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -10,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_contracts_match_the_eight_source_files():
     contracts = yaml.safe_load((ROOT / "config/source_contracts.yaml").read_text())
     assert len(contracts["sources"]) == 8
+    assert set(contracts["sources"]) == set(RAW_SOURCES)
     assert all(contract["file"].endswith(".csv") for contract in contracts["sources"].values())
 
 

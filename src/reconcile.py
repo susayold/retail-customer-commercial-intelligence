@@ -24,6 +24,7 @@ def main() -> None:
     sql = load(args.sql)
     bi = load(args.bi)
     metrics = sorted(set(sql) | set(bi))
+    failures = 0
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(
@@ -36,6 +37,7 @@ def main() -> None:
             bi_value = bi.get(metric, math.nan)
             difference = abs(sql_value - bi_value) if math.isfinite(sql_value) and math.isfinite(bi_value) else math.nan
             status = "pass" if math.isfinite(difference) and difference <= args.tolerance else "fail"
+            failures += status == "fail"
             writer.writerow({
                 "metric": metric,
                 "sql_value": sql_value,
@@ -44,6 +46,8 @@ def main() -> None:
                 "tolerance": args.tolerance,
                 "status": status,
             })
+    if failures:
+        raise SystemExit(f"Reconciliation failed for {failures} metric(s); inspect {args.output}")
 
 
 if __name__ == "__main__":
