@@ -89,7 +89,7 @@ GitHub stores code, configuration, SQL, documentation, tests and small synthetic
 
 ## 7. Reproducibility
 
-Run the pipeline from an environment that can read/write the Drive folders, such as Drive for Desktop, a mounted Google Drive runtime or a controlled notebook runtime. Keep RETAIL_DATA_ROOT and RETAIL_ARTIFACT_ROOT pointed at Drive. Do not use the repository as a data lake.
+Run the pipeline from an environment that can read/write the Drive folders, such as Drive for Desktop, a mounted Google Drive runtime or a controlled notebook runtime. Keep RETAIL_DATA_ROOT and RETAIL_ARTIFACT_ROOT pointed at Drive. Do not use the repository as a data lake. Run `make storage` first; the storage gate verifies all eight source names, required Drive artifact folders, repository artifact exclusions and that data paths are outside the checkout.
 
 ~~~powershell
 python -m pip install -r requirements.txt
