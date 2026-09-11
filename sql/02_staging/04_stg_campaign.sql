@@ -1,0 +1,7 @@
+CREATE OR REPLACE VIEW stg_campaign AS
+SELECT DISTINCT
+    CAST(CAMPAIGN AS INTEGER) AS campaign_id,
+    CAST(DESCRIPTION AS VARCHAR) AS campaign_type,
+    CAST(START_DAY AS INTEGER) AS start_day,
+    CAST(END_DAY AS INTEGER) AS end_day
+FROM raw_campaign_desc;

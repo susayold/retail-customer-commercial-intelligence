@@ -1,0 +1,23 @@
+from pathlib import Path
+
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_expected_source_contracts_are_present():
+    settings = yaml.safe_load((ROOT / "config/settings.yaml").read_text())
+    assert set(settings["sources"]) == {
+        "transaction_data", "causal_data", "coupon", "coupon_redempt",
+        "campaign_table", "campaign_desc", "product", "hh_demographic",
+    }
+
+
+def test_storage_policy_disallows_local_workspace_data():
+    settings = yaml.safe_load((ROOT / "config/settings.yaml").read_text())
+    assert settings["storage"]["local_workspace_data_allowed"] is False
+
+
+def test_segments_have_fallback():
+    rules = yaml.safe_load((ROOT / "config/segmentation_rules.yaml").read_text())
+    assert any("Low-Engagement" in item["name"] for item in rules["rules"])

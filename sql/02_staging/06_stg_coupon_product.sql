@@ -1,0 +1,6 @@
+CREATE OR REPLACE VIEW stg_coupon_product AS
+SELECT DISTINCT
+    CAST(COUPON_UPC AS BIGINT) AS coupon_upc,
+    CAST(PRODUCT_ID AS BIGINT) AS product_id,
+    CAST(CAMPAIGN AS INTEGER) AS campaign_id
+FROM raw_coupon;
