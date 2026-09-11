@@ -18,6 +18,9 @@ parquet:
 warehouse:
 	$(PYTHON) -m src.build_warehouse --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT"
 
+segment:
+	$(PYTHON) -m src.segment_customers --database "$$RETAIL_ARTIFACT_ROOT/03_duckdb_and_marts/retail_intelligence.duckdb"
+
 validate:
 	$(PYTHON) -m src.validate --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT"
 
@@ -27,4 +30,4 @@ stats:
 powerbi:
 	$(PYTHON) -m src.export_powerbi --artifact-root "$$RETAIL_ARTIFACT_ROOT" --format parquet
 
-all: schema inventory profile parquet warehouse validate stats powerbi test
+all: schema inventory profile parquet warehouse segment validate stats powerbi test
