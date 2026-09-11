@@ -17,7 +17,9 @@ The approximate counts are planning expectations from the supplied blueprint. Re
 
 ## Acquisition
 
-Use official dunnhumby Source Files where possible. If Kaggle is used, download into the Drive 01_raw_source folder and record the source URL, date, version and checksum in 06_source_docs.
+Primary source: [official dunnhumby Source Files](https://www.dunnhumby.com/source-files/), which provides The Complete Journey download. A permitted mirror such as [the Kaggle dataset](https://www.kaggle.com/datasets/frtgnn/dunnhumby-the-complete-journey) may be used only after confirming its terms and recording the exact URL, download date, version and checksum in Drive `06_source_docs`.
+
+The current project acquisition check on 2026-09-12 found no source CSVs in Drive `01_raw_source`. The connected Drive workflow cannot import a remote URL directly; place the licensed files in Drive before running the pipeline. Do not download or stage raw records in the GitHub checkout or Codex workspace.
 
 Do not redistribute raw source files until rights are verified.
 
