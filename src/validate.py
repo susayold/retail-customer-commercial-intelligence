@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from src.sql_renderer import render_sql_file
+from src.storage_paths import require_drive_path
 from src.utils.duckdb_client import connect, register_raw_views
 
 
@@ -86,18 +87,21 @@ def main() -> None:
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--sql-dir", type=Path, default=Path("sql"))
+    parser.add_argument("--drive-root", type=Path, required=True)
     parser.add_argument(
         "--thresholds", type=Path, default=Path("config/analysis_thresholds.yaml")
     )
     args = parser.parse_args()
 
+    data_root = require_drive_path(args.data_root, args.drive_root, "--data-root")
+    artifact_root = require_drive_path(args.artifact_root, args.drive_root, "--artifact-root")
     thresholds_path = args.thresholds.expanduser().resolve()
     sql_root = args.sql_dir
     if sql_root.name == "07_quality":
         sql_root = sql_root.parent
 
-    qa_dir = args.artifact_root / "04_qa_reports"
-    database_dir = args.artifact_root / "03_duckdb_and_marts"
+    qa_dir = artifact_root / "04_qa_reports"
+    database_dir = artifact_root / "03_duckdb_and_marts"
     qa_dir.mkdir(parents=True, exist_ok=True)
     database_dir.mkdir(parents=True, exist_ok=True)
     database = database_dir / "retail_intelligence.duckdb"
@@ -113,7 +117,7 @@ def main() -> None:
 
     connection = connect(database)
     try:
-        register_raw_views(connection, args.data_root)
+        register_raw_views(connection, data_root)
         run_sql_files(connection, model_paths, thresholds_path)
         run_sql_files(connection, qa_paths, thresholds_path)
         for table_name in QA_TABLES:
