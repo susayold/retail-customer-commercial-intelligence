@@ -8,7 +8,7 @@ from typing import Any
 
 import yaml
 
-TOKEN_RE = re.compile(r"{{\\s*([A-Z][A-Z0-9_]*)\\s*}}")
+TOKEN_RE = re.compile(r"{{\s*([A-Z][A-Z0-9_]*)\s*}}")
 
 
 def _flatten(values: dict[str, Any], prefix: str = "") -> dict[str, Any]:
