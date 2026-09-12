@@ -43,7 +43,7 @@ tables:
   - name: Mart_Category_Weekly
     role: aggregate
     source_file: Mart_Category_Weekly.parquet
-    grain: week_number, department, commodity_desc
+    grain: week_number, department, commodity
   - name: Mart_Category_Household
     role: aggregate
     source_file: Mart_Category_Household.parquet
@@ -59,11 +59,11 @@ tables:
   - name: Mart_Brand_Category
     role: aggregate
     source_file: Mart_Brand_Category.parquet
-    grain: department, commodity_desc, brand_type
+    grain: department, commodity, brand_type
   - name: Mart_Promotion_Category_Week
     role: aggregate
     source_file: Mart_Promotion_Category_Week.parquet
-    grain: week_number, product_id, store_id, department, commodity_desc
+    grain: week_number, department, commodity, promo_state_group
   - name: Analysis_Promotion_Association
     role: aggregate
     source_file: Analysis_Promotion_Association.parquet
@@ -119,7 +119,7 @@ tables:
   - name: Mart_Decision_Alerts
     role: aggregate
     source_file: Mart_Decision_Alerts.parquet
-    grain: alert_id
+    grain: metric, scope
 
 relationships:
   - from: Dim_Week[week_number]
