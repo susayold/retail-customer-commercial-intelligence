@@ -1,7 +1,10 @@
 from pathlib import Path
 
+import pytest
+
 from src.inventory import EXPECTED_FILES, inspect_csv
 from src.storage_policy import repository_violations, source_status, storage_status
+from src.storage_paths import require_drive_path
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -64,3 +67,29 @@ def test_storage_status_rejects_roots_outside_declared_drive_root(tmp_path):
     assert result["ready"] is False
     assert "data_root_outside_declared_drive_root" in result["failures"]
     assert "artifact_root_outside_declared_drive_root" in result["failures"]
+
+
+def test_storage_status_rejects_unmounted_drive_root(tmp_path):
+    drive_root = tmp_path / "not-mounted"
+    result = storage_status(
+        drive_root / "raw",
+        drive_root / "artifacts",
+        ROOT,
+        drive_root,
+    )
+
+    assert result["drive_root_available"] is False
+    assert "drive_root_missing_or_not_directory" in result["failures"]
+
+
+def test_standalone_stage_paths_require_a_real_drive_root(tmp_path):
+    with pytest.raises(SystemExit, match="--drive-root"):
+        require_drive_path(tmp_path / "output", None, "--output")
+
+    drive_root = tmp_path / "drive"
+    drive_root.mkdir()
+    with pytest.raises(SystemExit, match="underneath"):
+        require_drive_path(tmp_path / "outside", drive_root, "--output")
+
+    target = drive_root / "artifacts"
+    assert require_drive_path(target, drive_root, "--output") == target.resolve()
