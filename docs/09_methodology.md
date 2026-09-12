@@ -39,3 +39,13 @@ The promotion mart is built from the product-store-week skeleton, so zero-sale w
 ## Campaign response by segment
 
 `analysis_campaign_segment` preserves the campaign funnel at campaign × campaign type × observed customer segment. It reports recipient and redeemer household denominators, redemption rate, pre/during/post observable row counts, and demographic coverage. Unobservable windows remain excluded from averages, and the output is interpreted as observed response rather than causal campaign lift.
+
+## Coupon analytics
+
+Coupon analysis keeps separate grains for campaign funnel, customer segment, coupon-category mapping, observed basket behavior and repeat-category behavior:
+
+- `analysis_coupon_campaign` reports campaign reach, redemption, linked coupon count and linked product count.
+- `analysis_coupon_segment` reports recipient and redeemer denominators by observed customer segment.
+- `analysis_coupon_category` attributes redemption events to linked departments/commodities with distinct event counts; because the bridge is many-to-many, category event counts are intentionally non-additive across categories.
+- `analysis_coupon_basket` compares coupon-discounted and non-coupon-discounted observed baskets without claiming exact redemption-to-basket attribution.
+- `analysis_coupon_repeat_category` starts from the first observed coupon-discounted category purchase and checks for a later observed purchase in that category. It is not true acquisition, true first-ever purchase or causal repeat.
