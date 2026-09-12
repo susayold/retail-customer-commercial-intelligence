@@ -311,7 +311,8 @@ def main() -> None:
 
         write_rows(
             output_dir / "stats_campaign_redemption.csv",
-            ["campaign_type", "n_recipients", "redeemers", "redemption_rate", "ci_low", "ci_high"],
+            ["campaign_type", "n_recipients", "redeemers", "redemption_rate", "ci_low", "ci_high",
+             "chi_square_statistic", "chi_square_p_value", "effect_size_cramers_v"],
             campaign_stats,
         )
     except Exception as caught:
