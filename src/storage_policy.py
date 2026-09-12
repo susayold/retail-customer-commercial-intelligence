@@ -81,14 +81,23 @@ def storage_status(
     data_root: Path,
     artifact_root: Path,
     repo_root: Path,
+    drive_root: Path | None = None,
 ) -> dict[str, object]:
     data = _resolved(data_root)
     artifacts = _resolved(artifact_root)
     repo = _resolved(repo_root)
+    drive = _resolved(drive_root) if drive_root is not None else None
     artifact_missing = [
         folder for folder in ARTIFACT_FOLDERS if not (artifacts / folder).is_dir()
     ]
     violations: list[str] = []
+    if drive is None:
+        violations.append("drive_root_not_declared")
+    else:
+        if not _inside(data, drive):
+            violations.append("data_root_outside_declared_drive_root")
+        if not _inside(artifacts, drive):
+            violations.append("artifact_root_outside_declared_drive_root")
     if _inside(data, repo):
         violations.append("data_root_inside_repository")
     if _inside(artifacts, repo):
@@ -100,6 +109,8 @@ def storage_status(
     failures.extend(violations)
     return {
         "ready": not failures,
+        "drive_root": str(drive) if drive is not None else None,
+        "drive_root_declared": drive is not None,
         "source": source,
         "artifact_root": str(artifacts),
         "required_artifact_folders": list(ARTIFACT_FOLDERS),
@@ -113,19 +124,32 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument("--artifact-root", type=Path, required=True)
+    parser.add_argument("--drive-root", type=Path, default=None)
     parser.add_argument("--repo-root", type=Path, default=Path("."))
     parser.add_argument("--output", type=Path, default=None)
     args = parser.parse_args()
 
-    result = storage_status(args.data_root, args.artifact_root, args.repo_root)
+    result = storage_status(
+        args.data_root,
+        args.artifact_root,
+        args.repo_root,
+        args.drive_root,
+    )
     rendered = json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True)
     print(rendered)
     if args.output is not None:
         output = _resolved(args.output)
         if not _inside(output, _resolved(args.artifact_root)):
             raise SystemExit("Storage policy failed: --output must be inside artifact-root")
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(rendered + "\n", encoding="utf-8")
+        if result["drive_root_declared"] and not any(
+            item in result["failures"]
+            for item in (
+                "data_root_outside_declared_drive_root",
+                "artifact_root_outside_declared_drive_root",
+            )
+        ):
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(rendered + "\n", encoding="utf-8")
     if not result["ready"]:
         raise SystemExit("Storage policy failed; inspect the reported Drive paths")
 
