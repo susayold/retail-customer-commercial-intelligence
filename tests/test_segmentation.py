@@ -2,6 +2,8 @@ from pathlib import Path
 
 import yaml
 
+from src.sql_renderer import render_sql_file
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -12,8 +14,9 @@ def test_segmentation_rules_have_a_fallback_and_explicit_priority():
 
 
 def test_high_value_engaged_requires_observed_trajectory():
-    sql = (ROOT / "sql/06_marts/04_mart_customer_segment.sql").read_text(
-        encoding="utf-8"
+    sql = render_sql_file(
+        ROOT / "sql/06_marts/04_mart_customer_segment.sql",
+        ROOT / "config/analysis_thresholds.yaml",
     )
     assert (
         "monetary_quintile >= 4 AND trajectory IN ('Growing', 'Stable')"
