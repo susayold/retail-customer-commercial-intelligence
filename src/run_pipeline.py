@@ -56,6 +56,12 @@ def main() -> None:
     )
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument("--artifact-root", type=Path, required=True)
+    parser.add_argument(
+        "--drive-root",
+        type=Path,
+        default=None,
+        help="Explicit mounted Drive project root; both data and artifacts must be underneath it.",
+    )
     parser.add_argument("--repo-root", type=Path, default=Path("."))
     parser.add_argument("--contracts", type=Path, default=Path("config/source_contracts.yaml"))
     parser.add_argument("--sql-dir", type=Path, default=Path("sql"))
@@ -67,6 +73,7 @@ def main() -> None:
 
     data_root = args.data_root.resolve()
     artifact_root = args.artifact_root.resolve()
+    drive_root = args.drive_root.resolve() if args.drive_root is not None else None
     repo_root = args.repo_root.resolve()
     contracts = (
         args.contracts
@@ -86,8 +93,6 @@ def main() -> None:
     qa_root = artifact_root / "04_qa_reports"
     parquet_root = artifact_root / "02_curated_parquet"
     database = artifact_root / "03_duckdb_and_marts" / "retail_intelligence.duckdb"
-    qa_root.mkdir(parents=True, exist_ok=True)
-    log_path = qa_root / "pipeline_orchestration.log"
 
     storage_command = [
         sys.executable,
@@ -97,6 +102,11 @@ def main() -> None:
         str(data_root),
         "--artifact-root",
         str(artifact_root),
+        *(
+            ["--drive-root", str(drive_root)]
+            if drive_root is not None
+            else []
+        ),
         "--repo-root",
         str(repo_root),
         "--output",
@@ -105,6 +115,12 @@ def main() -> None:
     try:
         run_command("storage_gate", storage_command, cwd=repo_root)
     except subprocess.CalledProcessError as error:
+        if drive_root is None:
+            raise
+        if not data_root.is_relative_to(drive_root) or not artifact_root.is_relative_to(drive_root):
+            raise
+        qa_root.mkdir(parents=True, exist_ok=True)
+        log_path = qa_root / "pipeline_orchestration.log"
         with log_path.open("a", encoding="utf-8") as log_handle:
             log_event(
                 log_handle,
@@ -114,6 +130,9 @@ def main() -> None:
                 output=str(qa_root / "storage_status.json"),
             )
         raise
+
+    qa_root.mkdir(parents=True, exist_ok=True)
+    log_path = qa_root / "pipeline_orchestration.log"
 
     with log_path.open("a", encoding="utf-8") as log_handle:
         log_event(log_handle, "storage_gate", "complete")
