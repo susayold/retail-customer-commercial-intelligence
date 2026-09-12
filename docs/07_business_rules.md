@@ -8,7 +8,7 @@
 6. Raw quantity is preserved. Outliers are flagged and not silently capped.
 7. DAY and WEEK_NO are observation indexes. Synthetic dates are for BI mechanics only.
 8. First observed purchase is not customer acquisition.
-9. Customer trajectory uses early and late 13-observation-week windows. Thresholds are Growing at +10%, Declining at -10%, otherwise Stable; missing window coverage is Insufficient History. The numeric thresholds for trajectory, segmentation and decision alerts live in config/analysis_thresholds.yaml and are rendered into SQL by src/sql_renderer.py.
+9. Customer trajectory uses early and late windows whose length is `trajectory.window_weeks` (13 by default). Thresholds are Growing at +10%, Declining at -10%, otherwise Stable; missing window coverage is Insufficient History. Trajectory, segmentation, decision-alert and cross-category thresholds live in config/analysis_thresholds.yaml and are rendered into SQL by src/sql_renderer.py.
 10. Segments are deterministic and assigned once using listed precedence.
 11. Category household penetration uses buying households divided by active panel households for the selected period.
 12. Coupon is a many-to-many coupon UPC × product × campaign bridge.
