@@ -4,7 +4,7 @@ test:
 	$(PYTHON) -m pytest -q
 
 storage:
-	$(PYTHON) -m src.storage_policy --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --repo-root "."
+	$(PYTHON) -m src.storage_policy --data-root "$RETAIL_DATA_ROOT" --artifact-root "$RETAIL_ARTIFACT_ROOT" --repo-root "." --output "$RETAIL_ARTIFACT_ROOT/04_qa_reports/storage_status.json"
 
 schema:
 	$(PYTHON) -m src.schema_contracts --input "$$RETAIL_DATA_ROOT" --contracts config/source_contracts.yaml --output "$$RETAIL_ARTIFACT_ROOT/04_qa_reports/schema_validation.csv"
@@ -25,7 +25,10 @@ segment:
 	$(PYTHON) -m src.segment_customers --database "$$RETAIL_ARTIFACT_ROOT/03_duckdb_and_marts/retail_intelligence.duckdb"
 
 validate:
-	$(PYTHON) -m src.validate --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT"
+	$(PYTHON) -m src.validate --data-root "$RETAIL_DATA_ROOT" --artifact-root "$RETAIL_ARTIFACT_ROOT"
+
+quality-gate:
+	$(PYTHON) -m src.enforce_quality_gate --artifact-root "$RETAIL_ARTIFACT_ROOT"
 
 stats:
 	$(PYTHON) -m src.statistical_validation --database "$$RETAIL_ARTIFACT_ROOT/03_duckdb_and_marts/retail_intelligence.duckdb" --artifact-root "$$RETAIL_ARTIFACT_ROOT"
