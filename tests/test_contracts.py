@@ -56,3 +56,10 @@ def test_one_command_runner_uses_drive_roots_for_data_artifacts():
 
 
     assert runner.index('"inventory",') < runner.index('"schema",')
+
+
+def test_makefile_exposes_drive_storage_and_quality_gate_targets():
+    makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
+    assert "--output \"$$RETAIL_ARTIFACT_ROOT/04_qa_reports/storage_status.json\"" in makefile
+    assert "quality-gate:" in makefile
+    assert "src.enforce_quality_gate" in makefile
