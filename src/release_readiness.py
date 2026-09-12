@@ -31,6 +31,9 @@ REQUIRED_ARTIFACT_FILES = (
     "04_qa_reports/statistics/statistics_run_log.csv",
 )
 
+REQUIRED_UAT_CHECK_IDS = tuple(f"UAT-{index:02d}" for index in range(1, 13))
+
+
 REQUIRED_REPOSITORY_FILES = (
     "docs/11_root_cause_cases.md",
     "docs/12_executive_decisions.md",
@@ -92,6 +95,8 @@ def _csv_contract(
     complete_statuses: set[str] | None = None,
     require_nonblank_columns: set[str] | None = None,
     require_blank_columns: set[str] | None = None,
+    unique_columns: set[str] | None = None,
+    exact_values: dict[str, set[str]] | None = None,
 ) -> dict[str, Any]:
     path = artifact_root / relative_path
     rows, fieldnames, error = _read_csv(path)
@@ -106,6 +111,34 @@ def _csv_contract(
             f"missing columns: {', '.join(missing)}",
             relative_path,
         )
+    if unique_columns is not None:
+        for column in unique_columns:
+            seen: set[str] = set()
+            duplicates: set[str] = set()
+            for row in rows:
+                value = str(row.get(column, "")).strip()
+                if value in seen:
+                    duplicates.add(value)
+                seen.add(value)
+            if duplicates:
+                return _check(
+                    relative_path,
+                    False,
+                    f"duplicate value(s) in {column}: {', '.join(sorted(duplicates))}",
+                    relative_path,
+                )
+    if exact_values is not None:
+        for column, expected in exact_values.items():
+            actual = {str(row.get(column, "")).strip() for row in rows}
+            missing = sorted(expected - actual)
+            unexpected = sorted(actual - expected)
+            if missing or unexpected:
+                parts = []
+                if missing:
+                    parts.append(f"missing {column}: {', '.join(missing)}")
+                if unexpected:
+                    parts.append(f"unexpected {column}: {', '.join(unexpected)}")
+                return _check(relative_path, False, "; ".join(parts), relative_path)
     if expected_rows is not None and len(rows) != expected_rows:
         return _check(
             relative_path,
@@ -278,8 +311,11 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
             artifact_root,
             "04_qa_reports/uat_results.csv",
             {"check_id", "status"},
-            expected_rows=12,
+            expected_rows=len(REQUIRED_UAT_CHECK_IDS),
             require_pass_status=True,
+            require_nonblank_columns={"check_id"},
+            unique_columns={"check_id"},
+            exact_values={"check_id": set(REQUIRED_UAT_CHECK_IDS)},
         )
     )
     checks.append(
