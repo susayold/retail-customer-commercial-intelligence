@@ -3,16 +3,16 @@ SELECT
     'day_range' AS audit_name,
     CAST(MIN(day_key) AS VARCHAR) AS observed_min,
     CAST(MAX(day_key) AS VARCHAR) AS observed_max,
-    SUM(CASE WHEN day_key IS NULL OR day_key < 1 THEN 1 ELSE 0 END) AS violating_rows,
-    'DAY must be a positive observation index; retain observed range' AS rule
+    SUM(CASE WHEN day_key IS NULL OR day_key < 1 OR day_key > 711 THEN 1 ELSE 0 END) AS violating_rows,
+    'DAY must be a positive observation index; 1–711 is the planning range; retain and review deviations' AS rule
 FROM fct_transaction_line
 UNION ALL
 SELECT
     'week_range',
     CAST(MIN(week_number) AS VARCHAR),
     CAST(MAX(week_number) AS VARCHAR),
-    SUM(CASE WHEN week_number IS NULL OR week_number < 1 THEN 1 ELSE 0 END),
-    'WEEK_NO must be a positive observation index; retain observed range'
+    SUM(CASE WHEN week_number IS NULL OR week_number < 1 OR week_number > 102 THEN 1 ELSE 0 END),
+    'WEEK_NO must be a positive observation index; 1–102 is the planning range; retain and review deviations'
 FROM fct_transaction_line
 UNION ALL
 SELECT
