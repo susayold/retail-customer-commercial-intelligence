@@ -89,6 +89,7 @@ def _csv_contract(
     minimum_rows: int | None = None,
     require_pass_status: bool = False,
     complete_statuses: set[str] | None = None,
+    require_nonblank_columns: set[str] | None = None,
 ) -> dict[str, Any]:
     path = artifact_root / relative_path
     rows, fieldnames, error = _read_csv(path)
@@ -141,6 +142,20 @@ def _csv_contract(
                 relative_path,
                 False,
                 f"{len(incomplete)} row(s) are not complete",
+                relative_path,
+            )
+    if require_nonblank_columns is not None:
+        blank_values = sum(
+            1
+            for row in rows
+            for column in require_nonblank_columns
+            if not str(row.get(column, "")).strip()
+        )
+        if blank_values:
+            return _check(
+                relative_path,
+                False,
+                f"{blank_values} required evidence value(s) are blank",
                 relative_path,
             )
     return _check(relative_path, True, f"{len(rows)} row(s) validated", relative_path)
@@ -222,6 +237,7 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
             {"case_id", "status", "evidence_uri", "run_id", "limitation"},
             expected_rows=3,
             complete_statuses={"complete", "completed", "pass"},
+            require_nonblank_columns={"case_id", "evidence_uri", "run_id", "limitation"},
         )
     )
     checks.append(
@@ -231,6 +247,7 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
             {"decision_id", "status", "evidence_uri", "run_id", "limitation"},
             expected_rows=5,
             complete_statuses={"complete", "completed", "pass"},
+            require_nonblank_columns={"decision_id", "evidence_uri", "run_id", "limitation"},
         )
     )
 
