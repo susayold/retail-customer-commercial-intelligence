@@ -10,6 +10,7 @@ Implemented decisions:
 - Google Drive project folder: Retail DA - Customer & Commercial Intelligence.
 - Public repository assumption: the attached plan frames this as a portfolio. Only code, contracts, documentation and synthetic fixtures are public.
 - Raw and curated retail data: Drive only; no source data is committed to GitHub or written to the Codex workspace.
+- Require an explicit mounted Drive root and fail closed if data or artifact paths fall outside it.
 - Excel companion: Drive-native Google Sheet at 05_powerbi_exports, using the six plan tabs plus audit/readme tabs.
 
 ## Attached plan instructions adopted
