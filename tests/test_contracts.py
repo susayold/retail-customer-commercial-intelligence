@@ -39,6 +39,7 @@ def test_one_command_runner_uses_drive_roots_for_data_artifacts():
         "src.build_parquet",
         "src.build_warehouse",
         "src.validate",
+        "src.enforce_quality_gate",
         "src.statistical_validation",
         "src.export_powerbi",
         "pipeline_orchestration.log",
@@ -52,3 +53,6 @@ def test_one_command_runner_uses_drive_roots_for_data_artifacts():
         "sql_dir =",
     ):
         assert token in runner
+
+
+    assert runner.index('"inventory",') < runner.index('"schema",')
