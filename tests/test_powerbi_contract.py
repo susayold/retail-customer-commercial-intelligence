@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from src.export_powerbi import POWERBI_OUTPUT_NAMES
+from src.sql_renderer import render_sql_file
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -118,7 +119,7 @@ def test_declared_grains_and_relationship_columns_exist_in_synthetic_warehouse()
             if "07_quality" not in path.parts and "09_exports" not in path.parts
         )
         for sql_path in model_paths:
-            connection.execute(sql_path.read_text(encoding="utf-8"))
+            connection.execute(render_sql_file(sql_path, ROOT / "config/analysis_thresholds.yaml"))
 
         output_to_table = {value: key for key, value in POWERBI_OUTPUT_NAMES.items()}
         for item in contract["tables"]:
