@@ -23,3 +23,20 @@ def test_transaction_anomaly_qa_is_registered_and_covers_plan_checks():
         "missing_basket",
     ):
         assert audit_name in sql
+
+
+def test_layer_reconciliation_qa_is_registered():
+    assert "qa_layer_reconciliation" in QA_TABLES
+    sql = (ROOT / "sql/07_quality/10_q10_layer_reconciliation.sql").read_text(
+        encoding="utf-8"
+    )
+    for token in (
+        "transaction_raw_vs_staging",
+        "transaction_staging_vs_fact",
+        "transaction_fact_vs_basket",
+        "sales_difference",
+        "household_difference",
+        "basket_difference",
+        "status",
+    ):
+        assert token in sql
