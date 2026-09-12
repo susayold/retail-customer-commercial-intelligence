@@ -87,3 +87,23 @@ def test_makefile_exposes_drive_storage_and_quality_gate_targets():
     assert "src.enforce_quality_gate" in makefile
     assert "release-audit:" in makefile
     assert "src.release_readiness" in makefile
+    for target in (
+        "schema",
+        "inventory",
+        "profile",
+        "parquet",
+        "warehouse",
+        "segment",
+        "validate",
+        "quality-gate",
+        "stats",
+        "powerbi",
+        "release-audit",
+    ):
+        target_block = makefile.split(f"{target}:\n", 1)[1].split("\n\n", 1)[0]
+        assert '--drive-root "$RETAIL_DRIVE_ROOT"' in target_block
+
+
+def test_all_data_stages_receive_drive_root():
+    runner = (ROOT / "src/run_pipeline.py").read_text(encoding="utf-8")
+    assert runner.count('"--drive-root"') >= 9
