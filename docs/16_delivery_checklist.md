@@ -17,7 +17,7 @@ This checklist separates implemented repository work from outputs that require t
 | 17 | Run QA | Implemented; anomaly QA, logging and blocking gate added | sql/07_quality/09_q09_transaction_anomalies.sql, sql/07_quality/10_q10_layer_reconciliation.sql, src/validate.py, src/enforce_quality_gate.py, QA exports + qa_run_log.csv + qa_quality_gate.json |
 | 18 | Reconcile totals | Implemented; layer and BI checks defined | qa_layer_reconciliation.csv for raw/staging/fact rows, populations and sales; src/reconcile.py + sql/09_exports for SQL/DAX |
 | 19 | Metric dictionary | Done | config/metric_definitions.yaml + Drive companion |
-| 20–29 | Build marts and analysis | Implemented and smoke-tested | sql/06_marts including mart_category_household; sql/08_analysis including promotion/campaign/coupon; campaign pre/during/post windows are configurable and rendered from config/analysis_thresholds.yaml |
+| 20–29 | Build marts and analysis | Implemented and smoke-tested | sql/06_marts including mart_category_household and cross-category pairs; sql/08_analysis including promotion/campaign/coupon; campaign windows, trajectory windows and category-pair minimums are configurable and rendered from config/analysis_thresholds.yaml |
 | 30 | Run statistics | Implemented | src/statistical_validation.py + notebook; statistics_run_log.csv records run ID, UTC timestamps, status, database path, outputs and error; requires real Drive DuckDB |
 | 31 | Root-cause cases | Template ready | docs/11_root_cause_cases.md; requires verified output |
 | 32 | Executive decisions | Template ready | docs/12_executive_decisions.md + Drive Decision_Tracker |
