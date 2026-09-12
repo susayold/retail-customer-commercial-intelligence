@@ -6,7 +6,7 @@ This checklist separates implemented repository work from outputs that require t
 |---:|---|---|---|
 | 01 | Create repo | Done | GitHub repository on main |
 | 02 | Download data | Blocked by source availability | Put licensed CSVs in Drive 01_raw_source |
-| 03 | Inventory files | Implemented | src/inventory.py; run to Drive QA |
+| 03 | Inventory files | Implemented | src/inventory.py + storage_status.json; run to Drive QA |
 | 04 | Validate schemas | Implemented | src/schema_contracts.py + config/source_contracts.yaml |
 | 05 | Profile sources | Implemented | src/profile_sources.py; row/type/null/distinct/range/cardinality outputs |
 | 06 | Document grain | Done | docs/04_grain_and_join_contracts.md, docs/05_data_model.md |
@@ -14,7 +14,7 @@ This checklist separates implemented repository work from outputs that require t
 | 08 | Convert CSV to Parquet | Implemented; audited logging | src/build_parquet.py; Drive output only; exact rows read/written logged |
 | 09 | Initialize DuckDB | Implemented; audited logging | src/build_warehouse.py; per-model rows read/written logged |
 | 10–16 | Build staging, dimensions, facts, bridge | Implemented and smoke-tested | sql/02_staging through sql/05_bridges |
-| 17 | Run QA | Implemented; anomaly QA and logging added | sql/07_quality/09_q09_transaction_anomalies.sql, sql/07_quality/10_q10_layer_reconciliation.sql, src/validate.py, QA exports + qa_run_log.csv |
+| 17 | Run QA | Implemented; anomaly QA, logging and blocking gate added | sql/07_quality/09_q09_transaction_anomalies.sql, sql/07_quality/10_q10_layer_reconciliation.sql, src/validate.py, src/enforce_quality_gate.py, QA exports + qa_run_log.csv + qa_quality_gate.json |
 | 18 | Reconcile totals | Implemented; layer and BI checks defined | qa_layer_reconciliation.csv for raw/staging/fact rows, populations and sales; src/reconcile.py + sql/09_exports for SQL/DAX |
 | 19 | Metric dictionary | Done | config/metric_definitions.yaml + Drive companion |
 | 20–29 | Build marts and analysis | Implemented and smoke-tested | sql/06_marts including mart_category_household; sql/08_analysis including promotion/campaign/coupon |
@@ -31,7 +31,7 @@ This checklist separates implemented repository work from outputs that require t
 | 40 | Finalize limitations | Done | docs/13_limitations.md |
 | 41 | Prepare interview guide | Done | docs/15_interview_guide.md |
 | 42 | Verified CV bullets | Pending by design | Only write after real-data QA |
-| 43 | Clean rebuild from raw | Runner ready; pending source | src/run_pipeline.py + Makefile `run`; execute full Drive-only rebuild after source upload |
+| 43 | Clean rebuild from raw | Runner ready; pending source | src/run_pipeline.py + Makefile `run`; storage status and blocking QA gate persist to Drive; execute full Drive-only rebuild after source upload |
 | 44 | Tag v1.0.0 | Pending by design | Tag only after all gates pass |
 
 ## Live Drive tracker
