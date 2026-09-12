@@ -37,4 +37,44 @@ WHERE NOT EXISTS (
     SELECT 1
     FROM dim_coupon c
     WHERE c.coupon_upc = r.coupon_upc
+)
+UNION ALL
+SELECT
+    'campaign_household_unmatched',
+    COUNT(*)
+FROM fct_campaign_exposure e
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM dim_household h
+    WHERE h.household_key = e.household_key
+)
+UNION ALL
+SELECT
+    'coupon_redemption_household_unmatched',
+    COUNT(*)
+FROM fct_coupon_redemption r
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM dim_household h
+    WHERE h.household_key = r.household_key
+)
+UNION ALL
+SELECT
+    'coupon_bridge_product_unmatched',
+    COUNT(*)
+FROM bridge_coupon_product_campaign b
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM dim_product p
+    WHERE p.product_id = b.product_id
+)
+UNION ALL
+SELECT
+    'coupon_redemption_campaign_unmatched',
+    COUNT(*)
+FROM fct_coupon_redemption r
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM dim_campaign c
+    WHERE c.campaign_id = r.campaign_id
 );
