@@ -107,10 +107,3 @@ def test_makefile_exposes_drive_storage_and_quality_gate_targets():
 def test_all_data_stages_receive_drive_root():
     runner = (ROOT / "src/run_pipeline.py").read_text(encoding="utf-8")
     assert runner.count('"--drive-root"') >= 9
- * 2 + 'RETAIL_DRIVE_ROOT' + '"'
-        assert drive_root_token in target_block
-
-
-def test_all_data_stages_receive_drive_root():
-    runner = (ROOT / "src/run_pipeline.py").read_text(encoding="utf-8")
-    assert runner.count('"--drive-root"') >= 9
