@@ -60,6 +60,30 @@ tables:
     role: aggregate
     source_file: Mart_Campaign_Summary.parquet
     grain: campaign_id
+  - name: Mart_Coupon_Summary
+    role: aggregate
+    source_file: Mart_Coupon_Summary.parquet
+    grain: campaign_id
+  - name: Analysis_Coupon_Campaign
+    role: aggregate
+    source_file: Analysis_Coupon_Campaign.parquet
+    grain: campaign_id
+  - name: Analysis_Coupon_Segment
+    role: aggregate
+    source_file: Analysis_Coupon_Segment.parquet
+    grain: campaign_id, customer_segment
+  - name: Analysis_Coupon_Category
+    role: aggregate
+    source_file: Analysis_Coupon_Category.parquet
+    grain: campaign_id, department, commodity
+  - name: Analysis_Coupon_Basket
+    role: aggregate
+    source_file: Analysis_Coupon_Basket.parquet
+    grain: customer_segment, basket_type
+  - name: Analysis_Coupon_Repeat_Category
+    role: aggregate
+    source_file: Analysis_Coupon_Repeat_Category.parquet
+    grain: commodity
   - name: Mart_Cross_Category_Pair
     role: aggregate
     source_file: Mart_Cross_Category_Pair.parquet
@@ -102,6 +126,22 @@ relationships:
     to: Mart_Campaign_Summary[campaign_id]
     cardinality: one_to_many
     cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Mart_Coupon_Summary[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Analysis_Coupon_Campaign[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Analysis_Coupon_Segment[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Analysis_Coupon_Category[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
 
 pages:
   - name: Executive Customer & Commercial Health
@@ -115,4 +155,4 @@ pages:
   - name: Promotion & Merchandising
     source_tables: [Mart_Promotion_Category_Week, Mart_Brand_Category]
   - name: Campaign & Coupon Intelligence
-    source_tables: [Mart_Campaign_Household, Mart_Campaign_Summary]
+    source_tables: [Mart_Campaign_Household, Mart_Campaign_Summary, Mart_Coupon_Summary, Analysis_Coupon_Campaign, Analysis_Coupon_Segment, Analysis_Coupon_Category, Analysis_Coupon_Basket, Analysis_Coupon_Repeat_Category]
