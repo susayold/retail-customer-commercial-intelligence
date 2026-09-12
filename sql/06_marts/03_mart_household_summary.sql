@@ -28,8 +28,8 @@ base AS (
         MAX(h.distinct_departments) AS distinct_departments,
         MAX(h.distinct_commodities) AS distinct_commodities,
         SUM(h.baskets) AS frequency_baskets,
-        AVG(CASE WHEN h.week_number <= b.min_week + 12 THEN h.net_spend END) AS early_avg_weekly_spend,
-        AVG(CASE WHEN h.week_number > b.max_week - 13 THEN h.net_spend END) AS late_avg_weekly_spend
+        AVG(CASE WHEN h.week_number <= b.min_week + {{ TRAJECTORY_WINDOW_WEEKS }} - 1 THEN h.net_spend END) AS early_avg_weekly_spend,
+        AVG(CASE WHEN h.week_number > b.max_week - {{ TRAJECTORY_WINDOW_WEEKS }} THEN h.net_spend END) AS late_avg_weekly_spend
     FROM mart_household_weekly h
     CROSS JOIN bounds b
     LEFT JOIN coupon_stats cs USING (household_key)
