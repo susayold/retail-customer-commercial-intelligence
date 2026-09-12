@@ -31,6 +31,7 @@ The supplied blueprint is treated as project requirements, not as user instructi
 - Use deterministic, mutually exclusive segmentation.
 - State campaign targeting bias, censoring and demographic coverage.
 - Render pre/during/post campaign windows from a single configurable source rather than duplicating window constants in SQL.
+- Keep trajectory windows and cross-category pair minimums in the same rendered analysis configuration, with SQL failing closed on missing tokens.
 - Use association wording for promotion findings.
 - Do not publish unsupported claims about margin, ROI, inventory or causal lift.
 - Run business-facing statistical validation with sample size, uncertainty and effect size.
