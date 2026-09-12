@@ -2,9 +2,13 @@ import csv
 import json
 from pathlib import Path
 
+import yaml
+
+from src.export_powerbi import POWERBI_OUTPUT_NAMES
 from src.inventory import EXPECTED_FILES
 from src.release_readiness import (
     REQUIRED_POWERBI_EXPORTS,
+    REQUIRED_POWERBI_MEASURES,
     evaluate_release_readiness,
 )
 
@@ -184,12 +188,28 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
         "docs/12_executive_decisions.md",
         "docs/13_limitations.md",
         "docs/14_powerbi_uat.md",
-        "powerbi/semantic_model.yaml",
-        "powerbi/measures.dax",
     ):
         path = repo_root / relative_path
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text("delivery contract\n", encoding="utf-8")
+
+    semantic_contract = {
+        "storage_policy": "Drive-only",
+        "source_folder": "05_powerbi_exports",
+        "raw_source_allowed": False,
+        "tables": [
+            {"name": name, "source_file": f"{name}.parquet"}
+            for table_name, name in POWERBI_OUTPUT_NAMES.items()
+            if not table_name.startswith("export_")
+        ],
+        "relationships": [],
+        "pages": [{"name": f"Page {index}"} for index in range(6)],
+    }
+    semantic_path = repo_root / "powerbi/semantic_model.yaml"
+    semantic_path.parent.mkdir(parents=True, exist_ok=True)
+    semantic_path.write_text(yaml.safe_dump(semantic_contract), encoding="utf-8")
+    measures_path = repo_root / "powerbi/measures.dax"
+    measures_path.write_text("\n".join(REQUIRED_POWERBI_MEASURES), encoding="utf-8")
 
 
 def test_release_readiness_is_fail_closed_without_drive_evidence(tmp_path):
@@ -236,6 +256,24 @@ def test_release_readiness_rejects_blank_decision_evidence(tmp_path):
         if item["name"] == "04_qa_reports/executive_decisions.csv"
     )
     assert "blank" in decision_check["reason"]
+
+def test_release_readiness_rejects_incomplete_powerbi_contract(tmp_path):
+    artifact_root = tmp_path / "artifacts"
+    repo_root = tmp_path / "repo"
+    seed_complete_delivery(artifact_root, repo_root)
+    semantic = repo_root / "powerbi" / "semantic_model.yaml"
+    contract = yaml.safe_load(semantic.read_text(encoding="utf-8"))
+    contract["pages"] = contract["pages"][:5]
+    semantic.write_text(yaml.safe_dump(contract), encoding="utf-8")
+
+    result = evaluate_release_readiness(artifact_root, repo_root)
+
+    assert result["ready"] is False
+    semantic_check = next(
+        item for item in result["failures"] if item["name"] == "powerbi_semantic_model"
+    )
+    assert "6 pages" in semantic_check["reason"]
+
 
 def test_release_readiness_rejects_incomplete_inventory(tmp_path):
     artifact_root = tmp_path / "artifacts"
