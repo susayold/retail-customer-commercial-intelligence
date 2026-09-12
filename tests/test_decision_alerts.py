@@ -42,8 +42,15 @@ def test_decision_alerts_apply_threshold_to_relative_variance():
             WHERE metric = 'panel_net_spend_decline'
             """
         ).fetchone()
-        baseline, current, variance, absolute_variance,
-        relative_variance, threshold, severity = row
+        (
+            baseline,
+            current,
+            variance,
+            absolute_variance,
+            relative_variance,
+            threshold,
+            severity,
+        ) = row
         assert baseline == pytest.approx(100.0)
         assert current == pytest.approx(85.0)
         assert variance == pytest.approx(-15.0)
