@@ -81,6 +81,8 @@ def write_statistics_run_log(
     status: str,
     database: Path,
     output_files: list[str],
+    duration_seconds: float,
+
     error: str = "",
 ) -> None:
     write_rows(
@@ -92,6 +94,7 @@ def write_statistics_run_log(
             "status",
             "database",
             "output_files",
+            "duration_seconds",
             "error",
         ],
         [
@@ -102,6 +105,7 @@ def write_statistics_run_log(
                 "status": status,
                 "database": str(database.expanduser().resolve()),
                 "output_files": "|".join(output_files),
+                "duration_seconds": f"{duration_seconds:.3f}",
                 "error": error,
             }
         ],
@@ -275,9 +279,9 @@ def main() -> None:
             status,
             args.database,
             output_files,
+            time.perf_counter() - started_clock,
             error_message,
         )
-        _ = time.perf_counter() - started_clock
 
 
 if __name__ == "__main__":
