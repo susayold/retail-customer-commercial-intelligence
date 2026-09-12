@@ -165,3 +165,18 @@ make reconcile
 ~~~
 
 The target requires RETAIL_DRIVE_ROOT, writes 04_qa_reports/powerbi_reconciliation.csv under the declared Drive root, and fails on any metric outside the configured tolerance. Do not put either input file in the GitHub checkout.
+
+
+## 14. Source acquisition commands
+
+The source acquisition module is the single implementation for official, Kaggle fallback and manual Drive-backed inputs. It writes temporary bytes and all raw records only below the declared Drive root, and it fails closed on unsafe ZIP paths, unexpected files, checksum mismatches or non-Drive inputs. See docs/18_source_acquisition_runbook.md.
+
+~~~bash
+export RETAIL_DRIVE_ROOT="/path/to/Drive/Retail DA - Customer & Commercial Intelligence"
+export RETAIL_DATA_ROOT="$RETAIL_DRIVE_ROOT/01_raw_source"
+export RETAIL_ARTIFACT_ROOT="$RETAIL_DRIVE_ROOT"
+make acquire-official
+make verify-source
+~~~
+
+For an already licensed Drive-backed fallback, set RETAIL_ACQUISITION_INPUT and run make acquire-manual. Use make acquire-kaggle only after the official source is unavailable and the applicable terms are confirmed. GitHub Actions uses synthetic fixtures only; it never downloads or stores the production source package.
