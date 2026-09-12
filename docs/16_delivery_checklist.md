@@ -32,7 +32,7 @@ This checklist separates implemented repository work from outputs that require t
 | 41 | Prepare interview guide | Done | docs/15_interview_guide.md |
 | 42 | Verified CV bullets | Pending by design | Only write after real-data QA |
 | 43 | Clean rebuild from raw | Runner ready; pending source | src/run_pipeline.py + Makefile `run`; storage status and blocking QA gate persist to Drive; execute full Drive-only rebuild after source upload |
-| 44 | Tag v1.0.0 | Pending by design | Tag only after all gates pass |
+| 44 | Tag v1.0.0 | Pending by design | Run src/release_readiness.py / Makefile `release-audit`; it fail-closes on missing Drive QA, SQL/DAX reconciliation, 12 UAT checks, 3 root-cause cases, 5 decisions or 31 Power BI exports; tag only after the Drive audit is ready |
 
 ## Live Drive tracker
 
