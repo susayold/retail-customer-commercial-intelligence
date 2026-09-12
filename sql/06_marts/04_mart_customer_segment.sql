@@ -17,9 +17,9 @@ SELECT
         WHEN monetary_quintile >= 4 AND trajectory = 'Declining' THEN 'High-Value Declining'
         WHEN monetary_quintile >= 4 AND trajectory IN ('Growing', 'Stable') THEN 'High-Value Engaged'
         WHEN frequency_quintile >= 4 AND monetary_quintile < 4 THEN 'Frequent Core'
-        WHEN coupon_basket_rate >= {{ SEGMENT_PROMOTION_COUPON_BASKET_RATE }} OR discount_share >= {{ SEGMENT_PROMOTION_DISCOUNT_SHARE }} THEN 'Promotion-Responsive'
-        WHEN private_label_share >= {{ SEGMENT_PRIVATE_LABEL_SHARE }} THEN 'Private-Label Loyal'
-        WHEN frequency_quintile <= {{ SEGMENT_OCCASIONAL_MAX_FREQUENCY_QUINTILE }} AND active_weeks <= {{ SEGMENT_OCCASIONAL_MAX_ACTIVE_WEEKS }} THEN 'Occasional'
+        WHEN coupon_basket_rate >= {{ SEGMENTATION_PROMOTION_COUPON_BASKET_RATE }} OR discount_share >= {{ SEGMENTATION_PROMOTION_DISCOUNT_SHARE }} THEN 'Promotion-Responsive'
+        WHEN private_label_share >= {{ SEGMENTATION_PRIVATE_LABEL_SHARE }} THEN 'Private-Label Loyal'
+        WHEN frequency_quintile <= {{ SEGMENTATION_OCCASIONAL_MAX_FREQUENCY_QUINTILE }} AND active_weeks <= {{ SEGMENTATION_OCCASIONAL_MAX_ACTIVE_WEEKS }} THEN 'Occasional'
         ELSE 'Low-Engagement'
     END AS segment
 FROM scored;
