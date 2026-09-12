@@ -151,3 +151,15 @@ The final quality gate requires eight sources inventoried, schemas and grains va
 ## 12. License and source rights
 
 The source files are not redistributed here. Verify dunnhumby/Kaggle terms before sharing any raw or derived files. This repository is a portfolio implementation scaffold and must not be treated as an official retailer dataset.
+
+## 13. SQL–Power BI reconciliation command
+
+After the Power BI refresh, place two small comparison inputs on Drive. Each input must contain a metric column and one numeric value column (value, sql_value or powerbi_value). Set the paths and write the result back to the Drive QA folder:
+
+~~~powershell
+$env:RETAIL_SQL_RECONCILIATION = "$env:RETAIL_ARTIFACT_ROOT\04_qa_reports\sql_metric_values.csv"
+$env:RETAIL_BI_RECONCILIATION = "$env:RETAIL_ARTIFACT_ROOT\04_qa_reports\powerbi_metric_values.csv"
+make reconcile
+~~~
+
+The target requires RETAIL_DRIVE_ROOT, writes 04_qa_reports/powerbi_reconciliation.csv under the declared Drive root, and fails on any metric outside the configured tolerance. Do not put either input file in the GitHub checkout.
