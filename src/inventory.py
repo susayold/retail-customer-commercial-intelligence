@@ -1,4 +1,4 @@
-"""Inventory source CSVs without loading the full dataset into memory."""
+"""Inventory the exact Drive-backed raw CSV contract without local staging."""
 
 from __future__ import annotations
 
@@ -9,31 +9,11 @@ import json
 from pathlib import Path
 from typing import Iterable
 
+from src.source_manifest import EXPECTED_ROW_COUNTS, EXPECTED_SOURCE_FILES
 from src.storage_paths import require_drive_path
 
-EXPECTED_FILES = (
-    "transaction_data.csv",
-    "causal_data.csv",
-    "coupon.csv",
-    "coupon_redempt.csv",
-    "campaign_table.csv",
-    "campaign_desc.csv",
-    "product.csv",
-    "hh_demographic.csv",
-)
-
-# Planning expectations from the supplied blueprint; differences require review,
-# not automatic rejection, because permitted source versions may vary.
-EXPECTED_ROW_COUNTS = {
-    "transaction_data.csv": 2_595_732,
-    "causal_data.csv": 36_786_524,
-    "coupon.csv": 124_548,
-    "coupon_redempt.csv": 2_318,
-    "campaign_table.csv": 7_208,
-    "campaign_desc.csv": 30,
-    "product.csv": 92_353,
-    "hh_demographic.csv": 801,
-}
+# Backward-compatible aliases for downstream imports. The manifest is canonical.
+EXPECTED_FILES = EXPECTED_SOURCE_FILES
 
 
 def column_hash(columns: Iterable[str]) -> str:
@@ -54,11 +34,7 @@ def inspect_csv(path: Path, expected_row_count: int | None = None) -> dict[str, 
         reader = csv.reader(handle)
         header = next(reader, [])
         rows = sum(1 for _ in reader)
-    row_count_delta = (
-        rows - expected_row_count
-        if expected_row_count is not None
-        else None
-    )
+    row_count_delta = rows - expected_row_count if expected_row_count is not None else None
     planning_expectation_status = (
         "match"
         if expected_row_count is not None and row_count_delta == 0
@@ -81,8 +57,8 @@ def inspect_csv(path: Path, expected_row_count: int | None = None) -> dict[str, 
 
 
 def inventory(input_dir: Path) -> list[dict[str, object]]:
-    rows = []
-    for name in EXPECTED_FILES:
+    rows: list[dict[str, object]] = []
+    for name in EXPECTED_SOURCE_FILES:
         path = input_dir / name
         if path.exists():
             rows.append(inspect_csv(path, EXPECTED_ROW_COUNTS.get(name)))
@@ -103,6 +79,8 @@ def inventory(input_dir: Path) -> list[dict[str, object]]:
 
 
 def write_inventory(rows: list[dict[str, object]], output: Path) -> None:
+    if not rows:
+        raise ValueError("Inventory cannot be written without source rows")
     output.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = list(rows[0].keys())
     with output.open("w", encoding="utf-8", newline="") as handle:
