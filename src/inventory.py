@@ -26,6 +26,14 @@ def column_hash(columns: Iterable[str]) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def content_hash(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def inspect_csv(path: Path) -> dict[str, object]:
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.reader(handle)
@@ -37,6 +45,7 @@ def inspect_csv(path: Path) -> dict[str, object]:
         "row_count": rows,
         "column_count": len(header),
         "column_names_hash": column_hash(header),
+        "content_sha256": content_hash(path),
         "load_status": "ok",
     }
 
@@ -54,6 +63,7 @@ def inventory(input_dir: Path) -> list[dict[str, object]]:
                 "row_count": None,
                 "column_count": None,
                 "column_names_hash": None,
+                "content_sha256": None,
                 "load_status": "missing",
             })
     return rows
