@@ -27,6 +27,12 @@ CALCULATE(
 )
 Coupon Basket Rate = DIVIDE([Coupon Baskets], [Baskets])
 
+Category Household Penetration =
+DIVIDE(
+    SUM('Analysis_Category_Penetration'[buying_households]),
+    SUM('Analysis_Category_Penetration'[panel_households])
+)
+
 Campaign Recipients =
 DISTINCTCOUNT('Mart_Campaign_Household'[household_key])
 Campaign Redeemers =
