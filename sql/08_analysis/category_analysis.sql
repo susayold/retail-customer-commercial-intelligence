@@ -105,8 +105,8 @@ SELECT
     CASE
         WHEN early_spend IS NULL OR late_spend IS NULL THEN 'Insufficient History'
         WHEN early_spend = 0 AND late_spend > 0 THEN 'Emerging'
-        WHEN late_spend >= early_spend * 1.10 THEN 'Growing'
-        WHEN late_spend <= early_spend * 0.90 THEN 'Declining'
+        WHEN late_spend >= early_spend * {{ TRAJECTORY_GROWING_FACTOR }} THEN 'Growing'
+        WHEN late_spend <= early_spend * {{ TRAJECTORY_DECLINING_FACTOR }} THEN 'Declining'
         ELSE 'Stable'
     END AS category_trajectory
 FROM pivoted;
