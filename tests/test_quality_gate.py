@@ -60,3 +60,18 @@ def test_quality_gate_passes_when_blocking_conditions_are_clean(tmp_path):
     assert result["ready"] is True
     assert result["failures"] == []
     assert result["warnings"][0]["reason"] == "transaction_anomaly_retained_for_review"
+
+
+def test_quality_gate_rejects_empty_quality_outputs(tmp_path):
+    qa_root = tmp_path / "04_qa_reports"
+    qa_root.mkdir(parents=True, exist_ok=True)
+    write_csv(qa_root / "qa_key_audit.csv", ["model", "duplicate_rows"], [])
+    write_csv(qa_root / "qa_grain_audit.csv", ["audit_name", "violating_baskets"], [])
+    write_csv(qa_root / "qa_reference_coverage.csv", ["audit_name", "violating_rows"], [])
+    write_csv(qa_root / "qa_layer_reconciliation.csv", ["audit_name", "status"], [])
+    write_csv(qa_root / "qa_transaction_anomalies.csv", ["audit_name", "violating_rows"], [])
+
+    result = evaluate_quality_gate(qa_root)
+
+    assert result["ready"] is False
+    assert all(item["reason"] == "empty_quality_output" for item in result["failures"])
