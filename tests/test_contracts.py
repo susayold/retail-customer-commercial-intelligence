@@ -34,6 +34,7 @@ def test_expected_source_contracts_are_present():
 def test_storage_policy_disallows_local_workspace_data():
     settings = yaml.safe_load((ROOT / "config/settings.yaml").read_text())
     assert settings["storage"]["local_workspace_data_allowed"] is False
+    assert settings["storage"]["drive_root_env"] == "RETAIL_DRIVE_ROOT"
 
 
 def test_segments_have_fallback():
@@ -56,6 +57,7 @@ def test_one_command_runner_uses_drive_roots_for_data_artifacts():
         "src.export_powerbi",
         "pipeline_orchestration.log",
         "artifact_root",
+        "drive_root",
         "storage_status.json",
         "pipeline_orchestration.log",
         "storage_gate",
