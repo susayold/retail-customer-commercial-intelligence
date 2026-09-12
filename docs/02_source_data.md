@@ -13,7 +13,7 @@
 | product.csv | product | product, manufacturer, department, brand, commodities | 92K |
 | hh_demographic.csv | household demographic record | household and demographic descriptors | 801 |
 
-The approximate counts are planning expectations from the supplied blueprint. Replace them with the Drive inventory before publishing metrics.
+The approximate counts are planning expectations from the supplied blueprint. Replace them with the Drive inventory before publishing metrics. The inventory also records a content SHA-256 for source-file traceability.
 
 ## Acquisition
 
