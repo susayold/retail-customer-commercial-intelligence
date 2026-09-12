@@ -32,3 +32,5 @@
 | 2026-09-12 | Centralized analysis thresholds | config/analysis_thresholds.yaml + src/sql_renderer.py + warehouse/QA smoke chain | implemented | trajectory, segmentation and decision-alert numeric thresholds are configuration-backed and rendered consistently in warehouse/validation execution and synthetic tests |
 
 | 2026-09-12 | Category trajectory threshold wiring | sql/08_analysis/category_analysis.sql + tests/test_sql_renderer.py | implemented | category decomposition now consumes the shared trajectory thresholds; SQL hardcode audit is clean |
+
+| 2026-09-12 | Statistical validation expansion | src/statistical_validation.py + tests/test_statistics.py | implemented | promotion Mann–Whitney/rank-biserial and campaign chi-square/Cramér’s V added with NULL-safe degenerate handling |
