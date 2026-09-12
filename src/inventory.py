@@ -20,6 +20,19 @@ EXPECTED_FILES = (
     "hh_demographic.csv",
 )
 
+# Planning expectations from the supplied blueprint; differences require review,
+# not automatic rejection, because permitted source versions may vary.
+EXPECTED_ROW_COUNTS = {
+    "transaction_data.csv": 2_595_732,
+    "causal_data.csv": 36_786_524,
+    "coupon.csv": 124_548,
+    "coupon_redempt.csv": 2_318,
+    "campaign_table.csv": 7_208,
+    "campaign_desc.csv": 30,
+    "product.csv": 92_353,
+    "hh_demographic.csv": 801,
+}
+
 
 def column_hash(columns: Iterable[str]) -> str:
     payload = "|".join(columns).encode("utf-8")
@@ -34,15 +47,30 @@ def content_hash(path: Path) -> str:
     return digest.hexdigest()
 
 
-def inspect_csv(path: Path) -> dict[str, object]:
+def inspect_csv(path: Path, expected_row_count: int | None = None) -> dict[str, object]:
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.reader(handle)
         header = next(reader, [])
         rows = sum(1 for _ in reader)
+    row_count_delta = (
+        rows - expected_row_count
+        if expected_row_count is not None
+        else None
+    )
+    planning_expectation_status = (
+        "match"
+        if expected_row_count is not None and row_count_delta == 0
+        else "review"
+        if expected_row_count is not None
+        else "not_configured"
+    )
     return {
         "file_name": path.name,
         "file_size_bytes": path.stat().st_size,
         "row_count": rows,
+        "expected_row_count": expected_row_count,
+        "row_count_delta": row_count_delta,
+        "planning_expectation_status": planning_expectation_status,
         "column_count": len(header),
         "column_names_hash": column_hash(header),
         "content_sha256": content_hash(path),
@@ -55,12 +83,15 @@ def inventory(input_dir: Path) -> list[dict[str, object]]:
     for name in EXPECTED_FILES:
         path = input_dir / name
         if path.exists():
-            rows.append(inspect_csv(path))
+            rows.append(inspect_csv(path, EXPECTED_ROW_COUNTS.get(name)))
         else:
             rows.append({
                 "file_name": name,
                 "file_size_bytes": None,
                 "row_count": None,
+                "expected_row_count": EXPECTED_ROW_COUNTS.get(name),
+                "row_count_delta": None,
+                "planning_expectation_status": "missing",
                 "column_count": None,
                 "column_names_hash": None,
                 "content_sha256": None,
