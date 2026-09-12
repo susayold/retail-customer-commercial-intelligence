@@ -44,6 +44,18 @@ tables:
     role: aggregate
     source_file: Mart_Category_Weekly.parquet
     grain: week_number, department, commodity_desc
+  - name: Mart_Category_Household
+    role: aggregate
+    source_file: Mart_Category_Household.parquet
+    grain: household_key, department, commodity
+  - name: Analysis_Category_Penetration
+    role: aggregate
+    source_file: Analysis_Category_Penetration.parquet
+    grain: department, commodity
+  - name: Analysis_Category_Decomposition
+    role: aggregate
+    source_file: Analysis_Category_Decomposition.parquet
+    grain: department, commodity
   - name: Mart_Brand_Category
     role: aggregate
     source_file: Mart_Brand_Category.parquet
@@ -52,6 +64,14 @@ tables:
     role: aggregate
     source_file: Mart_Promotion_Category_Week.parquet
     grain: week_number, product_id, store_id, department, commodity_desc
+  - name: Analysis_Promotion_Association
+    role: aggregate
+    source_file: Analysis_Promotion_Association.parquet
+    grain: department, commodity, promo_state_group
+  - name: Analysis_Promotion_Dependency
+    role: aggregate
+    source_file: Analysis_Promotion_Dependency.parquet
+    grain: department, commodity
   - name: Mart_Campaign_Household
     role: factless_event
     source_file: Mart_Campaign_Household.parquet
@@ -60,6 +80,14 @@ tables:
     role: aggregate
     source_file: Mart_Campaign_Summary.parquet
     grain: campaign_id
+  - name: Analysis_Campaign_Funnel
+    role: aggregate
+    source_file: Analysis_Campaign_Funnel.parquet
+    grain: campaign_id
+  - name: Analysis_Campaign_Segment
+    role: aggregate
+    source_file: Analysis_Campaign_Segment.parquet
+    grain: campaign_id, customer_segment
   - name: Mart_Coupon_Summary
     role: aggregate
     source_file: Mart_Coupon_Summary.parquet
@@ -118,12 +146,24 @@ relationships:
     to: Mart_Campaign_Household[household_key]
     cardinality: one_to_many
     cross_filter: single
+  - from: Dim_Household[household_key]
+    to: Mart_Category_Household[household_key]
+    cardinality: one_to_many
+    cross_filter: single
   - from: Dim_Campaign[campaign_id]
     to: Mart_Campaign_Household[campaign_id]
     cardinality: one_to_many
     cross_filter: single
   - from: Dim_Campaign[campaign_id]
     to: Mart_Campaign_Summary[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Analysis_Campaign_Funnel[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Analysis_Campaign_Segment[campaign_id]
     cardinality: one_to_many
     cross_filter: single
   - from: Dim_Campaign[campaign_id]
@@ -149,10 +189,10 @@ pages:
   - name: Customer Engagement & Segmentation
     source_tables: [Mart_Household_Summary, Mart_Customer_Segment]
   - name: Basket & Category Intelligence
-    source_tables: [Mart_Basket, Mart_Category_Weekly, Mart_Cross_Category_Pair]
+    source_tables: [Mart_Basket, Mart_Category_Weekly, Mart_Category_Household, Analysis_Category_Penetration, Analysis_Category_Decomposition, Mart_Cross_Category_Pair]
   - name: Category, Brand & Private Label
-    source_tables: [Mart_Category_Weekly, Mart_Brand_Category, Mart_Panel_Weekly]
+    source_tables: [Mart_Category_Weekly, Mart_Category_Household, Analysis_Category_Penetration, Analysis_Category_Decomposition, Mart_Brand_Category, Mart_Panel_Weekly]
   - name: Promotion & Merchandising
-    source_tables: [Mart_Promotion_Category_Week, Mart_Brand_Category]
+    source_tables: [Mart_Promotion_Category_Week, Analysis_Promotion_Association, Analysis_Promotion_Dependency, Mart_Brand_Category]
   - name: Campaign & Coupon Intelligence
-    source_tables: [Mart_Campaign_Household, Mart_Campaign_Summary, Mart_Coupon_Summary, Analysis_Coupon_Campaign, Analysis_Coupon_Segment, Analysis_Coupon_Category, Analysis_Coupon_Basket, Analysis_Coupon_Repeat_Category]
+    source_tables: [Mart_Campaign_Household, Mart_Campaign_Summary, Analysis_Campaign_Funnel, Analysis_Campaign_Segment, Mart_Coupon_Summary, Analysis_Coupon_Campaign, Analysis_Coupon_Segment, Analysis_Coupon_Category, Analysis_Coupon_Basket, Analysis_Coupon_Repeat_Category]

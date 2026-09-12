@@ -14,14 +14,17 @@ def test_powerbi_model_contract_is_curated_and_six_pages():
     )
     assert contract["storage_policy"] == "Drive-only"
     assert contract["raw_source_allowed"] is False
-    assert len(contract["tables"]) == 22
+    assert len(contract["tables"]) == 29
     assert len(contract["pages"]) == 6
     assert all(item["source_file"].endswith(".parquet") for item in contract["tables"])
     assert all(item["cross_filter"] == "single" for item in contract["relationships"])
     coupon_sources = contract["pages"][-1]["source_tables"]
     assert "Mart_Coupon_Summary" in coupon_sources
     assert "Analysis_Coupon_Category" in coupon_sources
+    assert "Analysis_Campaign_Segment" in coupon_sources
     assert "Analysis_Coupon_Repeat_Category" in coupon_sources
+    assert "Analysis_Category_Decomposition" in contract["pages"][3]["source_tables"]
+    assert "Analysis_Promotion_Dependency" in contract["pages"][4]["source_tables"]
 
 
 def test_powerbi_dax_contract_contains_governed_measures():
@@ -42,5 +45,8 @@ def test_powerbi_export_names_match_semantic_contract():
     assert POWERBI_OUTPUT_NAMES["mart_basket"] == "Mart_Basket"
     assert POWERBI_OUTPUT_NAMES["mart_campaign_household"] == "Mart_Campaign_Household"
     assert POWERBI_OUTPUT_NAMES["analysis_coupon_category"] == "Analysis_Coupon_Category"
+    assert POWERBI_OUTPUT_NAMES["analysis_category_decomposition"] == "Analysis_Category_Decomposition"
+    assert POWERBI_OUTPUT_NAMES["analysis_promotion_dependency"] == "Analysis_Promotion_Dependency"
+    assert POWERBI_OUTPUT_NAMES["analysis_campaign_segment"] == "Analysis_Campaign_Segment"
     assert POWERBI_OUTPUT_NAMES["analysis_coupon_repeat_category"] == "Analysis_Coupon_Repeat_Category"
-    assert len(POWERBI_OUTPUT_NAMES) == 24
+    assert len(POWERBI_OUTPUT_NAMES) == 31

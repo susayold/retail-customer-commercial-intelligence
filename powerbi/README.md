@@ -10,9 +10,12 @@ Import only these Drive-backed exports from 05_powerbi_exports:
 
 - Dim_Day, Dim_Week, Dim_Household, Dim_Product, Dim_Campaign
 - Mart_Panel_Weekly, Mart_Household_Summary, Mart_Customer_Segment
-- Mart_Basket, Mart_Category_Weekly, Mart_Brand_Category
-- Mart_Promotion_Category_Week, Mart_Campaign_Household
-- Mart_Campaign_Summary, Mart_Coupon_Summary
+- Mart_Basket, Mart_Category_Weekly, Mart_Category_Household
+- Analysis_Category_Penetration, Analysis_Category_Decomposition
+- Mart_Brand_Category, Mart_Promotion_Category_Week
+- Analysis_Promotion_Association, Analysis_Promotion_Dependency
+- Mart_Campaign_Household, Mart_Campaign_Summary
+- Analysis_Campaign_Funnel, Analysis_Campaign_Segment, Mart_Coupon_Summary
 - Analysis_Coupon_Campaign, Analysis_Coupon_Segment, Analysis_Coupon_Category
 - Analysis_Coupon_Basket, Analysis_Coupon_Repeat_Category
 - Mart_Cross_Category_Pair, Mart_Decision_Alerts
@@ -32,7 +35,8 @@ Use single-direction relationships wherever possible:
 - Dim_Week[week_number] → weekly marts[week_number].
 - Dim_Day[day_key] → Mart_Basket[day_key].
 - Dim_Household[household_key] → Mart_Basket, Mart_Household_Summary, Mart_Customer_Segment and Mart_Campaign_Household.
-- Dim_Campaign[campaign_id] → Mart_Campaign_Household, Mart_Campaign_Summary, Mart_Coupon_Summary and coupon analysis aggregates.
+- Dim_Campaign[campaign_id] → Mart_Campaign_Household, Mart_Campaign_Summary, Analysis_Campaign_Funnel, Analysis_Campaign_Segment, Mart_Coupon_Summary and coupon analysis aggregates.
+- Category penetration/decomposition and promotion association/dependency are pre-aggregated analysis tables; keep their declared category/promo-state grain and do not relate them directly to transaction-line facts.
 - Keep Mart_Basket and weekly aggregate marts as separate fact-like tables; do not relate them directly.
 - Coupon category analysis is linked through campaign and keeps the many-to-many bridge logic in SQL; do not flatten the bridge into household exposure.
 - Do not hide a many-to-many coupon relationship inside a KPI.
