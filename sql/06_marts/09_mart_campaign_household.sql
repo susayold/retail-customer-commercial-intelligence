@@ -3,16 +3,16 @@ WITH transaction_windows AS (
     SELECT
         e.household_key,
         e.campaign_id,
-        SUM(CASE WHEN t.day_key BETWEEN e.start_day - 28 AND e.start_day - 1 THEN t.sales_value ELSE 0 END) AS pre_28d_spend,
-        COUNT(DISTINCT CASE WHEN t.day_key BETWEEN e.start_day - 28 AND e.start_day - 1 THEN t.basket_id END) AS pre_28d_baskets,
+        SUM(CASE WHEN t.day_key BETWEEN e.start_day - {{ CAMPAIGN_PRE_DAYS }} AND e.start_day - 1 THEN t.sales_value ELSE 0 END) AS pre_28d_spend,
+        COUNT(DISTINCT CASE WHEN t.day_key BETWEEN e.start_day - {{ CAMPAIGN_PRE_DAYS }} AND e.start_day - 1 THEN t.basket_id END) AS pre_28d_baskets,
         SUM(CASE WHEN t.day_key BETWEEN e.start_day AND e.end_day THEN t.sales_value ELSE 0 END) AS during_spend,
         COUNT(DISTINCT CASE WHEN t.day_key BETWEEN e.start_day AND e.end_day THEN t.basket_id END) AS during_baskets,
-        SUM(CASE WHEN t.day_key BETWEEN e.end_day + 1 AND e.end_day + 28 THEN t.sales_value ELSE 0 END) AS post_28d_spend,
-        COUNT(DISTINCT CASE WHEN t.day_key BETWEEN e.end_day + 1 AND e.end_day + 28 THEN t.basket_id END) AS post_28d_baskets
+        SUM(CASE WHEN t.day_key BETWEEN e.end_day + 1 AND e.end_day + {{ CAMPAIGN_POST_DAYS }} THEN t.sales_value ELSE 0 END) AS post_28d_spend,
+        COUNT(DISTINCT CASE WHEN t.day_key BETWEEN e.end_day + 1 AND e.end_day + {{ CAMPAIGN_POST_DAYS }} THEN t.basket_id END) AS post_28d_baskets
     FROM fct_campaign_exposure e
     LEFT JOIN fct_transaction_line t
         ON t.household_key = e.household_key
-       AND t.day_key BETWEEN e.start_day - 28 AND e.end_day + 28
+       AND t.day_key BETWEEN e.start_day - {{ CAMPAIGN_PRE_DAYS }} AND e.end_day + {{ CAMPAIGN_POST_DAYS }}
     GROUP BY e.household_key, e.campaign_id
 ),
 redemptions AS (
