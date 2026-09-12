@@ -9,6 +9,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
+from src.sql_renderer import render_sql_file
 from src.utils.duckdb_client import connect, register_raw_views
 
 
@@ -37,9 +38,11 @@ RUN_LOG_FIELDS = [
 ]
 
 
-def run_sql_files(connection, sql_paths: list[Path]) -> None:
+def run_sql_files(
+    connection, sql_paths: list[Path], thresholds_path: Path
+) -> None:
     for sql_path in sql_paths:
-        connection.execute(sql_path.read_text(encoding="utf-8"))
+        connection.execute(render_sql_file(sql_path, thresholds_path))
 
 
 def relation_row_count(connection, relation_name: str) -> int:
@@ -83,8 +86,12 @@ def main() -> None:
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--sql-dir", type=Path, default=Path("sql"))
+    parser.add_argument(
+        "--thresholds", type=Path, default=Path("config/analysis_thresholds.yaml")
+    )
     args = parser.parse_args()
 
+    thresholds_path = args.thresholds.expanduser().resolve()
     sql_root = args.sql_dir
     if sql_root.name == "07_quality":
         sql_root = sql_root.parent
@@ -107,8 +114,8 @@ def main() -> None:
     connection = connect(database)
     try:
         register_raw_views(connection, args.data_root)
-        run_sql_files(connection, model_paths)
-        run_sql_files(connection, qa_paths)
+        run_sql_files(connection, model_paths, thresholds_path)
+        run_sql_files(connection, qa_paths, thresholds_path)
         for table_name in QA_TABLES:
             started_at = time.perf_counter()
             output_path = qa_dir / f"{table_name}.csv"
