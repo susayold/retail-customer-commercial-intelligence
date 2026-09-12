@@ -72,3 +72,18 @@ def test_powerbi_export_names_match_semantic_contract():
     assert POWERBI_OUTPUT_NAMES["analysis_campaign_segment"] == "Analysis_Campaign_Segment"
     assert POWERBI_OUTPUT_NAMES["analysis_coupon_repeat_category"] == "Analysis_Coupon_Repeat_Category"
     assert len(POWERBI_OUTPUT_NAMES) == 31
+
+
+def test_powerbi_tables_match_exporter_contract():
+    import yaml
+
+    contract = yaml.safe_load(
+        (ROOT / "powerbi" / "semantic_model.yaml").read_text(encoding="utf-8")
+    )
+    semantic_tables = {item["name"] for item in contract["tables"]}
+    exported_curated_tables = {
+        output_name
+        for table_name, output_name in POWERBI_OUTPUT_NAMES.items()
+        if not table_name.startswith("export_")
+    }
+    assert semantic_tables == exported_curated_tables
