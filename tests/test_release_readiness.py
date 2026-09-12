@@ -43,6 +43,7 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
         "stats_basket_by_segment.csv",
         "stats_promotion_state.csv",
         "stats_campaign_redemption.csv",
+        "statistics_run_log.csv",
     ):
         stats_path = qa_root / "statistics" / name
         stats_path.parent.mkdir(parents=True, exist_ok=True)
