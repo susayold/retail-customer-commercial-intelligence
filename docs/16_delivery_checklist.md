@@ -15,7 +15,7 @@ This checklist separates implemented repository work from outputs that require t
 | 09 | Initialize DuckDB | Implemented; audited logging | src/build_warehouse.py; per-model rows read/written logged |
 | 10–16 | Build staging, dimensions, facts, bridge | Implemented and smoke-tested | sql/02_staging through sql/05_bridges |
 | 17 | Run QA | Implemented; anomaly QA, logging and blocking gate added | sql/07_quality/09_q09_transaction_anomalies.sql, sql/07_quality/10_q10_layer_reconciliation.sql, src/validate.py, src/enforce_quality_gate.py, QA exports + qa_run_log.csv + qa_quality_gate.json |
-| 18 | Reconcile totals | Implemented; layer and BI checks defined | qa_layer_reconciliation.csv for raw/staging/fact rows, populations and sales; src/reconcile.py + sql/09_exports for SQL/DAX |
+| 18 | Reconcile totals | Implemented; layer and BI checks defined | qa_layer_reconciliation.csv for raw/staging/fact rows, populations and sales; src/reconcile.py + sql/09_exports for SQL/DAX; release audit validates exact eight required reconciliation metrics |
 | 19 | Metric dictionary | Done | config/metric_definitions.yaml + Drive companion |
 | 20–29 | Build marts and analysis | Implemented and smoke-tested | sql/06_marts including mart_category_household and cross-category pairs; sql/08_analysis including promotion/campaign/coupon; campaign windows, trajectory windows and category-pair minimums are configurable and rendered from config/analysis_thresholds.yaml |
 | 30 | Run statistics | Implemented | src/statistical_validation.py + notebook; statistics_run_log.csv records run ID, UTC timestamps, status, database path, outputs and error; requires real Drive DuckDB |
