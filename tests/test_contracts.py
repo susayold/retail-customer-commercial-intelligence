@@ -131,3 +131,16 @@ def test_standalone_data_writers_require_drive_boundary():
         assert "require_drive_path" in source
         assert "\"--drive-root\"" in source
         assert "required=True" in source
+
+
+def test_release_readiness_document_matches_reconciliation_contract():
+    document = (ROOT / "docs/17_release_readiness.md").read_text(encoding="utf-8")
+    for token in (
+        "RETAIL_SQL_RECONCILIATION",
+        "RETAIL_BI_RECONCILIATION",
+        "make reconcile",
+        "make release-audit",
+        "v1.0.0",
+        "Drive",
+    ):
+        assert token in document
