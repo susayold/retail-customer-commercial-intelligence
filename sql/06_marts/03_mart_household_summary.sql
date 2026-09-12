@@ -40,8 +40,8 @@ SELECT
     late_avg_weekly_spend - early_avg_weekly_spend AS absolute_change,
     CASE
         WHEN early_avg_weekly_spend IS NULL OR late_avg_weekly_spend IS NULL THEN 'Insufficient History'
-        WHEN late_avg_weekly_spend >= early_avg_weekly_spend * 1.10 THEN 'Growing'
-        WHEN late_avg_weekly_spend <= early_avg_weekly_spend * 0.90 THEN 'Declining'
+        WHEN late_avg_weekly_spend >= early_avg_weekly_spend * {{ TRAJECTORY_GROWING_FACTOR }} THEN 'Growing'
+        WHEN late_avg_weekly_spend <= early_avg_weekly_spend * {{ TRAJECTORY_DECLINING_FACTOR }} THEN 'Declining'
         ELSE 'Stable'
     END AS trajectory,
     d.has_demographics
