@@ -13,6 +13,8 @@ import duckdb
 import numpy as np
 from scipy import stats
 
+from src.storage_paths import require_drive_path
+
 
 def bootstrap_mean_difference(
     left: np.ndarray,
@@ -144,9 +146,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--database", type=Path, required=True)
     parser.add_argument("--artifact-root", type=Path, required=True)
+    parser.add_argument("--drive-root", type=Path, required=True)
     args = parser.parse_args()
 
-    output_dir = args.artifact_root / "04_qa_reports" / "statistics"
+    database = require_drive_path(args.database, args.drive_root, "--database")
+    artifact_root = require_drive_path(args.artifact_root, args.drive_root, "--artifact-root")
+    output_dir = artifact_root / "04_qa_reports" / "statistics"
     output_dir.mkdir(parents=True, exist_ok=True)
     run_id = uuid.uuid4().hex
     started_at = datetime.now(timezone.utc).isoformat()
@@ -155,7 +160,7 @@ def main() -> None:
     error_message = ""
     connection = None
     try:
-        connection = duckdb.connect(str(args.database), read_only=True)
+        connection = duckdb.connect(str(database), read_only=True)
         basket_rows = connection.execute(
             """
             SELECT basket_net_spend, COALESCE(segment, 'Unknown') AS segment
@@ -334,7 +339,7 @@ def main() -> None:
             started_at,
             finished_at,
             status,
-            args.database,
+            database,
             output_files,
             time.perf_counter() - started_clock,
             error_message,
