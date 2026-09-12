@@ -40,3 +40,17 @@ def test_layer_reconciliation_qa_is_registered():
         "status",
     ):
         assert token in sql
+
+
+
+def test_reference_coverage_includes_campaign_and_coupon_households():
+    sql = (ROOT / "sql/07_quality/08_q08_reference_coverage.sql").read_text(
+        encoding="utf-8"
+    )
+    for audit_name in (
+        "campaign_household_unmatched",
+        "coupon_redemption_household_unmatched",
+        "coupon_bridge_product_unmatched",
+        "coupon_redemption_campaign_unmatched",
+    ):
+        assert audit_name in sql
