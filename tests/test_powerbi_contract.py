@@ -57,6 +57,7 @@ def test_powerbi_dax_contract_contains_governed_measures():
         "Spend per Basket",
         "Private Label Share",
         "Coupon Basket Rate",
+        "Category Household Penetration",
         "Campaign Redemption Rate",
     ):
         assert measure in dax
