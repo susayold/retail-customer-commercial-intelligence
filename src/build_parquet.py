@@ -12,6 +12,8 @@ from pathlib import Path
 
 import duckdb
 
+from src.storage_paths import require_drive_path
+
 FILES = (
     "transaction_data",
     "causal_data",
@@ -69,10 +71,13 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--drive-root", type=Path, required=True)
     args = parser.parse_args()
 
-    args.output.mkdir(parents=True, exist_ok=True)
-    qa_dir = args.output.parent.parent / "04_qa_reports"
+    input_root = require_drive_path(args.input, args.drive_root, "--input")
+    output_root = require_drive_path(args.output, args.drive_root, "--output")
+    output_root.mkdir(parents=True, exist_ok=True)
+    qa_dir = output_root.parent.parent / "04_qa_reports"
     qa_dir.mkdir(parents=True, exist_ok=True)
     log_path = qa_dir / "pipeline_run.log"
     run_id = uuid.uuid4().hex
@@ -90,8 +95,8 @@ def main() -> None:
     log_run(logger, run_id, "pipeline_start", 0, 0, 0.0)
     try:
         for stem in FILES:
-            source_path = args.input / f"{stem}.csv"
-            target_path = args.output / f"{stem}.parquet"
+            source_path = input_root / f"{stem}.csv"
+            target_path = output_root / f"{stem}.parquet"
             file_started = time.perf_counter()
             rows_read = 0
             rows_written = 0
