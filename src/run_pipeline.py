@@ -78,6 +78,8 @@ def main() -> None:
     qa_root = artifact_root / "04_qa_reports"
     parquet_root = artifact_root / "02_curated_parquet"
     database = artifact_root / "03_duckdb_and_marts" / "retail_intelligence.duckdb"
+    qa_root.mkdir(parents=True, exist_ok=True)
+    log_path = qa_root / "pipeline_orchestration.log"
 
     storage_command = [
         sys.executable,
@@ -92,10 +94,19 @@ def main() -> None:
         "--output",
         str(qa_root / "storage_status.json"),
     ]
-    run_command("storage_gate", storage_command, cwd=repo_root)
+    try:
+        run_command("storage_gate", storage_command, cwd=repo_root)
+    except subprocess.CalledProcessError as error:
+        with log_path.open("a", encoding="utf-8") as log_handle:
+            log_event(
+                log_handle,
+                "storage_gate",
+                "failed",
+                return_code=error.returncode,
+                output=str(qa_root / "storage_status.json"),
+            )
+        raise
 
-    qa_root.mkdir(parents=True, exist_ok=True)
-    log_path = qa_root / "pipeline_orchestration.log"
     with log_path.open("a", encoding="utf-8") as log_handle:
         log_event(log_handle, "storage_gate", "complete")
 
