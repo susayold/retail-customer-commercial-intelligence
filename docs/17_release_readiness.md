@@ -5,7 +5,7 @@ The final tag is gated by a fail-closed audit. It is deliberately separate from 
 Run only with Drive-backed paths. The normal rebuild must set `RETAIL_DRIVE_ROOT` and pass `--drive-root`; the storage gate fails closed if the roots are not underneath that explicit boundary:
 
 ~~~powershell
-python -m src.release_readiness --artifact-root $env:RETAIL_ARTIFACT_ROOT --repo-root "."
+python -m src.release_readiness --artifact-root $env:RETAIL_ARTIFACT_ROOT --repo-root "." --drive-root $env:RETAIL_DRIVE_ROOT
 ~~~
 
 The command writes 04_qa_reports/release_readiness.json to the Drive artifact root and exits non-zero while any check is missing or fails. It never writes raw or curated data into the repository.
