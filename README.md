@@ -95,12 +95,7 @@ Run the pipeline from an environment that can read/write the Drive folders, such
 python -m pip install -r requirements.txt
 $env:RETAIL_DATA_ROOT = "D:\path\to\Drive\Retail DA - Customer & Commercial Intelligence\01_raw_source"
 $env:RETAIL_ARTIFACT_ROOT = "D:\path\to\Drive\Retail DA - Customer & Commercial Intelligence"
-python -m src.inventory --input $env:RETAIL_DATA_ROOT --output "$env:RETAIL_ARTIFACT_ROOT\04_qa_reports\raw_file_inventory.csv"
-python -m src.profile_sources --data-root $env:RETAIL_DATA_ROOT --artifact-root $env:RETAIL_ARTIFACT_ROOT
-python -m src.build_parquet --input $env:RETAIL_DATA_ROOT --output "$env:RETAIL_ARTIFACT_ROOT\02_curated_parquet"
-python -m src.build_warehouse --data-root $env:RETAIL_DATA_ROOT --artifact-root $env:RETAIL_ARTIFACT_ROOT
-python -m src.validate --data-root $env:RETAIL_DATA_ROOT --artifact-root $env:RETAIL_ARTIFACT_ROOT
-pytest
+python -m src.run_pipeline --data-root $env:RETAIL_DATA_ROOT --artifact-root $env:RETAIL_ARTIFACT_ROOT --repo-root "." --with-tests
 ~~~
 
 The D path above is a runtime mount example; the persistent source of truth remains Drive. No raw or curated data is written into the GitHub checkout.
