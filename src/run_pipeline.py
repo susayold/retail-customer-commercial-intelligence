@@ -59,6 +59,9 @@ def main() -> None:
     parser.add_argument("--repo-root", type=Path, default=Path("."))
     parser.add_argument("--contracts", type=Path, default=Path("config/source_contracts.yaml"))
     parser.add_argument("--sql-dir", type=Path, default=Path("sql"))
+    parser.add_argument(
+        "--thresholds", type=Path, default=Path("config/analysis_thresholds.yaml")
+    )
     parser.add_argument("--with-tests", action="store_true")
     args = parser.parse_args()
 
@@ -74,6 +77,11 @@ def main() -> None:
         args.sql_dir
         if args.sql_dir.is_absolute()
         else repo_root / args.sql_dir
+    )
+    thresholds = (
+        args.thresholds
+        if args.thresholds.is_absolute()
+        else repo_root / args.thresholds
     )
     qa_root = artifact_root / "04_qa_reports"
     parquet_root = artifact_root / "02_curated_parquet"
@@ -173,6 +181,8 @@ def main() -> None:
                     str(artifact_root),
                     "--sql-dir",
                     str(sql_dir),
+                    "--thresholds",
+                    str(thresholds),
                 ],
             ),
             (
@@ -187,6 +197,8 @@ def main() -> None:
                     str(artifact_root),
                     "--sql-dir",
                     str(sql_dir),
+                    "--thresholds",
+                    str(thresholds),
                 ],
             ),
             (
