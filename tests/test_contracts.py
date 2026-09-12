@@ -76,8 +76,7 @@ def test_one_command_runner_uses_drive_roots_for_data_artifacts():
     ):
         assert token in runner
 
-
-    assert runner.index('"inventory",') < runner.index('"schema",')
+    assert runner.index('\"inventory\",') < runner.index('\"schema\",')
 
 
 def test_makefile_exposes_drive_storage_and_quality_gate_targets():
@@ -104,6 +103,29 @@ def test_makefile_exposes_drive_storage_and_quality_gate_targets():
         drive_root_token = "--drive-root " + chr(34) + "$" * 2 + "RETAIL_DRIVE_ROOT" + chr(34)
         assert drive_root_token in target_block
 
+
 def test_all_data_stages_receive_drive_root():
     runner = (ROOT / "src/run_pipeline.py").read_text(encoding="utf-8")
-    assert runner.count('"--drive-root"') >= 9
+    assert runner.count('\"--drive-root\"') >= 9
+
+
+def test_standalone_data_writers_require_drive_boundary():
+    stage_paths = (
+        "src/inventory.py",
+        "src/schema_contracts.py",
+        "src/profile_sources.py",
+        "src/build_parquet.py",
+        "src/build_warehouse.py",
+        "src/validate.py",
+        "src/enforce_quality_gate.py",
+        "src/statistical_validation.py",
+        "src/export_powerbi.py",
+        "src/segment_customers.py",
+        "src/reconcile.py",
+        "src/release_readiness.py",
+    )
+    for relative_path in stage_paths:
+        source = (ROOT / relative_path).read_text(encoding="utf-8")
+        assert "require_drive_path" in source
+        assert "\"--drive-root\"" in source
+        assert "required=True" in source
