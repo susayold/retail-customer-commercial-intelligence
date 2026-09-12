@@ -115,7 +115,7 @@ tables:
   - name: Mart_Cross_Category_Pair
     role: aggregate
     source_file: Mart_Cross_Category_Pair.parquet
-    grain: category_a, category_b
+    grain: commodity_a, commodity_b
   - name: Mart_Decision_Alerts
     role: aggregate
     source_file: Mart_Decision_Alerts.parquet
