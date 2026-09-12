@@ -16,6 +16,7 @@ SELECT
     'panel_net_spend_decline' AS metric,
     prior_spend AS baseline,
     panel_net_spend AS current,
+    panel_net_spend - prior_spend AS variance,
     panel_net_spend - prior_spend AS absolute_variance,
     panel_net_spend / NULLIF(prior_spend, 0) - 1 AS relative_variance,
     -0.10 AS threshold,
@@ -32,6 +33,7 @@ SELECT
     prior_households,
     active_households,
     active_households - prior_households,
+    active_households - prior_households,
     active_households / NULLIF(prior_households, 0) - 1,
     -0.10,
     CASE
@@ -46,6 +48,7 @@ SELECT
     'trip_frequency_decline',
     prior_trips,
     trips_per_household,
+    trips_per_household - prior_trips,
     trips_per_household - prior_trips,
     trips_per_household / NULLIF(prior_trips, 0) - 1,
     -0.10,
