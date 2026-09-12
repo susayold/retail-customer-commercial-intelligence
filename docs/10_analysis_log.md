@@ -34,3 +34,4 @@
 | 2026-09-12 | Category trajectory threshold wiring | sql/08_analysis/category_analysis.sql + tests/test_sql_renderer.py | implemented | category decomposition now consumes the shared trajectory thresholds; SQL hardcode audit is clean |
 
 | 2026-09-12 | Statistical validation expansion | src/statistical_validation.py + tests/test_statistics.py | implemented | promotion Mann–Whitney/rank-biserial and campaign chi-square/Cramér’s V added with NULL-safe degenerate handling |
+| 2026-09-12 | Centralized trajectory and basket-pair rules | config/analysis_thresholds.yaml + sql/06_marts/03_mart_household_summary.sql + sql/06_marts/12_mart_cross_category_pair.sql + sql/08_analysis/category_analysis.sql | implemented | trajectory window and cross-category minimum baskets/support now render from one config; duplicate settings values removed; synthetic renderer contracts added |
