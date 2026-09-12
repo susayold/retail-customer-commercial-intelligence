@@ -35,6 +35,8 @@ The data is observational. Promotion and campaign recipients may be selected. Us
 
 `analysis_category_decomposition` compares early and late observation windows using distinct buyers and category baskets. The decomposition separates changes in buyers, baskets per buying household and spend per category basket. Early/late labels use observation weeks, not real calendar seasonality.
 
+The cross-category pair mart keeps only pairs meeting the configured `basket.category_pair_min_baskets` and `basket.category_pair_min_support` thresholds. These are rendered from config/analysis_thresholds.yaml so recommendation volume can be tuned without editing SQL.
+
 ## Promotion dependency
 
 Promotion dependency is reported by department and commodity as two descriptive shares:
