@@ -9,12 +9,12 @@
 | 2026-09-12 | Statistical runner | src/statistical_validation.py | implemented | outputs CI/effect-size tables to Drive |
 | 2026-09-12 | BI companion | Drive-native Google Sheet | complete | six plan tabs plus tracker/UAT/readme |
 | 2026-09-12 | Plan tracking | Drive `Plan Status!A1:F45` | complete | all 44 plan items mapped with status and next action |
-| 2026-09-12 | Power BI semantic contract | powerbi/semantic_model.yaml + measures.dax | implemented | six-page model and governed DAX are data-free; refresh pending source |
+| 2026-09-12 | Power BI semantic contract | powerbi/semantic_model.yaml + measures.dax | implemented | six-page model with 29 curated tables and governed DAX is data-free; refresh pending source |
 | 2026-09-12 | Power BI reconciliation hardening | exporter + sql/09_exports + tests | implemented | PascalCase export names and DISTINCTCOUNT-aligned populations |
 | 2026-09-12 | Profiling contract hardening | src/profile_sources.py | implemented | source_cardinality.csv added to Drive QA outputs |
 | 2026-09-12 | Pipeline logging hardening | src/build_parquet.py + src/build_warehouse.py | implemented | exact row counts and durations logged per source/model |
 | 2026-09-12 | Category household mart | sql/06_marts/14_mart_category_household.sql + category_analysis.sql | implemented | distinct buyers, household penetration, baskets, frequency, spend/basket, private label and decomposition; real-source run pending |
-| 2026-09-12 | Coupon Power BI contract | src/export_powerbi.py + powerbi/semantic_model.yaml | implemented | coupon summary plus five coupon aggregates wired into 24 exports and 22 semantic tables; refresh pending source |
+| 2026-09-12 | Analysis mart Power BI coverage | src/export_powerbi.py + powerbi/semantic_model.yaml | implemented | category, promotion, campaign and coupon aggregates wired into 31 Drive exports and 29 semantic tables; refresh pending source |
 | 2026-09-12 | Root-cause templates | docs/11_root_cause_cases.md | implemented; findings pending | three case contracts define evidence, decision rules, actions and limitations |
 | 2026-09-12 | Executive decision slots | docs/12_executive_decisions.md + Drive Decision_Tracker | implemented; findings pending | five decision slots require verified Drive outputs and run IDs |
 | pending | Inventory/profile | Drive 04_qa_reports | pending | no eight-source CSVs present yet |
