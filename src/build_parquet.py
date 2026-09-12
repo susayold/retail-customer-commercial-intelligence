@@ -85,7 +85,9 @@ def main() -> None:
             rows_read = 0
             rows_written = 0
             try:
-                rows_read = inventory_counts.get(source_path.name, count_csv_rows(source_path))
+                rows_read = inventory_counts.get(source_path.name)
+                if rows_read is None:
+                    rows_read = count_csv_rows(source_path)
                 source = source_path.as_posix()
                 target = target_path.as_posix()
                 connection.execute(
