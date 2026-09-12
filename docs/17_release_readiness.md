@@ -2,7 +2,7 @@
 
 The final tag is gated by a fail-closed audit. It is deliberately separate from the ordinary rebuild because root-cause findings, executive decisions, Power BI reconciliation and UAT are evidence artifacts that require human review after refresh.
 
-Run only with Drive-backed paths. The normal rebuild must set `RETAIL_DRIVE_ROOT` and pass `--drive-root`; the storage gate fails closed if the roots are not underneath that explicit boundary:
+Run only with Drive-backed paths. The normal rebuild and every standalone data-writing stage must set `RETAIL_DRIVE_ROOT` and pass `--drive-root`; the storage gate fails closed if the mount is unavailable, the roots are not underneath that explicit boundary, or a path points into the repository:
 
 ~~~powershell
 python -m src.release_readiness --artifact-root $env:RETAIL_ARTIFACT_ROOT --repo-root "." --drive-root $env:RETAIL_DRIVE_ROOT
