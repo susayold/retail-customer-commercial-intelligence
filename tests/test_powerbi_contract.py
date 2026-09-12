@@ -134,9 +134,14 @@ def test_declared_grains_and_relationship_columns_exist_in_synthetic_warehouse()
                     [table_name],
                 ).fetchall()
             }
-            for field in item.get("grain", "").split(","):
+            declared_fields = (
+                item.get("grain", "").split(",")
+                if item.get("grain")
+                else [item["key"]]
+            )
+            for field in declared_fields:
                 assert field.strip() in columns, (
-                    f"{item['name']} grain field {field.strip()} is missing"
+                    f"{item['name']} declared field {field.strip()} is missing"
                 )
 
         for relationship in contract["relationships"]:
