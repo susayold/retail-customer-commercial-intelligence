@@ -135,7 +135,7 @@ No numeric CV bullets are included until the full data run produces verified num
 - Active Panel Households = distinct households with at least one basket in the selected period.
 - Baskets/Trips = COUNT(DISTINCT basket_id).
 - Spend per Basket = Panel Net Spend / Baskets.
-- Spend driver identity = Active Households × Trips per Active Household × Spend per Basket.
+- Spend driver identity = Active Panel Households × Trips per Active Household × Spend per Basket.
 - Category penetration = buying households / active panel households.
 - Promotion and campaign findings are association/observed-response statements, not causal claims.
 
