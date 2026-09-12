@@ -64,7 +64,7 @@ def test_one_command_runner_uses_drive_roots_for_data_artifacts():
         "storage_status.json",
         "pipeline_orchestration.log",
         "storage_gate",
-        "output=str(qa_root / \"storage_status.json\")",
+        "output=str(qa_root / "storage_status.json")",
         "cwd=str(cwd)",
         "cwd=repo_root",
         "data_root = args.data_root.resolve()",
@@ -76,12 +76,12 @@ def test_one_command_runner_uses_drive_roots_for_data_artifacts():
     ):
         assert token in runner
 
-    assert runner.index('\"inventory\",') < runner.index('\"schema\",')
+    assert runner.index('"schema",') < runner.index('"inventory",')
 
 
 def test_makefile_exposes_drive_storage_and_quality_gate_targets():
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
-    assert "--output \"$$RETAIL_ARTIFACT_ROOT/04_qa_reports/storage_status.json\"" in makefile
+    assert "--output "$$RETAIL_ARTIFACT_ROOT/04_qa_reports/storage_status.json"" in makefile
     assert "quality-gate:" in makefile
     assert "src.enforce_quality_gate" in makefile
     assert "release-audit:" in makefile
@@ -108,7 +108,7 @@ def test_makefile_exposes_drive_storage_and_quality_gate_targets():
 
 def test_all_data_stages_receive_drive_root():
     runner = (ROOT / "src/run_pipeline.py").read_text(encoding="utf-8")
-    assert runner.count('\"--drive-root\"') >= 9
+    assert runner.count('"--drive-root"') >= 9
 
 
 def test_standalone_data_writers_require_drive_boundary():
@@ -129,7 +129,7 @@ def test_standalone_data_writers_require_drive_boundary():
     for relative_path in stage_paths:
         source = (ROOT / relative_path).read_text(encoding="utf-8")
         assert "require_drive_path" in source
-        assert "\"--drive-root\"" in source
+        assert ""--drive-root"" in source
         assert "required=True" in source
 
 
