@@ -36,6 +36,9 @@ stats:
 powerbi:
 	$(PYTHON) -m src.export_powerbi --artifact-root "$$RETAIL_ARTIFACT_ROOT" --format parquet --drive-root "$$RETAIL_DRIVE_ROOT"
 
+reconcile:
+	$(PYTHON) -m src.reconcile --sql "$$RETAIL_SQL_RECONCILIATION" --bi "$$RETAIL_BI_RECONCILIATION" --output "$$RETAIL_ARTIFACT_ROOT/04_qa_reports/powerbi_reconciliation.csv" --drive-root "$$RETAIL_DRIVE_ROOT"
+
 release-audit:
 	$(PYTHON) -m src.release_readiness --artifact-root "$$RETAIL_ARTIFACT_ROOT" --repo-root "." --drive-root "$$RETAIL_DRIVE_ROOT"
 
