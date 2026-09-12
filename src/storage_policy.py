@@ -145,12 +145,25 @@ def main() -> None:
         output = _resolved(args.output)
         if not _inside(output, _resolved(args.artifact_root)):
             raise SystemExit("Storage policy failed: --output must be inside artifact-root")
-        if result["drive_root_available"] and not any(
-            item in result["failures"]
-            for item in (
-                "data_root_outside_declared_drive_root",
-                "artifact_root_outside_declared_drive_root",
+        repository_boundary_failures = (
+            "data_root_inside_repository",
+            "artifact_root_inside_repository",
+        )
+        repository_artifact_failure = any(
+            item.startswith("repository_artifact:")
+            for item in result["failures"]
+        )
+        if (
+            result["drive_root_available"]
+            and not any(
+                item in result["failures"]
+                for item in (
+                    "data_root_outside_declared_drive_root",
+                    "artifact_root_outside_declared_drive_root",
+                    *repository_boundary_failures,
+                )
             )
+            and not repository_artifact_failure
         ):
             output.parent.mkdir(parents=True, exist_ok=True)
             output.write_text(rendered + "\n", encoding="utf-8")
