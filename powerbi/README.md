@@ -32,7 +32,7 @@ The current Drive-native Excel companion is [Retail DA - Excel Companion](https:
 
 Use single-direction relationships wherever possible:
 
-- Dim_Week[week_number] → weekly marts[week_number].
+- Dim_Week[week_number] → Mart_Panel_Weekly, Mart_Category_Weekly and Mart_Promotion_Category_Week[week_number].
 - Dim_Day[day_key] → Mart_Basket[day_key].
 - Dim_Household[household_key] → Mart_Basket, Mart_Household_Summary, Mart_Customer_Segment and Mart_Campaign_Household.
 - Dim_Campaign[campaign_id] → Mart_Campaign_Household, Mart_Campaign_Summary, Analysis_Campaign_Funnel, Analysis_Campaign_Segment, Mart_Coupon_Summary and coupon analysis aggregates.
