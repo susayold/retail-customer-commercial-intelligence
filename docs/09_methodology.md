@@ -55,3 +55,6 @@ Coupon analysis keeps separate grains for campaign funnel, customer segment, cou
 - `analysis_coupon_category` attributes redemption events to linked departments/commodities with distinct event counts; because the bridge is many-to-many, category event counts are intentionally non-additive across categories.
 - `analysis_coupon_basket` compares coupon-discounted and non-coupon-discounted observed baskets without claiming exact redemption-to-basket attribution.
 - `analysis_coupon_repeat_category` starts from the first observed coupon-discounted category purchase and checks for a later observed purchase in that category. It is not true acquisition, true first-ever purchase or causal repeat.
+
+
+For promotion states, `stats_promotion_state.csv` reports Kruskal–Wallis with eta-squared across observed states and, when a non-promoted reference exists, Mann–Whitney U with rank-biserial effect size versus `none`. For campaign types, the same output adds a global chi-square independence test with Cramér’s V alongside Wilson confidence intervals. Degenerate or empty comparisons return NULL-safe missing values rather than fabricated significance.
