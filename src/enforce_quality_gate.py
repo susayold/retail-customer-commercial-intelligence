@@ -7,6 +7,8 @@ import csv
 import json
 from pathlib import Path
 
+from src.storage_paths import require_drive_path
+
 
 REQUIRED_QA_FILES = (
     "qa_key_audit.csv",
@@ -192,9 +194,11 @@ def evaluate_quality_gate(qa_root: Path) -> dict[str, object]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact-root", type=Path, required=True)
+    parser.add_argument("--drive-root", type=Path, required=True)
     args = parser.parse_args()
 
-    qa_root = args.artifact_root / "04_qa_reports"
+    artifact_root = require_drive_path(args.artifact_root, args.drive_root, "--artifact-root")
+    qa_root = artifact_root / "04_qa_reports"
     result = evaluate_quality_gate(qa_root)
     output_path = qa_root / "qa_quality_gate.json"
     output_path.parent.mkdir(parents=True, exist_ok=True)
