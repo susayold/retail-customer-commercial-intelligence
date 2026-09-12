@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from src.inventory import EXPECTED_FILES, inspect_csv
-from src.storage_policy import repository_violations, source_status
+from src.storage_policy import repository_violations, source_status, storage_status
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -39,3 +39,28 @@ def test_inventory_reports_planning_row_count_delta(tmp_path):
     assert result["expected_row_count"] == 1
     assert result["row_count_delta"] == 0
     assert result["planning_expectation_status"] == "match"
+
+def test_storage_status_requires_explicit_drive_root(tmp_path):
+    result = storage_status(
+        tmp_path / "raw",
+        tmp_path / "artifacts",
+        ROOT,
+    )
+
+    assert result["ready"] is False
+    assert result["drive_root_declared"] is False
+    assert "drive_root_not_declared" in result["failures"]
+
+
+def test_storage_status_rejects_roots_outside_declared_drive_root(tmp_path):
+    drive_root = tmp_path / "drive"
+    result = storage_status(
+        tmp_path / "raw",
+        tmp_path / "artifacts",
+        ROOT,
+        drive_root,
+    )
+
+    assert result["ready"] is False
+    assert "data_root_outside_declared_drive_root" in result["failures"]
+    assert "artifact_root_outside_declared_drive_root" in result["failures"]
