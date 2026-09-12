@@ -132,6 +132,7 @@ No numeric CV bullets are included until the full data run produces verified num
 - Spend per Basket = Panel Net Spend / Baskets.
 - Spend driver identity = Active Panel Households × Trips per Active Household × Spend per Basket.
 - Category penetration = buying households / active panel households.
+- Decision alert thresholds apply to relative variance; absolute variance remains available for sizing the movement.
 - Promotion and campaign findings are association/observed-response statements, not causal claims.
 
 ## 11. Definition of done
