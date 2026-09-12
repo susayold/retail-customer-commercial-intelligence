@@ -6,6 +6,7 @@ import argparse
 import csv
 from pathlib import Path
 
+from src.storage_paths import require_drive_path
 from src.utils.duckdb_client import RAW_SOURCES, connect, register_raw_views
 
 
@@ -138,8 +139,11 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument("--artifact-root", type=Path, required=True)
+    parser.add_argument("--drive-root", type=Path, required=True)
     args = parser.parse_args()
-    profile_sources(args.data_root, args.artifact_root)
+    data_root = require_drive_path(args.data_root, args.drive_root, "--data-root")
+    artifact_root = require_drive_path(args.artifact_root, args.drive_root, "--artifact-root")
+    profile_sources(data_root, artifact_root)
 
 
 if __name__ == "__main__":
