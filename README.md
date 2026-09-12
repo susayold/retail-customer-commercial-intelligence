@@ -91,13 +91,14 @@ GitHub stores code, configuration, SQL, documentation, tests and small synthetic
 
 ## 7. Reproducibility
 
-Run the pipeline from an environment that can read/write the Drive folders, such as Drive for Desktop, a mounted Google Drive runtime or a controlled notebook runtime. Keep RETAIL_DATA_ROOT and RETAIL_ARTIFACT_ROOT pointed at Drive. Do not use the repository as a data lake. Run `make storage` first; the storage gate verifies all eight source names, required Drive artifact folders, repository artifact exclusions and that data paths are outside the checkout.
+Run the pipeline from an environment that can read/write the Drive folders, such as Drive for Desktop, a mounted Google Drive runtime or a controlled notebook runtime. Set RETAIL_DRIVE_ROOT to the mounted project folder, then keep RETAIL_DATA_ROOT and RETAIL_ARTIFACT_ROOT underneath it. Do not use the repository as a data lake. Run `make storage` first; the storage gate requires the explicit Drive root, verifies both data paths are underneath it, checks all eight source names, required Drive artifact folders and repository artifact exclusions, and fails before creating artifacts when the Drive root is missing or outside the declared boundary.
 
 ~~~powershell
 python -m pip install -r requirements.txt
-$env:RETAIL_DATA_ROOT = "D:\path\to\Drive\Retail DA - Customer & Commercial Intelligence\01_raw_source"
-$env:RETAIL_ARTIFACT_ROOT = "D:\path\to\Drive\Retail DA - Customer & Commercial Intelligence"
-python -m src.run_pipeline --data-root $env:RETAIL_DATA_ROOT --artifact-root $env:RETAIL_ARTIFACT_ROOT --repo-root "." --with-tests
+$env:RETAIL_DRIVE_ROOT = "D:\path\to\Drive\Retail DA - Customer & Commercial Intelligence"
+$env:RETAIL_DATA_ROOT = "$env:RETAIL_DRIVE_ROOT\01_raw_source"
+$env:RETAIL_ARTIFACT_ROOT = "$env:RETAIL_DRIVE_ROOT"
+python -m src.run_pipeline --data-root $env:RETAIL_DATA_ROOT --artifact-root $env:RETAIL_ARTIFACT_ROOT --drive-root $env:RETAIL_DRIVE_ROOT --repo-root "." --with-tests
 ~~~
 
 The D path above is a runtime mount example; the persistent source of truth remains Drive. The runner writes storage_status.json and qa_quality_gate.json to Drive and stops before statistics/BI when blocking checks fail. No raw or curated data is written into the GitHub checkout. After the human-reviewed UAT, SQL/DAX reconciliation, root-cause and decision evidence are placed in Drive, run `make release-audit`; it writes release_readiness.json and fails closed until the final release contract is complete.
