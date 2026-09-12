@@ -6,6 +6,18 @@ test:
 storage:
 	$(PYTHON) -m src.storage_policy --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT" --repo-root "." --output "$$RETAIL_ARTIFACT_ROOT/04_qa_reports/storage_status.json"
 
+acquire-official:
+	$(PYTHON) -m src.acquire_source --provider official --drive-root "$$RETAIL_DRIVE_ROOT"
+
+acquire-kaggle:
+	$(PYTHON) -m src.acquire_source --provider kaggle --drive-root "$$RETAIL_DRIVE_ROOT"
+
+acquire-manual:
+	$(PYTHON) -m src.acquire_source --provider manual --input "$$RETAIL_ACQUISITION_INPUT" --drive-root "$$RETAIL_DRIVE_ROOT"
+
+verify-source:
+	$(PYTHON) -m src.verify_source_ready --drive-root "$$RETAIL_DRIVE_ROOT"
+
 schema:
 	$(PYTHON) -m src.schema_contracts --input "$$RETAIL_DATA_ROOT" --contracts config/source_contracts.yaml --output "$$RETAIL_ARTIFACT_ROOT/04_qa_reports/schema_validation.csv" --drive-root "$$RETAIL_DRIVE_ROOT"
 
