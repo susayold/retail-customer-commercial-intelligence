@@ -23,6 +23,8 @@
 
 Use bootstrap or proportion confidence intervals, Mann–Whitney/Kruskal–Wallis, chi-square or matched observational comparisons only when they answer a business question. Report sample size, magnitude, uncertainty and limitation together. Never use a p-value as the business result.
 
+Campaign pre/during/post windows are rendered from config/analysis_thresholds.yaml (28-day pre and governed post windows, plus a supplemental 14-day observability flag); the values are not duplicated in SQL.
+
 ## Causal language
 
 The data is observational. Promotion and campaign recipients may be selected. Use associated with, observed response, descriptive difference and matched observational comparison. Do not write causal lift or ROI without verified experimental/cost data.
