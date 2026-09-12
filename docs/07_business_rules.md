@@ -13,7 +13,7 @@
 11. Category household penetration uses buying households divided by active panel households for the selected period.
 12. Coupon is a many-to-many coupon UPC × product × campaign bridge.
 13. Campaign redemption rate uses recipient households as the denominator.
-14. Campaign post windows are blank when not observable; they are never zero-filled.
+14. Campaign windows are configured in config/analysis_thresholds.yaml: pre = 28 days, governed post = 28 days, with a supplemental 14-day observability flag. Post-window metrics are blank when not observable; they are never zero-filled.
 15. Promotion findings use associated with, not caused.
 16. Demographic findings are limited to households with demographic records and include coverage.
 17. No COGS, campaign cost, inventory or geography is invented.
