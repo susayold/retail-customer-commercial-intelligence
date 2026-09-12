@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from src.utils.duckdb_client import connect
 
 
@@ -40,6 +42,12 @@ def test_decision_alerts_apply_threshold_to_relative_variance():
             WHERE metric = 'panel_net_spend_decline'
             """
         ).fetchone()
-        assert row == (100.0, 85.0, -15.0, -0.15, -0.10, "high")
+        baseline, current, absolute_variance, relative_variance, threshold, severity = row
+        assert baseline == pytest.approx(100.0)
+        assert current == pytest.approx(85.0)
+        assert absolute_variance == pytest.approx(-15.0)
+        assert relative_variance == pytest.approx(-0.15)
+        assert float(threshold) == pytest.approx(-0.10)
+        assert severity == "high"
     finally:
         connection.close()
