@@ -35,3 +35,7 @@ Promotion dependency is reported by department and commodity as two descriptive 
 - product-store-weeks in display/mailer-supported states divided by all product-store-weeks.
 
 The promotion mart is built from the product-store-week skeleton, so zero-sale weeks remain in the denominator. These measures describe association and support commercial monitoring; they do not imply causal lift, profitability or ROI.
+
+## Campaign response by segment
+
+`analysis_campaign_segment` preserves the campaign funnel at campaign × campaign type × observed customer segment. It reports recipient and redeemer household denominators, redemption rate, pre/during/post observable row counts, and demographic coverage. Unobservable windows remain excluded from averages, and the output is interpreted as observed response rather than causal campaign lift.
