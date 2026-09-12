@@ -8,6 +8,7 @@ This report is completed from Drive outputs after the source run. The planning c
 - schema_validation.csv: required columns, missing columns and contract status;
 - source_profile_summary.csv: types, row counts and column counts;
 - source_null_profile.csv: null/blank rate, distinct count and min/max profile;
+- source_cardinality.csv: per-column distinct count and cardinality ratio for key and reference profiling;
 - qa_source_reconciliation.csv: source counts and distinct keys;
 - qa_key_audit.csv: duplicate counts at model grain;
 - qa_grain_audit.csv: basket consistency checks;

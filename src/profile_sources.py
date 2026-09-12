@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 from pathlib import Path
 
 from src.utils.duckdb_client import RAW_SOURCES, connect, register_raw_views
@@ -12,17 +13,12 @@ def quote_identifier(name: str) -> str:
     return '"' + name.replace('"', '""') + '"'
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--data-root", type=Path, required=True)
-    parser.add_argument("--artifact-root", type=Path, required=True)
-    args = parser.parse_args()
-
-    qa_dir = args.artifact_root / "04_qa_reports"
+def profile_sources(data_root: Path, artifact_root: Path) -> None:
+    qa_dir = artifact_root / "04_qa_reports"
     qa_dir.mkdir(parents=True, exist_ok=True)
     connection = connect(":memory:")
     try:
-        register_raw_views(connection, args.data_root)
+        register_raw_views(connection, data_root)
         connection.execute(
             """
             CREATE OR REPLACE TABLE source_profile_summary (
@@ -48,12 +44,26 @@ def main() -> None:
             )
             """
         )
+        connection.execute(
+            """
+            CREATE OR REPLACE TABLE source_cardinality (
+                source_name VARCHAR,
+                source_filename VARCHAR,
+                column_name VARCHAR,
+                row_count BIGINT,
+                distinct_count BIGINT,
+                cardinality_ratio DOUBLE
+            )
+            """
+        )
 
         for source_name, source_filename in RAW_SOURCES.items():
             columns = connection.execute(
                 f"DESCRIBE SELECT * FROM raw_{source_name}"
             ).fetchall()
-            quoted_columns = [(quote_identifier(row[0]), row[0], row[1]) for row in columns]
+            quoted_columns = [
+                (quote_identifier(row[0]), row[0], row[1]) for row in columns
+            ]
             expressions = ["COUNT(*) AS row_count"]
             for ordinal, (identifier, _name, _type) in enumerate(quoted_columns):
                 expressions.extend(
@@ -72,13 +82,18 @@ def main() -> None:
                 "INSERT INTO source_profile_summary VALUES (?, ?, ?, ?)",
                 [source_name, source_filename, row_count, len(columns)],
             )
-            for ordinal, (_identifier, column_name, column_type) in enumerate(quoted_columns):
+            for ordinal, (_identifier, column_name, column_type) in enumerate(
+                quoted_columns
+            ):
                 offset = 1 + ordinal * 4
                 null_count = int(row[offset] or 0)
                 distinct_count = int(row[offset + 1] or 0)
                 min_value = row[offset + 2]
                 max_value = row[offset + 3]
                 null_pct = null_count / row_count if row_count else None
+                cardinality_ratio = (
+                    distinct_count / row_count if row_count else None
+                )
                 connection.execute(
                     "INSERT INTO source_null_profile VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     [
@@ -93,8 +108,23 @@ def main() -> None:
                         None if max_value is None else str(max_value),
                     ],
                 )
+                connection.execute(
+                    "INSERT INTO source_cardinality VALUES (?, ?, ?, ?, ?, ?)",
+                    [
+                        source_name,
+                        source_filename,
+                        column_name,
+                        row_count,
+                        distinct_count,
+                        cardinality_ratio,
+                    ],
+                )
 
-        for table_name in ("source_profile_summary", "source_null_profile"):
+        for table_name in (
+            "source_profile_summary",
+            "source_null_profile",
+            "source_cardinality",
+        ):
             output_path = qa_dir / f"{table_name}.csv"
             connection.execute(
                 f"COPY (SELECT * FROM {table_name}) TO ? (HEADER, DELIMITER ',')",
@@ -102,6 +132,14 @@ def main() -> None:
             )
     finally:
         connection.close()
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data-root", type=Path, required=True)
+    parser.add_argument("--artifact-root", type=Path, required=True)
+    args = parser.parse_args()
+    profile_sources(args.data_root, args.artifact_root)
 
 
 if __name__ == "__main__":
