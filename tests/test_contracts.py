@@ -45,6 +45,8 @@ def test_one_command_runner_uses_drive_roots_for_data_artifacts():
         "artifact_root",
         "cwd=str(cwd)",
         "cwd=repo_root",
+        "data_root = args.data_root.resolve()",
+        "artifact_root = args.artifact_root.resolve()",
         "contracts =",
         "sql_dir =",
     ):
