@@ -10,6 +10,15 @@ EXPECTED_SOURCES = {
 }
 
 
+def test_analysis_thresholds_are_centralized():
+    thresholds = yaml.safe_load(
+        (ROOT / "config/analysis_thresholds.yaml").read_text(encoding="utf-8")
+    )
+    assert thresholds["trajectory"]["growing_factor"] == 1.10
+    assert thresholds["trajectory"]["declining_factor"] == 0.90
+    assert thresholds["decision_alerts"]["relative_decline_threshold"] == -0.10
+
+
 def test_expected_source_contracts_are_present():
     settings = yaml.safe_load((ROOT / "config/settings.yaml").read_text())
     assert set(settings["sources"]) == EXPECTED_SOURCES
@@ -54,6 +63,8 @@ def test_one_command_runner_uses_drive_roots_for_data_artifacts():
         "artifact_root = args.artifact_root.resolve()",
         "contracts =",
         "sql_dir =",
+        "thresholds = args.thresholds",
+        "str(thresholds)",
     ):
         assert token in runner
 
