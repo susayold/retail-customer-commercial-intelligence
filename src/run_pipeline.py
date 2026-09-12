@@ -115,7 +115,7 @@ def main() -> None:
     try:
         run_command("storage_gate", storage_command, cwd=repo_root)
     except subprocess.CalledProcessError as error:
-        if drive_root is None:
+        if drive_root is None or not drive_root.is_dir():
             raise
         if not data_root.is_relative_to(drive_root) or not artifact_root.is_relative_to(drive_root):
             raise
