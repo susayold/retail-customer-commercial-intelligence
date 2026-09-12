@@ -5,7 +5,7 @@ This report is completed from Drive outputs after the source run. The planning c
 ## Required evidence
 
 - raw_file_inventory.csv: eight files, size, rows, columns, header hash and load status;
-- schema_validation.csv: required columns, missing columns and contract status;
+- schema_validation.csv: required columns, missing columns, unexpected columns, duplicate headers and contract status;
 - source_profile_summary.csv: types, row counts and column counts;
 - source_null_profile.csv: null/blank rate, distinct count and min/max profile;
 - source_cardinality.csv: per-column distinct count and cardinality ratio for key and reference profiling;

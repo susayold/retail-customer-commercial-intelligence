@@ -18,3 +18,30 @@ def test_contracts_match_the_eight_source_files():
 def test_synthetic_headers_satisfy_source_contracts():
     rows = validate_headers(ROOT / "tests/fixtures", ROOT / "config/source_contracts.yaml")
     assert all(row["status"] == "ok" for row in rows)
+
+
+def test_schema_validator_flags_unexpected_and_duplicate_headers(tmp_path):
+    required = [
+        "household_key",
+        "BASKET_ID",
+        "DAY",
+        "PRODUCT_ID",
+        "QUANTITY",
+        "SALES_VALUE",
+        "STORE_ID",
+        "RETAIL_DISC",
+        "COUPON_DISC",
+        "COUPON_MATCH_DISC",
+        "TRANS_TIME",
+        "WEEK_NO",
+    ]
+    (tmp_path / "transaction_data.csv").write_text(
+        ",".join(required + ["UNEXPECTED", "BASKET_ID"]) + "
+",
+        encoding="utf-8",
+    )
+    rows = validate_headers(tmp_path, ROOT / "config/source_contracts.yaml")
+    transaction = next(row for row in rows if row["source_name"] == "transaction_data")
+    assert transaction["status"] == "duplicate_columns"
+    assert transaction["unexpected_columns"] == "UNEXPECTED"
+    assert transaction["duplicate_columns"] == "BASKET_ID"

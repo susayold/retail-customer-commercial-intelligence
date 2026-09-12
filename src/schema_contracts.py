@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+from collections import Counter
 from pathlib import Path
 
 import yaml
@@ -26,17 +27,34 @@ def validate_headers(input_dir: Path, contract_path: Path) -> list[dict[str, obj
                 "file_name": file_name,
                 "status": "missing_file",
                 "missing_columns": "",
+                "unexpected_columns": "",
+                "duplicate_columns": "",
                 "observed_column_count": None,
             })
             continue
+
         observed = read_header(path)
         required = set(contract["required_columns"])
         missing = sorted(required - set(observed))
+        unexpected = sorted(set(observed) - required)
+        duplicate = sorted(
+            name for name, count in Counter(observed).items() if count > 1
+        )
+        if duplicate:
+            status = "duplicate_columns"
+        elif missing:
+            status = "missing_columns"
+        elif unexpected:
+            status = "unexpected_columns"
+        else:
+            status = "ok"
         rows.append({
             "source_name": source_name,
             "file_name": file_name,
-            "status": "ok" if not missing else "missing_columns",
+            "status": status,
             "missing_columns": "|".join(missing),
+            "unexpected_columns": "|".join(unexpected),
+            "duplicate_columns": "|".join(duplicate),
             "observed_column_count": len(observed),
         })
     return rows
@@ -44,7 +62,15 @@ def validate_headers(input_dir: Path, contract_path: Path) -> list[dict[str, obj
 
 def write_report(rows: list[dict[str, object]], output: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
-    fieldnames = ["source_name", "file_name", "status", "missing_columns", "observed_column_count"]
+    fieldnames = [
+        "source_name",
+        "file_name",
+        "status",
+        "missing_columns",
+        "unexpected_columns",
+        "duplicate_columns",
+        "observed_column_count",
+    ]
     with output.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
