@@ -54,6 +54,14 @@ def wilson_interval(successes: int, total: int, z: float = 1.96) -> tuple[float,
     return float(centre - margin), float(centre + margin)
 
 
+def normalized_group_label(value: object) -> str:
+    """Return a stable label when a source dimension is NULL or blank."""
+    if value is None:
+        return "Unknown"
+    label = str(value).strip()
+    return label or "Unknown"
+
+
 def write_rows(path: Path, fieldnames: list[str], rows: list[dict[str, object]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
@@ -75,19 +83,28 @@ def main() -> None:
             """
             SELECT basket_net_spend, COALESCE(segment, 'Unknown') AS segment
             FROM mart_basket
+            WHERE basket_net_spend IS NOT NULL
             """
         ).fetchall()
         groups: dict[str, np.ndarray] = {}
-        for segment in sorted({row[1] for row in basket_rows}):
+        for segment in sorted({normalized_group_label(row[1]) for row in basket_rows}):
             groups[segment] = np.array(
-                [float(row[0]) for row in basket_rows if row[1] == segment],
+                [
+                    float(row[0])
+                    for row in basket_rows
+                    if normalized_group_label(row[1]) == segment
+                ],
                 dtype=float,
             )
         basket_stats = []
         for segment, values in groups.items():
-            others = np.concatenate(
-                [candidate for name, candidate in groups.items() if name != segment]
-            ) if len(groups) > 1 else np.array([], dtype=float)
+            others = (
+                np.concatenate(
+                    [candidate for name, candidate in groups.items() if name != segment]
+                )
+                if len(groups) > 1
+                else np.array([], dtype=float)
+            )
             difference, lower, upper = bootstrap_mean_difference(values, others)
             basket_stats.append({
                 "segment": segment,
@@ -109,16 +126,21 @@ def main() -> None:
         promotion_rows = connection.execute(
             """
             SELECT
-                promo_state_group,
+                COALESCE(CAST(promo_state_group AS VARCHAR), 'Unknown') AS promo_state_group,
                 panel_sales / NULLIF(product_store_weeks, 0)
             FROM mart_promotion_category_week
             WHERE product_store_weeks > 0
+              AND panel_sales IS NOT NULL
             """
         ).fetchall()
         promotion_groups: dict[str, np.ndarray] = {}
-        for state in sorted({row[0] for row in promotion_rows}):
+        for state in sorted({normalized_group_label(row[0]) for row in promotion_rows}):
             promotion_groups[state] = np.array(
-                [float(row[1]) for row in promotion_rows if row[0] == state],
+                [
+                    float(row[1])
+                    for row in promotion_rows
+                    if normalized_group_label(row[0]) == state
+                ],
                 dtype=float,
             )
         promotion_values = [values for values in promotion_groups.values() if len(values)]
@@ -130,7 +152,11 @@ def main() -> None:
                 float((kruskal_stat - len(promotion_values) + 1) / (total_n - len(promotion_values))),
             ) if total_n > len(promotion_values) else float("nan")
         else:
-            kruskal_stat, kruskal_p, eta_squared = (float("nan"), float("nan"), float("nan"))
+            kruskal_stat, kruskal_p, eta_squared = (
+                float("nan"),
+                float("nan"),
+                float("nan"),
+            )
         promotion_stats = [
             {
                 "promo_state_group": state,
@@ -153,13 +179,21 @@ def main() -> None:
 
         campaign_rows = connection.execute(
             """
-            SELECT campaign_type, CAST(redeemed_coupon_flag AS INTEGER)
+            SELECT
+                COALESCE(CAST(campaign_type AS VARCHAR), 'Unknown') AS campaign_type,
+                COALESCE(CAST(redeemed_coupon_flag AS INTEGER), 0) AS redeemed_coupon_flag
             FROM mart_campaign_household
             """
         ).fetchall()
         campaign_stats = []
-        for campaign_type in sorted({row[0] for row in campaign_rows}):
-            values = [int(row[1]) for row in campaign_rows if row[0] == campaign_type]
+        for campaign_type in sorted(
+            {normalized_group_label(row[0]) for row in campaign_rows}
+        ):
+            values = [
+                int(row[1])
+                for row in campaign_rows
+                if normalized_group_label(row[0]) == campaign_type
+            ]
             successes = sum(values)
             lower, upper = wilson_interval(successes, len(values))
             campaign_stats.append({
