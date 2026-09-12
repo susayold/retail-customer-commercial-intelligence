@@ -16,9 +16,13 @@ SELECT
     'panel_net_spend_decline' AS metric,
     prior_spend AS baseline,
     panel_net_spend AS current,
-    panel_net_spend - prior_spend AS variance,
+    panel_net_spend - prior_spend AS absolute_variance,
+    panel_net_spend / NULLIF(prior_spend, 0) - 1 AS relative_variance,
     -0.10 AS threshold,
-    CASE WHEN panel_net_spend < prior_spend * 0.90 THEN 'high' ELSE 'normal' END AS severity,
+    CASE
+        WHEN panel_net_spend / NULLIF(prior_spend, 0) - 1 < -0.10 THEN 'high'
+        ELSE 'normal'
+    END AS severity,
     'observation_week=' || CAST(week_number AS VARCHAR) AS scope
 FROM weekly
 WHERE prior_spend IS NOT NULL
@@ -28,8 +32,12 @@ SELECT
     prior_households,
     active_households,
     active_households - prior_households,
+    active_households / NULLIF(prior_households, 0) - 1,
     -0.10,
-    CASE WHEN active_households < prior_households * 0.90 THEN 'high' ELSE 'normal' END,
+    CASE
+        WHEN active_households / NULLIF(prior_households, 0) - 1 < -0.10 THEN 'high'
+        ELSE 'normal'
+    END,
     'observation_week=' || CAST(week_number AS VARCHAR)
 FROM weekly
 WHERE prior_households IS NOT NULL
@@ -39,8 +47,12 @@ SELECT
     prior_trips,
     trips_per_household,
     trips_per_household - prior_trips,
+    trips_per_household / NULLIF(prior_trips, 0) - 1,
     -0.10,
-    CASE WHEN trips_per_household < prior_trips * 0.90 THEN 'medium' ELSE 'normal' END,
+    CASE
+        WHEN trips_per_household / NULLIF(prior_trips, 0) - 1 < -0.10 THEN 'medium'
+        ELSE 'normal'
+    END,
     'observation_week=' || CAST(week_number AS VARCHAR)
 FROM weekly
 WHERE prior_trips IS NOT NULL;
