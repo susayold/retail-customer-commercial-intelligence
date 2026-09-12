@@ -7,6 +7,8 @@ import csv
 import math
 from pathlib import Path
 
+from src.storage_paths import require_drive_path
+
 VALUE_COLUMNS = ("value", "sql_value", "powerbi_value")
 
 
@@ -37,14 +39,18 @@ def main() -> None:
     parser.add_argument("--bi", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--tolerance", type=float, default=1e-6)
+    parser.add_argument("--drive-root", type=Path, required=True)
     args = parser.parse_args()
 
-    sql = load(args.sql)
-    bi = load(args.bi)
+    sql_path = require_drive_path(args.sql, args.drive_root, "--sql")
+    bi_path = require_drive_path(args.bi, args.drive_root, "--bi")
+    output_path = require_drive_path(args.output, args.drive_root, "--output")
+    sql = load(sql_path)
+    bi = load(bi_path)
     metrics = sorted(set(sql) | set(bi))
     failures = 0
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    with args.output.open("w", encoding="utf-8", newline="") as handle:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(
             handle,
             fieldnames=["metric", "sql_value", "powerbi_value", "difference", "tolerance", "status"],
@@ -65,7 +71,7 @@ def main() -> None:
                 "status": status,
             })
     if failures:
-        raise SystemExit(f"Reconciliation failed for {failures} metric(s); inspect {args.output}")
+        raise SystemExit(f"Reconciliation failed for {failures} metric(s); inspect {output_path}")
 
 
 if __name__ == "__main__":
