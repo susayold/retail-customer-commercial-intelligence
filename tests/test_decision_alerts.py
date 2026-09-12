@@ -34,6 +34,30 @@ def test_decision_alerts_apply_threshold_to_relative_variance():
         ).read_text(encoding="utf-8")
         connection.execute(sql)
 
+        output_columns = {
+            row[1]
+            for row in connection.execute("PRAGMA table_info('mart_decision_alerts')").fetchall()
+        }
+        assert {
+            "metric",
+            "baseline",
+            "current",
+            "variance",
+            "threshold",
+            "severity",
+            "scope",
+        }.issubset(output_columns)
+        assert {
+            row[0]
+            for row in connection.execute(
+                "SELECT DISTINCT metric FROM mart_decision_alerts"
+            ).fetchall()
+        } == {
+            "panel_net_spend_decline",
+            "active_households_decline",
+            "trip_frequency_decline",
+        }
+
         row = connection.execute(
             """
             SELECT baseline, current, variance, absolute_variance,
