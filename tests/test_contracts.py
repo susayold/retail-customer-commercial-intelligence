@@ -16,6 +16,9 @@ def test_analysis_thresholds_are_centralized():
     )
     assert thresholds["trajectory"]["growing_factor"] == 1.10
     assert thresholds["trajectory"]["declining_factor"] == 0.90
+    assert thresholds["trajectory"]["window_weeks"] == 13
+    assert thresholds["basket"]["category_pair_min_support"] == 0.01
+    assert thresholds["basket"]["category_pair_min_baskets"] == 100
     assert thresholds["decision_alerts"]["relative_decline_threshold"] == -0.10
     assert thresholds["campaign"]["pre_days"] == 28
     assert thresholds["campaign"]["post_short_days"] == 14
