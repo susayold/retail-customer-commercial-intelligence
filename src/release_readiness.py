@@ -91,6 +91,7 @@ def _csv_contract(
     require_pass_status: bool = False,
     complete_statuses: set[str] | None = None,
     require_nonblank_columns: set[str] | None = None,
+    require_blank_columns: set[str] | None = None,
 ) -> dict[str, Any]:
     path = artifact_root / relative_path
     rows, fieldnames, error = _read_csv(path)
@@ -159,6 +160,20 @@ def _csv_contract(
                 f"{blank_values} required evidence value(s) are blank",
                 relative_path,
             )
+    if require_blank_columns is not None:
+        nonblank_values = sum(
+            1
+            for row in rows
+            for column in require_blank_columns
+            if str(row.get(column, "")).strip()
+        )
+        if nonblank_values:
+            return _check(
+                relative_path,
+                False,
+                f"{nonblank_values} fields expected to be blank are populated",
+                relative_path,
+            )
     return _check(relative_path, True, f"{len(rows)} row(s) validated", relative_path)
 
 
@@ -203,6 +218,42 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
                 relative_path,
             )
         )
+
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/statistics/stats_basket_by_segment.csv",
+            {"segment", "n", "mean_basket_value", "ci_low", "ci_high"},
+            minimum_rows=1,
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/statistics/stats_promotion_state.csv",
+            {"promo_state_group", "n", "mean_panel_sales_per_product_store_week", "kruskal_wallis_p_value"},
+            minimum_rows=1,
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/statistics/stats_campaign_redemption.csv",
+            {"campaign_type", "n_recipients", "redeemers", "redemption_rate", "ci_low", "ci_high"},
+            minimum_rows=1,
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/statistics/statistics_run_log.csv",
+            {"run_id", "started_at_utc", "finished_at_utc", "status", "database", "output_files", "duration_seconds", "error"},
+            expected_rows=1,
+            complete_statuses={"success"},
+            require_nonblank_columns={"run_id", "started_at_utc", "finished_at_utc", "database", "output_files"},
+            require_blank_columns={"error"},
+        )
+    )
 
     checks.append(
         _csv_contract(
