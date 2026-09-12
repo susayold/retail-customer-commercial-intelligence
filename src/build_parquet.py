@@ -32,6 +32,16 @@ def count_csv_rows(path: Path) -> int:
         return sum(1 for _ in reader)
 
 
+def count_parquet_rows(connection: duckdb.DuckDBPyConnection, path: Path) -> int:
+    """Count rows written to a Parquet file using DuckDB's reader."""
+    return int(
+        connection.execute(
+            "SELECT COUNT(*) FROM read_parquet(?)",
+            [path.as_posix()],
+        ).fetchone()[0]
+    )
+
+
 def log_run(
     logger: logging.Logger,
     run_id: str,
@@ -84,6 +94,7 @@ def main() -> None:
             target_path = args.output / f"{stem}.parquet"
             file_started = time.perf_counter()
             rows_read = 0
+            rows_written = 0
             try:
                 rows_read = count_csv_rows(source_path)
                 source = source_path.as_posix()
@@ -93,8 +104,12 @@ def main() -> None:
                     "TO ? (FORMAT PARQUET, COMPRESSION ZSTD)",
                     [source, target],
                 )
-                # The conversion is row-preserving; no silent filtering is applied.
-                rows_written = rows_read
+                rows_written = count_parquet_rows(connection, target_path)
+                if rows_written != rows_read:
+                    raise ValueError(
+                        f"Parquet row-count mismatch for {source_path.name}: "
+                        f"read={rows_read}, written={rows_written}"
+                    )
                 total_read += rows_read
                 total_written += rows_written
                 log_run(
@@ -112,7 +127,7 @@ def main() -> None:
                     run_id,
                     source_path.as_posix(),
                     rows_read,
-                    0,
+                    rows_written,
                     time.perf_counter() - file_started,
                     errors=repr(error),
                 )

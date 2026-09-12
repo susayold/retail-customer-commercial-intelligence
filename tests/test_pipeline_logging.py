@@ -23,3 +23,21 @@ def test_warehouse_output_and_input_helpers():
         "raw_transaction_data",
         "dim_product",
     }
+
+
+
+def test_parquet_row_counter_reads_written_file(tmp_path):
+    import duckdb
+
+    path = tmp_path / "sample.parquet"
+    connection = duckdb.connect(":memory:")
+    try:
+        connection.execute(
+            "COPY (SELECT * FROM range(3) AS t(value)) TO ? (FORMAT PARQUET)",
+            [path.as_posix()],
+        )
+        from src.build_parquet import count_parquet_rows
+
+        assert count_parquet_rows(connection, path) == 3
+    finally:
+        connection.close()
