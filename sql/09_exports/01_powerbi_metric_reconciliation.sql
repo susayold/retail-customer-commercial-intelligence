@@ -8,7 +8,7 @@ WITH metrics AS (
     SELECT 'Baskets', COUNT(DISTINCT basket_id)
     FROM mart_basket
     UNION ALL
-    SELECT 'Active Households', COUNT(DISTINCT household_key)
+    SELECT 'Active Panel Households', COUNT(DISTINCT household_key)
     FROM mart_basket
     UNION ALL
     SELECT 'Spend per Basket',
