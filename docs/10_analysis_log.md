@@ -13,6 +13,8 @@
 | 2026-09-12 | Power BI reconciliation hardening | exporter + sql/09_exports + tests | implemented | PascalCase export names and DISTINCTCOUNT-aligned populations |
 | 2026-09-12 | Profiling contract hardening | src/profile_sources.py | implemented | source_cardinality.csv added to Drive QA outputs |
 | 2026-09-12 | Pipeline logging hardening | src/build_parquet.py + src/build_warehouse.py | implemented | exact row counts and durations logged per source/model |
+| 2026-09-12 | Category household mart | sql/06_marts/14_mart_category_household.sql + category_analysis.sql | implemented | distinct buyers, household penetration, baskets, frequency, spend/basket, private label and decomposition; real-source run pending |
+| 2026-09-12 | Coupon Power BI contract | src/export_powerbi.py + powerbi/semantic_model.yaml | implemented | coupon summary plus five coupon aggregates wired into 24 exports and 22 semantic tables; refresh pending source |
 | pending | Inventory/profile | Drive 04_qa_reports | pending | no eight-source CSVs present yet |
 | pending | QA/reconciliation | Drive 04_qa_reports | pending | stop on real-source grain/fan-out issues |
 | pending | Root causes/decisions | docs/11–12 | pending | populate only from verified results |
