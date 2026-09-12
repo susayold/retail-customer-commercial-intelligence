@@ -22,7 +22,7 @@ This checklist separates implemented repository work from outputs that require t
 | 31 | Root-cause cases | Template ready | docs/11_root_cause_cases.md; requires verified output |
 | 32 | Executive decisions | Template ready | docs/12_executive_decisions.md + Drive Decision_Tracker |
 | 33 | Export BI marts | Implemented | src/export_powerbi.py exports 31 curated marts/analysis/QA outputs, including category, promotion, campaign and coupon aggregates |
-| 34 | Build Power BI | Semantic contract ready; binary pending | powerbi/README.md + powerbi/semantic_model.yaml (29 curated tables, six pages) + powerbi/measures.dax; create PBIX after data refresh |
+| 34 | Build Power BI | Semantic contract ready; binary pending | powerbi/README.md + powerbi/semantic_model.yaml (29 curated tables, six pages, Drive-only source) + powerbi/measures.dax; release audit validates contract content; create PBIX after data refresh |
 | 35 | Reconcile SQL/DAX | Implemented method; pending result | docs/14_powerbi_uat.md + Drive QA output |
 | 36 | Complete UAT | Checklist ready; pending result | Drive companion UAT_Checklist with stable UAT-01..UAT-12 IDs; release audit enforces exact unique IDs |
 | 37 | Excel companion | Done as Drive-native workbook | Google Sheet with six plan tabs plus tracker/readme + Plan Status |
