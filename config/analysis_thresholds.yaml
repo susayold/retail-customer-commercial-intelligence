@@ -2,6 +2,7 @@
 trajectory:
   growing_factor: 1.10
   declining_factor: 0.90
+  window_weeks: 13
 segmentation:
   promotion_coupon_basket_rate: 0.30
   promotion_discount_share: 0.20
@@ -10,6 +11,10 @@ segmentation:
   occasional_max_active_weeks: 8
 decision_alerts:
   relative_decline_threshold: -0.10
+
+basket:
+  category_pair_min_support: 0.01
+  category_pair_min_baskets: 100
 
 campaign:
   pre_days: 28
