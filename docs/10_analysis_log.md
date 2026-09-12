@@ -12,6 +12,7 @@
 | 2026-09-12 | Power BI semantic contract | powerbi/semantic_model.yaml + measures.dax | implemented | six-page model with 29 curated tables and governed DAX is data-free; refresh pending source |
 | 2026-09-12 | Power BI reconciliation hardening | exporter + sql/09_exports + tests | implemented | PascalCase export names and DISTINCTCOUNT-aligned populations |
 | 2026-09-12 | Profiling contract hardening | src/profile_sources.py | implemented | source_cardinality.csv added to Drive QA outputs |
+| 2026-09-12 | Source provenance hardening | src/inventory.py | implemented | inventory now records content SHA-256; real source inventory pending |
 | 2026-09-12 | Pipeline logging hardening | src/build_parquet.py + src/build_warehouse.py | implemented | exact row counts and durations logged per source/model |
 | 2026-09-12 | Layer reconciliation hardening | sql/07_quality/10_q10_layer_reconciliation.sql + src/validate.py | implemented | raw/staging/fact populations and sales totals will be exported to Drive; real-source result pending |
 | 2026-09-12 | Category household mart | sql/06_marts/14_mart_category_household.sql + category_analysis.sql | implemented | distinct buyers, household penetration, baskets, frequency, spend/basket, private label and decomposition; real-source run pending |
