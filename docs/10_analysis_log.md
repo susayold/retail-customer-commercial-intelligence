@@ -27,3 +27,4 @@
 
 | 2026-09-12 | Decision alert semantics | sql/06_marts/13_mart_decision_alerts.sql + tests/test_decision_alerts.py | implemented | alert thresholds now use relative variance while preserving absolute variance; CI contract test added |
 | 2026-09-12 | Runner path hardening | src/run_pipeline.py + tests/test_contracts.py | implemented | resolves repository, SQL/config and Drive roots; subprocess stages execute with repository cwd; CI contract passes |
+| 2026-09-12 | Blocking QA gate | src/enforce_quality_gate.py + src/run_pipeline.py + tests/test_quality_gate.py | implemented | key duplicates, basket grain breaks, unmatched references and layer reconciliation review stop statistics/BI; retained transaction anomalies are warnings |
