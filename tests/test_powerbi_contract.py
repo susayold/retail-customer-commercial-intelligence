@@ -97,3 +97,74 @@ def test_sql_reconciliation_uses_governed_panel_household_label():
     ).read_text(encoding="utf-8")
     assert "'Active Panel Households'" in sql
     assert "'Active Households'" not in sql
+
+
+
+def test_declared_grains_and_relationship_columns_exist_in_synthetic_warehouse():
+    import yaml
+
+    from src.utils.duckdb_client import connect, register_raw_views
+
+    contract = yaml.safe_load(
+        (ROOT / "powerbi" / "semantic_model.yaml").read_text(encoding="utf-8")
+    )
+    connection = connect(":memory:")
+    try:
+        register_raw_views(connection, ROOT / "tests/fixtures")
+        sql_root = ROOT / "sql"
+        model_paths = sorted(
+            path
+            for path in sql_root.rglob("*.sql")
+            if "07_quality" not in path.parts and "09_exports" not in path.parts
+        )
+        for sql_path in model_paths:
+            connection.execute(sql_path.read_text(encoding="utf-8"))
+
+        output_to_table = {value: key for key, value in POWERBI_OUTPUT_NAMES.items()}
+        for item in contract["tables"]:
+            table_name = output_to_table[item["name"]]
+            columns = {
+                row[0]
+                for row in connection.execute(
+                    """
+                    SELECT column_name
+                    FROM information_schema.columns
+                    WHERE table_name = ?
+                    """,
+                    [table_name],
+                ).fetchall()
+            }
+            for field in item.get("grain", "").split(","):
+                assert field.strip() in columns, (
+                    f"{item['name']} grain field {field.strip()} is missing"
+                )
+
+        for relationship in contract["relationships"]:
+            from_table, from_column = relationship["from"].split("[")
+            to_table, to_column = relationship["to"].split("[")
+            assert from_table in output_to_table
+            assert to_table in output_to_table
+            assert from_column.rstrip("]") in {
+                row[0]
+                for row in connection.execute(
+                    """
+                    SELECT column_name
+                    FROM information_schema.columns
+                    WHERE table_name = ?
+                    """,
+                    [output_to_table[from_table]],
+                ).fetchall()
+            }
+            assert to_column.rstrip("]") in {
+                row[0]
+                for row in connection.execute(
+                    """
+                    SELECT column_name
+                    FROM information_schema.columns
+                    WHERE table_name = ?
+                    """,
+                    [output_to_table[to_table]],
+                ).fetchall()
+            }
+    finally:
+        connection.close()
