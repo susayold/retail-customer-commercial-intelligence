@@ -31,7 +31,10 @@ def test_powerbi_dax_contract_contains_governed_measures():
     dax = (ROOT / "powerbi" / "measures.dax").read_text(encoding="utf-8")
     for measure in (
         "Panel Net Spend",
-        "Active Households",
+        "Active Panel Households",
+        "Total Recorded Discount",
+        "Trips per Active Household",
+        "Spend per Active Household",
         "Spend per Basket",
         "Private Label Share",
         "Coupon Basket Rate",
