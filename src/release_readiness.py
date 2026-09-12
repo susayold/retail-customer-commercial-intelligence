@@ -79,6 +79,17 @@ REQUIRED_POWERBI_MEASURES = (
     "Campaign Redemption Rate",
 )
 
+REQUIRED_RECONCILIATION_METRICS = (
+    "Panel Net Spend",
+    "Baskets",
+    "Active Panel Households",
+    "Spend per Basket",
+    "Private Label Share",
+    "Campaign Recipients",
+    "Campaign Redeemers",
+    "Redemption Rate",
+)
+
 
 def _check(name: str, ready: bool, reason: str, path: str | None = None) -> dict[str, Any]:
     result: dict[str, Any] = {"name": name, "ready": bool(ready), "reason": reason}
@@ -372,6 +383,49 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
             require_nonblank_columns=SCHEMA_REQUIRED_COLUMNS,
             unique_columns={"file_name", "source_name"},
             exact_values={"file_name": set(EXPECTED_FILES), "status": {"ok"}},
+        )
+    )
+
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/source_profile_summary.csv",
+            {"source_name", "source_filename", "row_count", "column_count"},
+            expected_rows=len(EXPECTED_FILES),
+            require_nonblank_columns={"source_name", "source_filename", "row_count", "column_count"},
+            unique_columns={"source_name", "source_filename"},
+            exact_values={"source_filename": set(EXPECTED_FILES)},
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/source_cardinality.csv",
+            {"source_name", "source_filename", "column_name", "row_count", "distinct_count"},
+            minimum_rows=len(EXPECTED_FILES),
+            require_nonblank_columns={"source_name", "source_filename", "column_name", "row_count", "distinct_count"},
+            exact_values={"source_filename": set(EXPECTED_FILES)},
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/qa_run_log.csv",
+            {"run_id", "timestamp", "file", "rows_read", "rows_written", "duration_seconds", "errors"},
+            minimum_rows=1,
+            require_nonblank_columns={"run_id", "timestamp", "file", "rows_read", "rows_written", "duration_seconds"},
+            require_blank_columns={"errors"},
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/powerbi_reconciliation.csv",
+            {"metric", "sql_value", "powerbi_value", "difference", "tolerance", "status"},
+            expected_rows=len(REQUIRED_RECONCILIATION_METRICS),
+            require_pass_status=True,
+            unique_columns={"metric"},
+            exact_values={"metric": set(REQUIRED_RECONCILIATION_METRICS)},
         )
     )
 
