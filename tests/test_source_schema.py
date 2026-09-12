@@ -36,8 +36,7 @@ def test_schema_validator_flags_unexpected_and_duplicate_headers(tmp_path):
         "WEEK_NO",
     ]
     (tmp_path / "transaction_data.csv").write_text(
-        ",".join(required + ["UNEXPECTED", "BASKET_ID"]) + "
-",
+        ",".join(required + ["UNEXPECTED", "BASKET_ID"]) + "\n",
         encoding="utf-8",
     )
     rows = validate_headers(tmp_path, ROOT / "config/source_contracts.yaml")
