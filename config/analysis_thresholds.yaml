@@ -10,3 +10,8 @@ segmentation:
   occasional_max_active_weeks: 8
 decision_alerts:
   relative_decline_threshold: -0.10
+
+campaign:
+  pre_days: 28
+  post_short_days: 14
+  post_days: 28
