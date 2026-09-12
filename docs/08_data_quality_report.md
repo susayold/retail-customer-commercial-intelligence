@@ -16,6 +16,7 @@ This report is completed from Drive outputs after the source run. The planning c
 - qa_discount_audit.csv: sign and value audit;
 - qa_quantity_audit.csv: range, percentiles and outlier flags;
 - qa_transaction_anomalies.csv: DAY/WEEK_NO range, sales, quantity, time and required-key anomalies;
+- qa_layer_reconciliation.csv: raw → staging → fact row counts, household/basket populations and sales totals with pass/review status;
 - qa_campaign_observability.csv: pre/during/post window availability;
 - qa_demographic_coverage.csv: coverage and covered/uncovered behavior comparison;
 - powerbi_reconciliation.csv: SQL/DAX metric differences;
