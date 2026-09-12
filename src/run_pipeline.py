@@ -11,10 +11,23 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-def run_command(stage: str, command: list[str]) -> None:
+def run_command(
+    stage: str,
+    command: list[str],
+    cwd: Path | None = None,
+) -> None:
     started = time.perf_counter()
-    print(json.dumps({"stage": stage, "event": "start", "command": command}))
-    subprocess.run(command, check=True)
+    print(
+        json.dumps(
+            {
+                "stage": stage,
+                "event": "start",
+                "command": command,
+                "cwd": str(cwd) if cwd else None,
+            }
+        )
+    )
+    subprocess.run(command, check=True, cwd=str(cwd) if cwd else None)
     print(
         json.dumps(
             {
@@ -51,7 +64,17 @@ def main() -> None:
 
     data_root = args.data_root
     artifact_root = args.artifact_root
-    repo_root = args.repo_root
+    repo_root = args.repo_root.resolve()
+    contracts = (
+        args.contracts
+        if args.contracts.is_absolute()
+        else repo_root / args.contracts
+    )
+    sql_dir = (
+        args.sql_dir
+        if args.sql_dir.is_absolute()
+        else repo_root / args.sql_dir
+    )
     qa_root = artifact_root / "04_qa_reports"
     parquet_root = artifact_root / "02_curated_parquet"
     database = artifact_root / "03_duckdb_and_marts" / "retail_intelligence.duckdb"
@@ -67,7 +90,7 @@ def main() -> None:
         "--repo-root",
         str(repo_root),
     ]
-    run_command("storage_gate", storage_command)
+    run_command("storage_gate", storage_command, cwd=repo_root)
 
     qa_root.mkdir(parents=True, exist_ok=True)
     log_path = qa_root / "pipeline_orchestration.log"
@@ -84,7 +107,7 @@ def main() -> None:
                     "--input",
                     str(data_root),
                     "--contracts",
-                    str(args.contracts),
+                    str(contracts),
                     "--output",
                     str(qa_root / "schema_validation.csv"),
                 ],
@@ -136,7 +159,7 @@ def main() -> None:
                     "--artifact-root",
                     str(artifact_root),
                     "--sql-dir",
-                    str(args.sql_dir),
+                    str(sql_dir),
                 ],
             ),
             (
@@ -184,7 +207,7 @@ def main() -> None:
             started = time.perf_counter()
             log_event(log_handle, stage, "start", command=command)
             try:
-                run_command(stage, command)
+                run_command(stage, command, cwd=repo_root)
             except subprocess.CalledProcessError as error:
                 log_event(
                     log_handle,
@@ -205,7 +228,7 @@ def main() -> None:
             started = time.perf_counter()
             test_command = [sys.executable, "-m", "pytest", "-q"]
             log_event(log_handle, "tests", "start", command=test_command)
-            run_command("tests", test_command)
+            run_command("tests", test_command, cwd=repo_root)
             log_event(
                 log_handle,
                 "tests",
