@@ -10,7 +10,7 @@
 6. Reconcile raw/staging/fact rows and key populations.
 7. Build governed metrics and marts.
 8. Diagnose spend using the accounting identity:
-   Panel Spend = Active Households × Trips per Active Household × Spend per Basket.
+   Panel Spend = Active Panel Households × Trips per Active Household × Spend per Basket.
 9. Segment observed households with deterministic, explainable rules.
 10. Analyze baskets, categories, brands and private label.
 11. Build a product-store-week promotion skeleton so zero-sale weeks remain visible.
