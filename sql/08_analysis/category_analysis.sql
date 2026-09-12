@@ -45,7 +45,7 @@ category_period AS (
         p.department,
         p.commodity,
         CASE
-            WHEN t.week_number <= b.min_week + 12 THEN 'Early'
+            WHEN t.week_number <= b.min_week + {{ TRAJECTORY_WINDOW_WEEKS }} - 1 THEN 'Early'
             ELSE 'Late'
         END AS period,
         SUM(t.sales_value) AS spend,
@@ -54,13 +54,13 @@ category_period AS (
     FROM fct_transaction_line t
     LEFT JOIN dim_product p USING (product_id)
     CROSS JOIN bounds b
-    WHERE t.week_number <= b.min_week + 12
-       OR t.week_number > b.max_week - 13
+    WHERE t.week_number <= b.min_week + {{ TRAJECTORY_WINDOW_WEEKS }} - 1
+       OR t.week_number > b.max_week - {{ TRAJECTORY_WINDOW_WEEKS }}
     GROUP BY
         p.department,
         p.commodity,
         CASE
-            WHEN t.week_number <= b.min_week + 12 THEN 'Early'
+            WHEN t.week_number <= b.min_week + {{ TRAJECTORY_WINDOW_WEEKS }} - 1 THEN 'Early'
             ELSE 'Late'
         END
 ),
