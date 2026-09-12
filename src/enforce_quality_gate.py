@@ -15,6 +15,13 @@ REQUIRED_QA_FILES = (
     "qa_layer_reconciliation.csv",
     "qa_transaction_anomalies.csv",
 )
+REQUIRED_QA_COLUMNS = {
+    "qa_key_audit.csv": {"model", "duplicate_rows"},
+    "qa_grain_audit.csv": {"audit_name", "violating_baskets"},
+    "qa_reference_coverage.csv": {"audit_name", "violating_rows"},
+    "qa_layer_reconciliation.csv": {"audit_name", "status"},
+    "qa_transaction_anomalies.csv": {"audit_name", "violating_rows"},
+}
 BLOCKING_TRANSACTION_ANOMALIES = {
     "missing_product",
     "missing_household",
@@ -22,15 +29,19 @@ BLOCKING_TRANSACTION_ANOMALIES = {
 }
 
 
-def read_rows(path: Path) -> list[dict[str, str]]:
+def read_rows(path: Path) -> tuple[list[str], list[dict[str, str]]]:
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
-        return list(csv.DictReader(handle))
+        reader = csv.DictReader(handle)
+        return list(reader.fieldnames or []), list(reader)
 
 
-def as_number(value: str | None) -> float:
-    if value in (None, ""):
-        return 0.0
-    return float(value)
+def as_number(value: str | None) -> float | None:
+    if value is None or value.strip() == "":
+        return None
+    try:
+        return float(value)
+    except ValueError:
+        return None
 
 
 def evaluate_quality_gate(qa_root: Path) -> dict[str, object]:
@@ -49,11 +60,39 @@ def evaluate_quality_gate(qa_root: Path) -> dict[str, object]:
             )
             continue
         checked_files.append(file_name)
-        rows = read_rows(path)
+        fieldnames, rows = read_rows(path)
+        missing_columns = sorted(REQUIRED_QA_COLUMNS[file_name] - set(fieldnames))
+        if missing_columns:
+            failures.append(
+                {
+                    "file": file_name,
+                    "reason": "missing_quality_columns",
+                    "columns": "|".join(missing_columns),
+                }
+            )
+            continue
+        if not rows:
+            failures.append(
+                {
+                    "file": file_name,
+                    "reason": "empty_quality_output",
+                }
+            )
+            continue
 
         if file_name == "qa_key_audit.csv":
             for row in rows:
-                if as_number(row.get("duplicate_rows")) > 0:
+                value = as_number(row.get("duplicate_rows"))
+                if value is None:
+                    failures.append(
+                        {
+                            "file": file_name,
+                            "audit_name": row.get("model", ""),
+                            "reason": "invalid_quality_number",
+                            "value": row.get("duplicate_rows", ""),
+                        }
+                    )
+                elif value > 0:
                     failures.append(
                         {
                             "file": file_name,
@@ -64,7 +103,17 @@ def evaluate_quality_gate(qa_root: Path) -> dict[str, object]:
                     )
         elif file_name == "qa_grain_audit.csv":
             for row in rows:
-                if as_number(row.get("violating_baskets")) > 0:
+                value = as_number(row.get("violating_baskets"))
+                if value is None:
+                    failures.append(
+                        {
+                            "file": file_name,
+                            "audit_name": row.get("audit_name", ""),
+                            "reason": "invalid_quality_number",
+                            "value": row.get("violating_baskets", ""),
+                        }
+                    )
+                elif value > 0:
                     failures.append(
                         {
                             "file": file_name,
@@ -75,7 +124,17 @@ def evaluate_quality_gate(qa_root: Path) -> dict[str, object]:
                     )
         elif file_name == "qa_reference_coverage.csv":
             for row in rows:
-                if as_number(row.get("violating_rows")) > 0:
+                value = as_number(row.get("violating_rows"))
+                if value is None:
+                    failures.append(
+                        {
+                            "file": file_name,
+                            "audit_name": row.get("audit_name", ""),
+                            "reason": "invalid_quality_number",
+                            "value": row.get("violating_rows", ""),
+                        }
+                    )
+                elif value > 0:
                     failures.append(
                         {
                             "file": file_name,
@@ -98,6 +157,16 @@ def evaluate_quality_gate(qa_root: Path) -> dict[str, object]:
         elif file_name == "qa_transaction_anomalies.csv":
             for row in rows:
                 value = as_number(row.get("violating_rows"))
+                if value is None:
+                    failures.append(
+                        {
+                            "file": file_name,
+                            "audit_name": row.get("audit_name", ""),
+                            "reason": "invalid_quality_number",
+                            "value": row.get("violating_rows", ""),
+                        }
+                    )
+                    continue
                 if value <= 0:
                     continue
                 audit_name = row.get("audit_name", "")
