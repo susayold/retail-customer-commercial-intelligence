@@ -11,32 +11,20 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-def run_command(
-    stage: str,
-    command: list[str],
-    cwd: Path | None = None,
-) -> None:
+def run_command(stage: str, command: list[str], cwd: Path | None = None) -> None:
     started = time.perf_counter()
-    print(
-        json.dumps(
-            {
-                "stage": stage,
-                "event": "start",
-                "command": command,
-                "cwd": str(cwd) if cwd else None,
-            }
-        )
-    )
+    print(json.dumps({
+        "stage": stage,
+        "event": "start",
+        "command": command,
+        "cwd": str(cwd) if cwd else None,
+    }))
     subprocess.run(command, check=True, cwd=str(cwd) if cwd else None)
-    print(
-        json.dumps(
-            {
-                "stage": stage,
-                "event": "complete",
-                "duration_seconds": round(time.perf_counter() - started, 3),
-            }
-        )
-    )
+    print(json.dumps({
+        "stage": stage,
+        "event": "complete",
+        "duration_seconds": round(time.perf_counter() - started, 3),
+    }))
 
 
 def log_event(handle, stage: str, event: str, **details: object) -> None:
@@ -52,44 +40,30 @@ def log_event(handle, stage: str, event: str, **details: object) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Run inventory, QA, warehouse, statistics and BI exports using Drive paths."
+        description="Run the Drive-backed retail pipeline in a dependency-safe order."
     )
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument(
         "--drive-root",
         type=Path,
-        default=None,
+        required=True,
         help="Explicit mounted Drive project root; both data and artifacts must be underneath it.",
     )
     parser.add_argument("--repo-root", type=Path, default=Path("."))
     parser.add_argument("--contracts", type=Path, default=Path("config/source_contracts.yaml"))
     parser.add_argument("--sql-dir", type=Path, default=Path("sql"))
-    parser.add_argument(
-        "--thresholds", type=Path, default=Path("config/analysis_thresholds.yaml")
-    )
+    parser.add_argument("--thresholds", type=Path, default=Path("config/analysis_thresholds.yaml"))
     parser.add_argument("--with-tests", action="store_true")
     args = parser.parse_args()
 
     data_root = args.data_root.resolve()
     artifact_root = args.artifact_root.resolve()
-    drive_root = args.drive_root.resolve() if args.drive_root is not None else None
+    drive_root = args.drive_root.resolve()
     repo_root = args.repo_root.resolve()
-    contracts = (
-        args.contracts
-        if args.contracts.is_absolute()
-        else repo_root / args.contracts
-    )
-    sql_dir = (
-        args.sql_dir
-        if args.sql_dir.is_absolute()
-        else repo_root / args.sql_dir
-    )
-    thresholds = (
-        args.thresholds
-        if args.thresholds.is_absolute()
-        else repo_root / args.thresholds
-    )
+    contracts = args.contracts if args.contracts.is_absolute() else repo_root / args.contracts
+    sql_dir = args.sql_dir if args.sql_dir.is_absolute() else repo_root / args.sql_dir
+    thresholds = args.thresholds if args.thresholds.is_absolute() else repo_root / args.thresholds
     qa_root = artifact_root / "04_qa_reports"
     parquet_root = artifact_root / "02_curated_parquet"
     database = artifact_root / "03_duckdb_and_marts" / "retail_intelligence.duckdb"
@@ -102,11 +76,8 @@ def main() -> None:
         str(data_root),
         "--artifact-root",
         str(artifact_root),
-        *(
-            ["--drive-root", str(drive_root)]
-            if drive_root is not None
-            else []
-        ),
+        "--drive-root",
+        str(drive_root),
         "--repo-root",
         str(repo_root),
         "--output",
@@ -115,7 +86,7 @@ def main() -> None:
     try:
         run_command("storage_gate", storage_command, cwd=repo_root)
     except subprocess.CalledProcessError as error:
-        if drive_root is None or not drive_root.is_dir():
+        if not drive_root.is_dir():
             raise
         if not data_root.is_relative_to(drive_root) or not artifact_root.is_relative_to(drive_root):
             raise
@@ -136,22 +107,34 @@ def main() -> None:
 
     with log_path.open("a", encoding="utf-8") as log_handle:
         log_event(log_handle, "storage_gate", "complete")
+        source_command = [
+            sys.executable,
+            "-m",
+            "src.verify_source_ready",
+            "--drive-root",
+            str(drive_root),
+        ]
+        started = time.perf_counter()
+        log_event(log_handle, "source_ready_gate", "start", command=source_command)
+        try:
+            run_command("source_ready_gate", source_command, cwd=repo_root)
+        except subprocess.CalledProcessError as error:
+            log_event(
+                log_handle,
+                "source_ready_gate",
+                "failed",
+                return_code=error.returncode,
+                duration_seconds=round(time.perf_counter() - started, 3),
+            )
+            raise
+        log_event(
+            log_handle,
+            "source_ready_gate",
+            "complete",
+            duration_seconds=round(time.perf_counter() - started, 3),
+        )
 
         stages: list[tuple[str, list[str]]] = [
-            (
-                "inventory",
-                [
-                    sys.executable,
-                    "-m",
-                    "src.inventory",
-                    "--input",
-                    str(data_root),
-                    "--output",
-                    str(qa_root / "raw_file_inventory.csv"),
-                    "--drive-root",
-                    str(drive_root),
-                ],
-            ),
             (
                 "schema",
                 [
@@ -164,6 +147,20 @@ def main() -> None:
                     str(contracts),
                     "--output",
                     str(qa_root / "schema_validation.csv"),
+                    "--drive-root",
+                    str(drive_root),
+                ],
+            ),
+            (
+                "inventory",
+                [
+                    sys.executable,
+                    "-m",
+                    "src.inventory",
+                    "--input",
+                    str(data_root),
+                    "--output",
+                    str(qa_root / "raw_file_inventory.csv"),
                     "--drive-root",
                     str(drive_root),
                 ],
