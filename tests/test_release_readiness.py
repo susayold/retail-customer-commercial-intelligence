@@ -9,6 +9,7 @@ from src.inventory import EXPECTED_FILES
 from src.release_readiness import (
     REQUIRED_POWERBI_EXPORTS,
     REQUIRED_POWERBI_MEASURES,
+    REQUIRED_RECONCILIATION_METRICS,
     evaluate_release_readiness,
 )
 
@@ -86,12 +87,62 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
             for name in EXPECTED_FILES
         ],
     )
-    for name in (
-        "source_profile_summary.csv",
-        "source_cardinality.csv",
-        "qa_run_log.csv",
-    ):
-        (qa_root / name).write_text("header\nrow\n", encoding="utf-8")
+    write_csv(
+        qa_root / "source_profile_summary.csv",
+        ["source_name", "source_filename", "row_count", "column_count"],
+        [
+            {
+                "source_name": Path(name).stem,
+                "source_filename": name,
+                "row_count": 1,
+                "column_count": 1,
+            }
+            for name in EXPECTED_FILES
+        ],
+    )
+    write_csv(
+        qa_root / "source_cardinality.csv",
+        [
+            "source_name",
+            "source_filename",
+            "column_name",
+            "row_count",
+            "distinct_count",
+        ],
+        [
+            {
+                "source_name": Path(name).stem,
+                "source_filename": name,
+                "column_name": "household_key",
+                "row_count": 1,
+                "distinct_count": 1,
+            }
+            for name in EXPECTED_FILES
+        ],
+    )
+    write_csv(
+        qa_root / "qa_run_log.csv",
+        [
+            "run_id",
+            "timestamp",
+            "file",
+            "rows_read",
+            "rows_written",
+            "duration_seconds",
+            "warnings",
+            "errors",
+        ],
+        [{
+            "run_id": "run-001",
+            "timestamp": "2026-09-12T00:00:00+00:00",
+            "file": "qa_layer_reconciliation.csv",
+            "rows_read": 1,
+            "rows_written": 1,
+            "duration_seconds": "1.000",
+            "warnings": "",
+            "errors": "",
+        }],
+    )
     (qa_root / "pipeline_orchestration.log").write_text(
         "pipeline complete\n", encoding="utf-8"
     )
@@ -136,14 +187,14 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
         ["metric", "sql_value", "powerbi_value", "difference", "tolerance", "status"],
         [
             {
-                "metric": f"metric_{index}",
+                "metric": metric,
                 "sql_value": 1,
                 "powerbi_value": 1,
                 "difference": 0,
                 "tolerance": 0.000001,
                 "status": "pass",
             }
-            for index in range(8)
+            for metric in REQUIRED_RECONCILIATION_METRICS
         ],
     )
     write_csv(
@@ -256,6 +307,30 @@ def test_release_readiness_rejects_blank_decision_evidence(tmp_path):
         if item["name"] == "04_qa_reports/executive_decisions.csv"
     )
     assert "blank" in decision_check["reason"]
+
+def test_release_readiness_rejects_failed_reconciliation_status(tmp_path):
+    artifact_root = tmp_path / "artifacts"
+    repo_root = tmp_path / "repo"
+    seed_complete_delivery(artifact_root, repo_root)
+    reconciliation = artifact_root / "04_qa_reports" / "powerbi_reconciliation.csv"
+    reconciliation.write_text(
+        reconciliation.read_text(encoding="utf-8").replace(
+            "Panel Net Spend,1,1,0,1e-06,pass",
+            "Panel Net Spend,1,1,0,1e-06,review",
+        ),
+        encoding="utf-8",
+    )
+
+    result = evaluate_release_readiness(artifact_root, repo_root)
+
+    assert result["ready"] is False
+    reconciliation_check = next(
+        item
+        for item in result["failures"]
+        if item["name"] == "04_qa_reports/powerbi_reconciliation.csv"
+    )
+    assert "not pass" in reconciliation_check["reason"]
+
 
 def test_release_readiness_rejects_incomplete_powerbi_contract(tmp_path):
     artifact_root = tmp_path / "artifacts"
