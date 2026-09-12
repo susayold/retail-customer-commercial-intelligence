@@ -32,9 +32,15 @@ def configure_logger(log_path: Path) -> logging.Logger:
     return logger
 
 
+def output_table_names(sql_text: str) -> list[str]:
+    """Return every table created by a SQL file, preserving statement order."""
+    return CREATE_TABLE_RE.findall(sql_text)
+
+
 def output_table_name(sql_text: str) -> str | None:
-    match = CREATE_TABLE_RE.search(sql_text)
-    return match.group(1) if match else None
+    """Return the first created table for backward-compatible callers."""
+    names = output_table_names(sql_text)
+    return names[0] if names else None
 
 
 def referenced_relations(sql_text: str, available: set[str]) -> set[str]:
@@ -117,15 +123,14 @@ def main() -> None:
                 relation_count(connection, relation, row_counts)
                 for relation in inputs
             )
-            output = output_table_name(sql_text)
+            outputs = output_table_names(sql_text)
             try:
-                if output is not None:
+                for output in outputs:
                     row_counts.pop(output, None)
                 connection.execute(sql_text)
-                rows_written = (
+                rows_written = sum(
                     relation_count(connection, output, row_counts)
-                    if output is not None
-                    else 0
+                    for output in outputs
                 )
                 total_read += rows_read
                 total_written += rows_written
