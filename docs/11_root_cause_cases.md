@@ -30,6 +30,7 @@ What explains a change in Panel Net Spend: fewer active panel households, fewer 
 ### Required evidence
 
 - `mart_panel_weekly` for the selected observation windows;
+- `mart_decision_alerts` to identify candidate decline weeks; its threshold is applied to relative variance while absolute variance is retained for sizing;
 - `qa_source_reconciliation.csv` and `qa_basket_reconciliation.csv`;
 - segment-level movement from `mart_customer_segment`;
 - category contribution from `mart_category_weekly`;
@@ -46,6 +47,7 @@ What explains a change in Panel Net Spend: fewer active panel households, fewer 
 
 ### Decision rule
 
+- Use `mart_decision_alerts` only as a candidate-week alert; confirm the driver with the reconciled identity and treat the threshold as relative variance.
 - If active households are the primary movement, prioritize reach/re-engagement diagnostics.
 - If trips per household are the primary movement, investigate visit cadence and high-value declining households.
 - If spend per basket is the primary movement, investigate category mix, basket breadth and discount behavior.
