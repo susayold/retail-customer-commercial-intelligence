@@ -9,6 +9,8 @@ import json
 from pathlib import Path
 from typing import Iterable
 
+from src.storage_paths import require_drive_path
+
 EXPECTED_FILES = (
     "transaction_data.csv",
     "causal_data.csv",
@@ -113,11 +115,14 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--drive-root", type=Path, required=True)
     args = parser.parse_args()
-    rows = inventory(args.input)
-    write_inventory(rows, args.output)
+    input_root = require_drive_path(args.input, args.drive_root, "--input")
+    output_path = require_drive_path(args.output, args.drive_root, "--output")
+    rows = inventory(input_root)
+    write_inventory(rows, output_path)
     missing = [row["file_name"] for row in rows if row["load_status"] != "ok"]
-    print(json.dumps({"files": len(rows), "missing": missing, "output": str(args.output)}))
+    print(json.dumps({"files": len(rows), "missing": missing, "output": str(output_path)}))
     if missing:
         raise SystemExit("Source inventory failed: missing expected files")
 
