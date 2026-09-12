@@ -31,7 +31,7 @@ This checklist separates implemented repository work from outputs that require t
 | 40 | Finalize limitations | Done | docs/13_limitations.md |
 | 41 | Prepare interview guide | Done | docs/15_interview_guide.md |
 | 42 | Verified CV bullets | Pending by design | Only write after real-data QA |
-| 43 | Clean rebuild from raw | Pending by design | Run after Drive source upload |
+| 43 | Clean rebuild from raw | Runner ready; pending source | src/run_pipeline.py + Makefile `run`; execute full Drive-only rebuild after source upload |
 | 44 | Tag v1.0.0 | Pending by design | Tag only after all gates pass |
 
 ## Live Drive tracker
