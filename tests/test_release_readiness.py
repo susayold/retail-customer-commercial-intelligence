@@ -39,15 +39,35 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
         "pipeline complete\n", encoding="utf-8"
     )
 
-    for name in (
-        "stats_basket_by_segment.csv",
-        "stats_promotion_state.csv",
-        "stats_campaign_redemption.csv",
-        "statistics_run_log.csv",
-    ):
-        stats_path = qa_root / "statistics" / name
-        stats_path.parent.mkdir(parents=True, exist_ok=True)
-        stats_path.write_text("header\\nrow\\n", encoding="utf-8")
+    write_csv(
+        qa_root / "statistics" / "stats_basket_by_segment.csv",
+        ["segment", "n", "mean_basket_value", "ci_low", "ci_high"],
+        [{"segment": "High", "n": 2, "mean_basket_value": 10.0, "ci_low": 8.0, "ci_high": 12.0}],
+    )
+    write_csv(
+        qa_root / "statistics" / "stats_promotion_state.csv",
+        ["promo_state_group", "n", "mean_panel_sales_per_product_store_week", "kruskal_wallis_p_value"],
+        [{"promo_state_group": "display_only", "n": 2, "mean_panel_sales_per_product_store_week": 5.0, "kruskal_wallis_p_value": 0.5}],
+    )
+    write_csv(
+        qa_root / "statistics" / "stats_campaign_redemption.csv",
+        ["campaign_type", "n_recipients", "redeemers", "redemption_rate", "ci_low", "ci_high"],
+        [{"campaign_type": "TypeA", "n_recipients": 2, "redeemers": 1, "redemption_rate": 0.5, "ci_low": 0.1, "ci_high": 0.9}],
+    )
+    write_csv(
+        qa_root / "statistics" / "statistics_run_log.csv",
+        ["run_id", "started_at_utc", "finished_at_utc", "status", "database", "output_files", "duration_seconds", "error"],
+        [{
+            "run_id": "run-001",
+            "started_at_utc": "2026-09-12T00:00:00+00:00",
+            "finished_at_utc": "2026-09-12T00:00:01+00:00",
+            "status": "success",
+            "database": "drive://retail_intelligence.duckdb",
+            "output_files": "stats_basket_by_segment.csv|stats_promotion_state.csv|stats_campaign_redemption.csv",
+            "duration_seconds": "1.000",
+            "error": "",
+        }],
+    )
 
     write_csv(
         qa_root / "qa_layer_reconciliation.csv",
