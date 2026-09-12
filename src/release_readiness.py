@@ -12,6 +12,7 @@ import yaml
 
 from src.export_powerbi import POWERBI_OUTPUT_NAMES
 from src.inventory import EXPECTED_FILES
+from src.storage_paths import require_drive_path
 
 
 REQUIRED_ARTIFACT_FILES = (
@@ -562,12 +563,14 @@ def main() -> None:
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--repo-root", type=Path, default=Path("."))
     parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument("--drive-root", type=Path, required=True)
     args = parser.parse_args()
 
-    result = evaluate_release_readiness(args.artifact_root, args.repo_root)
-    output = (args.output or args.artifact_root / "04_qa_reports/release_readiness.json").expanduser().resolve()
+    artifact_root = require_drive_path(args.artifact_root, args.drive_root, "--artifact-root")
+    result = evaluate_release_readiness(artifact_root, args.repo_root)
+    output = (args.output or artifact_root / "04_qa_reports/release_readiness.json").expanduser().resolve()
     try:
-        output.relative_to(args.artifact_root.expanduser().resolve())
+        output.relative_to(artifact_root)
     except ValueError as exc:
         raise SystemExit("--output must be inside artifact-root") from exc
     output.parent.mkdir(parents=True, exist_ok=True)
