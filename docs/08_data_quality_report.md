@@ -14,10 +14,12 @@ This report is completed from Drive outputs after the source run. The planning c
 - qa_reference_coverage.csv: anti-join counts for unmatched product, promotion, campaign and coupon references;
 - qa_discount_audit.csv: sign and value audit;
 - qa_quantity_audit.csv: range, percentiles and outlier flags;
+- qa_transaction_anomalies.csv: DAY/WEEK_NO range, sales, quantity, time and required-key anomalies;
 - qa_campaign_observability.csv: pre/during/post window availability;
 - qa_demographic_coverage.csv: coverage and covered/uncovered behavior comparison;
 - powerbi_reconciliation.csv: SQL/DAX metric differences;
-- pipeline_run.log: run_id, timestamp, file, rows read/written, duration, warnings and errors.
+- qa_run_log.csv: run_id, timestamp, QA file, rows read/written, duration, warnings and errors;
+- pipeline_run.log: source/model run_id, timestamp, file, rows read/written, duration, warnings and errors.
 
 ## Stop conditions
 

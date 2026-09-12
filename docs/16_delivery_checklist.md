@@ -14,7 +14,7 @@ This checklist separates implemented repository work from outputs that require t
 | 08 | Convert CSV to Parquet | Implemented; audited logging | src/build_parquet.py; Drive output only; exact rows read/written logged |
 | 09 | Initialize DuckDB | Implemented; audited logging | src/build_warehouse.py; per-model rows read/written logged |
 | 10–16 | Build staging, dimensions, facts, bridge | Implemented and smoke-tested | sql/02_staging through sql/05_bridges |
-| 17 | Run QA | Implemented; QA row-count logging added | sql/07_quality, src/validate.py, 04_qa_reports/qa_run_log.csv |
+| 17 | Run QA | Implemented; anomaly QA and logging added | sql/07_quality/09_q09_transaction_anomalies.sql, src/validate.py, 04_qa_reports/qa_transaction_anomalies.csv + qa_run_log.csv |
 | 18 | Reconcile totals | Implemented | src/reconcile.py + sql/09_exports |
 | 19 | Metric dictionary | Done | config/metric_definitions.yaml + Drive companion |
 | 20–29 | Build marts and analysis | Implemented and smoke-tested | sql/06_marts, sql/08_analysis |
