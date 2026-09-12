@@ -150,7 +150,7 @@ The final quality gate requires eight sources inventoried, schemas and grains va
 
 ## 12. License and source rights
 
-The source files are not redistributed here. Verify dunnhumby/Kaggle terms before sharing any raw or derived files. This repository is a portfolio implementation scaffold and must not be treated as an official retailer dataset.
+The source files are not redistributed here. The primary acquisition reference is the official [dunnhumby Source Files](https://www.dunnhumby.com/source-files/) page; verify the applicable dunnhumby/Kaggle terms before sharing any raw or derived files. This repository is a portfolio implementation scaffold and must not be treated as an official retailer dataset.
 
 ## 13. SQL–Power BI reconciliation command
 
