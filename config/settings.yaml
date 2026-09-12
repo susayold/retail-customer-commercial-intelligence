@@ -25,7 +25,3 @@ time:
   max_week: 102
   synthetic_date_allowed_for_bi_mechanics: true
   synthetic_date_label: synthetic_date
-analysis:
-  trajectory_window_weeks: 13
-  category_pair_min_support: 0.01
-  category_pair_min_baskets: 100
