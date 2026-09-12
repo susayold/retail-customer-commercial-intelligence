@@ -18,7 +18,7 @@ The audit requires:
 - inventory, schema, profile, QA run log, layer reconciliation and statistics outputs;
 - all 31 declared Power BI exports;
 - 04_qa_reports/powerbi_reconciliation.csv with the eight required metrics and pass status;
-- 04_qa_reports/uat_results.csv with the 12 UAT checks and pass status;
+- 04_qa_reports/uat_results.csv with exactly one pass row for each stable ID UAT-01 through UAT-12 (missing, unexpected or duplicate IDs fail the audit);
 - 04_qa_reports/root_cause_cases.csv with three completed cases, Drive evidence URI, run ID and limitation;
 - 04_qa_reports/executive_decisions.csv with five completed decisions, Drive evidence URI, run ID and limitation;
 - repository contracts for the three root-cause cases, five executive decisions, limitations, UAT, semantic model and governed measures.
