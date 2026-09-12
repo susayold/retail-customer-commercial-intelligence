@@ -18,7 +18,7 @@ This checklist separates implemented repository work from outputs that require t
 | 18 | Reconcile totals | Implemented; layer and BI checks defined | qa_layer_reconciliation.csv for raw/staging/fact rows, populations and sales; src/reconcile.py + sql/09_exports for SQL/DAX |
 | 19 | Metric dictionary | Done | config/metric_definitions.yaml + Drive companion |
 | 20–29 | Build marts and analysis | Implemented and smoke-tested | sql/06_marts including mart_category_household; sql/08_analysis including promotion/campaign/coupon |
-| 30 | Run statistics | Implemented | src/statistical_validation.py + notebook; requires real Drive DuckDB |
+| 30 | Run statistics | Implemented | src/statistical_validation.py + notebook; statistics_run_log.csv records run ID, UTC timestamps, status, database path, outputs and error; requires real Drive DuckDB |
 | 31 | Root-cause cases | Template ready | docs/11_root_cause_cases.md; requires verified output |
 | 32 | Executive decisions | Template ready | docs/12_executive_decisions.md + Drive Decision_Tracker |
 | 33 | Export BI marts | Implemented | src/export_powerbi.py exports 31 curated marts/analysis/QA outputs, including category, promotion, campaign and coupon aggregates |
