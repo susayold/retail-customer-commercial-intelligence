@@ -148,6 +148,8 @@ def main() -> None:
                     str(data_root),
                     "--output",
                     str(qa_root / "raw_file_inventory.csv"),
+                    "--drive-root",
+                    str(drive_root),
                 ],
             ),
             (
@@ -162,6 +164,8 @@ def main() -> None:
                     str(contracts),
                     "--output",
                     str(qa_root / "schema_validation.csv"),
+                    "--drive-root",
+                    str(drive_root),
                 ],
             ),
             (
@@ -174,6 +178,8 @@ def main() -> None:
                     str(data_root),
                     "--artifact-root",
                     str(artifact_root),
+                    "--drive-root",
+                    str(drive_root),
                 ],
             ),
             (
@@ -186,6 +192,8 @@ def main() -> None:
                     str(data_root),
                     "--output",
                     str(parquet_root),
+                    "--drive-root",
+                    str(drive_root),
                 ],
             ),
             (
@@ -202,6 +210,8 @@ def main() -> None:
                     str(sql_dir),
                     "--thresholds",
                     str(thresholds),
+                    "--drive-root",
+                    str(drive_root),
                 ],
             ),
             (
@@ -218,6 +228,8 @@ def main() -> None:
                     str(sql_dir),
                     "--thresholds",
                     str(thresholds),
+                    "--drive-root",
+                    str(drive_root),
                 ],
             ),
             (
@@ -228,6 +240,8 @@ def main() -> None:
                     "src.enforce_quality_gate",
                     "--artifact-root",
                     str(artifact_root),
+                    "--drive-root",
+                    str(drive_root),
                 ],
             ),
             (
@@ -240,6 +254,8 @@ def main() -> None:
                     str(database),
                     "--artifact-root",
                     str(artifact_root),
+                    "--drive-root",
+                    str(drive_root),
                 ],
             ),
             (
@@ -254,6 +270,8 @@ def main() -> None:
                     str(sql_dir),
                     "--format",
                     "parquet",
+                    "--drive-root",
+                    str(drive_root),
                 ],
             ),
         ]
