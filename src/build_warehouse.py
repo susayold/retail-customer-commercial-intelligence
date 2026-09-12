@@ -4,12 +4,22 @@ from __future__ import annotations
 
 import argparse
 import logging
+import re
 import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
 from src.utils.duckdb_client import connect, register_raw_views
+
+CREATE_TABLE_RE = re.compile(
+    r"CREATE\s+(?:OR\s+REPLACE\s+)?TABLE\s+([A-Za-z_][A-Za-z0-9_]*)",
+    re.IGNORECASE,
+)
+RELATION_RE = re.compile(
+    r"\b(?:FROM|JOIN)\s+([A-Za-z_][A-Za-z0-9_]*)",
+    re.IGNORECASE,
+)
 
 
 def configure_logger(log_path: Path) -> logging.Logger:
@@ -20,6 +30,53 @@ def configure_logger(log_path: Path) -> logging.Logger:
     handler.setFormatter(logging.Formatter("%(message)s"))
     logger.addHandler(handler)
     return logger
+
+
+def output_table_name(sql_text: str) -> str | None:
+    match = CREATE_TABLE_RE.search(sql_text)
+    return match.group(1) if match else None
+
+
+def referenced_relations(sql_text: str, available: set[str]) -> set[str]:
+    return {name for name in RELATION_RE.findall(sql_text) if name in available}
+
+
+def relation_count(connection, relation: str, cache: dict[str, int]) -> int:
+    if relation not in cache:
+        cache[relation] = int(
+            connection.execute(f"SELECT COUNT(*) FROM {relation}").fetchone()[0]
+        )
+    return cache[relation]
+
+
+def available_relations(connection) -> set[str]:
+    rows = connection.execute(
+        "SELECT table_name FROM information_schema.tables"
+    ).fetchall()
+    return {row[0] for row in rows}
+
+
+def log_run(
+    logger: logging.Logger,
+    run_id: str,
+    file_name: str,
+    rows_read: int,
+    rows_written: int,
+    duration_seconds: float,
+    warnings: str = "",
+    errors: str = "",
+) -> None:
+    logger.info(
+        "run_id=%s timestamp=%s file=%s rows_read=%s rows_written=%s duration_seconds=%.3f warnings=%s errors=%s",
+        run_id,
+        datetime.now(timezone.utc).isoformat(),
+        file_name,
+        rows_read,
+        rows_written,
+        duration_seconds,
+        warnings,
+        errors,
+    )
 
 
 def main() -> None:
@@ -38,12 +95,13 @@ def main() -> None:
     log_path = qa_dir / "pipeline_run.log"
     run_id = uuid.uuid4().hex
     logger = configure_logger(log_path)
+    pipeline_started = time.perf_counter()
+    log_run(logger, run_id, "pipeline_start", 0, 0, 0.0)
+
     connection = connect(database)
-    started_at = datetime.now(timezone.utc).isoformat()
-    logger.info(
-        "run_id=%s timestamp=%s file=%s rows_read=%s rows_written=%s duration_seconds=%s warnings=%s errors=%s",
-        run_id, started_at, "pipeline_start", "unknown", "unknown", 0, "", "",
-    )
+    row_counts: dict[str, int] = {}
+    total_read = 0
+    total_written = 0
     try:
         register_raw_views(connection, args.data_root)
         model_paths = sorted(
@@ -51,27 +109,58 @@ def main() -> None:
             if "09_exports" not in path.parts
         )
         for sql_path in model_paths:
-            step_started = time.perf_counter()
+            sql_text = sql_path.read_text(encoding="utf-8")
+            file_started = time.perf_counter()
+            available = available_relations(connection)
+            inputs = referenced_relations(sql_text, available)
+            rows_read = sum(
+                relation_count(connection, relation, row_counts)
+                for relation in inputs
+            )
+            output = output_table_name(sql_text)
             try:
-                connection.execute(sql_path.read_text(encoding="utf-8"))
-                logger.info(
-                    "run_id=%s timestamp=%s file=%s rows_read=%s rows_written=%s duration_seconds=%.3f warnings=%s errors=%s",
-                    run_id, datetime.now(timezone.utc).isoformat(), sql_path.as_posix(),
-                    "unknown", "unknown", time.perf_counter() - step_started, "", "",
+                if output is not None:
+                    row_counts.pop(output, None)
+                connection.execute(sql_text)
+                rows_written = (
+                    relation_count(connection, output, row_counts)
+                    if output is not None
+                    else 0
+                )
+                total_read += rows_read
+                total_written += rows_written
+                log_run(
+                    logger,
+                    run_id,
+                    sql_path.as_posix(),
+                    rows_read,
+                    rows_written,
+                    time.perf_counter() - file_started,
                 )
             except Exception as error:
-                logger.error(
-                    "run_id=%s timestamp=%s file=%s rows_read=%s rows_written=%s duration_seconds=%.3f warnings=%s errors=%s",
-                    run_id, datetime.now(timezone.utc).isoformat(), sql_path.as_posix(),
-                    "unknown", "unknown", time.perf_counter() - step_started, "", repr(error),
+                log_run(
+                    logger,
+                    run_id,
+                    sql_path.as_posix(),
+                    rows_read,
+                    0,
+                    time.perf_counter() - file_started,
+                    errors=repr(error),
                 )
                 raise
     finally:
         connection.close()
-        logger.info(
-            "run_id=%s timestamp=%s file=%s rows_read=%s rows_written=%s duration_seconds=%s warnings=%s errors=%s",
-            run_id, datetime.now(timezone.utc).isoformat(), "pipeline_end", "unknown", "unknown", "unknown", "", "",
+        log_run(
+            logger,
+            run_id,
+            "pipeline_end",
+            total_read,
+            total_written,
+            time.perf_counter() - pipeline_started,
         )
+        for handler in list(logger.handlers):
+            logger.removeHandler(handler)
+            handler.close()
 
 
 if __name__ == "__main__":

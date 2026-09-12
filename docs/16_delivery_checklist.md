@@ -11,8 +11,8 @@ This checklist separates implemented repository work from outputs that require t
 | 05 | Profile sources | Implemented | src/profile_sources.py; row/type/null/distinct/range/cardinality outputs |
 | 06 | Document grain | Done | docs/04_grain_and_join_contracts.md, docs/05_data_model.md |
 | 07 | Document join risks | Done | docs/04_grain_and_join_contracts.md |
-| 08 | Convert CSV to Parquet | Implemented | src/build_parquet.py; Drive output only |
-| 09 | Initialize DuckDB | Implemented | src/build_warehouse.py |
+| 08 | Convert CSV to Parquet | Implemented; audited logging | src/build_parquet.py; Drive output only; exact rows read/written logged |
+| 09 | Initialize DuckDB | Implemented; audited logging | src/build_warehouse.py; per-model rows read/written logged |
 | 10–16 | Build staging, dimensions, facts, bridge | Implemented and smoke-tested | sql/02_staging through sql/05_bridges |
 | 17 | Run QA | Implemented and smoke-tested | sql/07_quality, src/validate.py |
 | 18 | Reconcile totals | Implemented | src/reconcile.py + sql/09_exports |
