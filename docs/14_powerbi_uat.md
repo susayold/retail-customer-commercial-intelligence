@@ -10,7 +10,7 @@
 
 ## Filter tests
 
-- Observation Week filter;
+- Observation Week filter (must propagate to Mart_Category_Weekly and Mart_Promotion_Category_Week);
 - customer segment filter;
 - department and commodity filter;
 - brand type filter;
@@ -42,4 +42,4 @@ Unobservable periods must be NULL in the household mart and excluded from averag
 Store 04_qa_reports/powerbi_reconciliation.csv with:
 metric, sql_value, powerbi_value, difference, tolerance, status.
 
-Required metrics: Panel Net Spend, Baskets, Active Households, Spend per Basket, Private Label Share, Campaign Recipients, Campaign Redeemers and Redemption Rate.
+Required metrics: Panel Net Spend, Baskets, Active Panel Households, Spend per Basket, Private Label Share, Campaign Recipients, Campaign Redeemers and Redemption Rate.
