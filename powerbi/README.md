@@ -23,7 +23,7 @@ Import only these Drive-backed exports from 05_powerbi_exports:
 Run the exporter after the DuckDB build:
 
 ~~~powershell
-python -m src.export_powerbi --artifact-root $env:RETAIL_ARTIFACT_ROOT --format parquet
+python -m src.export_powerbi --artifact-root $env:RETAIL_ARTIFACT_ROOT --format parquet --drive-root $env:RETAIL_DRIVE_ROOT
 ~~~
 
 The current Drive-native Excel companion is [Retail DA - Excel Companion](https://docs.google.com/spreadsheets/d/16Iz47jiHM2nl5gGuhP5Py_xbNjLVLO5FaFpiL-_dR4k/edit).
