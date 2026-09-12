@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from src.build_parquet import count_csv_rows
-from src.build_warehouse import output_table_name, referenced_relations
+from src.build_warehouse import output_table_name, output_table_names, referenced_relations
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -41,3 +41,11 @@ def test_parquet_row_counter_reads_written_file(tmp_path):
         assert count_parquet_rows(connection, path) == 3
     finally:
         connection.close()
+
+
+def test_warehouse_output_helper_lists_multi_statement_outputs():
+    sql = """
+    CREATE TABLE first_output AS SELECT 1 AS value;
+    CREATE OR REPLACE TABLE second_output AS SELECT 2 AS value;
+    """
+    assert output_table_names(sql) == ["first_output", "second_output"]
