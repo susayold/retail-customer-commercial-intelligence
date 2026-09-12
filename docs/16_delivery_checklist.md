@@ -36,7 +36,7 @@ This checklist separates implemented repository work from outputs that require t
 
 ## Live Drive tracker
 
-The Drive-native workbook contains a `Plan Status` tab covering all 44 steps in `Plan Status!A1:F45`, with current status, evidence, next action and real-source dependency.
+The Drive-native workbook contains a `Plan Status` tab covering all 44 steps in `Plan Status!A1:F45`, plus a `Source Register` tab listing the eight expected files, plan row counts and source QA gates.
 
 ## Definition of 100% completion
 
