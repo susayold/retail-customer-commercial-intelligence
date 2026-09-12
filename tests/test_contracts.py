@@ -66,3 +66,5 @@ def test_makefile_exposes_drive_storage_and_quality_gate_targets():
     assert "--output \"$$RETAIL_ARTIFACT_ROOT/04_qa_reports/storage_status.json\"" in makefile
     assert "quality-gate:" in makefile
     assert "src.enforce_quality_gate" in makefile
+    assert "release-audit:" in makefile
+    assert "src.release_readiness" in makefile
