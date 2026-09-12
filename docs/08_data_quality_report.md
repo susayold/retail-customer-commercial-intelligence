@@ -4,6 +4,7 @@ This report is completed from Drive outputs after the source run. The planning c
 
 ## Required evidence
 
+- storage_status.json: source completeness, required Drive artifact folders and repository artifact violations;
 - raw_file_inventory.csv: eight files, size, rows, columns, header hash, content SHA-256, planning expectation/delta and load status;
 - schema_validation.csv: required columns, missing columns, unexpected columns, duplicate headers and contract status;
 - source_profile_summary.csv: types, row counts and column counts;
