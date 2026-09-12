@@ -43,6 +43,7 @@ def test_one_command_runner_uses_drive_roots_for_data_artifacts():
         "src.export_powerbi",
         "pipeline_orchestration.log",
         "artifact_root",
+        "storage_status.json",
         "cwd=str(cwd)",
         "cwd=repo_root",
         "data_root = args.data_root.resolve()",
