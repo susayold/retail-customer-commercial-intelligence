@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from src.storage_paths import require_drive_path
 from src.utils.duckdb_client import connect
 
 
@@ -83,12 +84,18 @@ def main() -> None:
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--database", type=Path, default=None)
     parser.add_argument("--sql-dir", type=Path, default=Path("sql"))
+    parser.add_argument("--drive-root", type=Path, required=True)
     parser.add_argument("--format", choices=("parquet", "csv"), default="parquet")
     args = parser.parse_args()
 
-    output_dir = args.artifact_root / "05_powerbi_exports"
+    artifact_root = require_drive_path(args.artifact_root, args.drive_root, "--artifact-root")
+    database = (
+        require_drive_path(args.database, args.drive_root, "--database")
+        if args.database is not None
+        else artifact_root / "03_duckdb_and_marts" / "retail_intelligence.duckdb"
+    )
+    output_dir = artifact_root / "05_powerbi_exports"
     output_dir.mkdir(parents=True, exist_ok=True)
-    database = args.database or args.artifact_root / "03_duckdb_and_marts" / "retail_intelligence.duckdb"
 
     connection = connect(database, threads=2)
     try:
