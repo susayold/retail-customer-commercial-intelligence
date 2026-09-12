@@ -1,7 +1,7 @@
 project_name: retail-customer-commercial-intelligence
 dataset: dunnhumby_the_complete_journey
 storage:
-  drive_root_env: RETAIL_ARTIFACT_ROOT
+  drive_root_env: RETAIL_DRIVE_ROOT
   raw_folder: 01_raw_source
   curated_folder: 02_curated_parquet
   warehouse_folder: 03_duckdb_and_marts
@@ -27,8 +27,5 @@ time:
   synthetic_date_label: synthetic_date
 analysis:
   trajectory_window_weeks: 13
-  campaign_pre_days: 28
-  campaign_post_14_days: 14
-  campaign_post_28_days: 28
   category_pair_min_support: 0.01
   category_pair_min_baskets: 100
