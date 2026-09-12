@@ -12,7 +12,7 @@ This report is completed from Drive outputs after the source run. The planning c
 - qa_source_reconciliation.csv: source counts and distinct keys;
 - qa_key_audit.csv: duplicate counts at model grain;
 - qa_grain_audit.csv: basket consistency checks;
-- qa_reference_coverage.csv: anti-join counts for unmatched product, promotion, campaign and coupon references;
+- qa_reference_coverage.csv: anti-join counts for unmatched product, promotion, campaign, household and coupon-bridge references;
 - qa_discount_audit.csv: sign and value audit;
 - qa_quantity_audit.csv: range, percentiles and outlier flags;
 - qa_transaction_anomalies.csv: DAY/WEEK_NO range, sales, quantity, time and required-key anomalies;
