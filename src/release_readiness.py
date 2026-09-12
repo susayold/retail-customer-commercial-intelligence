@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from src.export_powerbi import POWERBI_OUTPUT_NAMES
+from src.inventory import EXPECTED_FILES
 
 
 REQUIRED_ARTIFACT_FILES = (
@@ -32,6 +33,22 @@ REQUIRED_ARTIFACT_FILES = (
 )
 
 REQUIRED_UAT_CHECK_IDS = tuple(f"UAT-{index:02d}" for index in range(1, 13))
+
+INVENTORY_REQUIRED_COLUMNS = {
+    "file_name",
+    "file_size_bytes",
+    "row_count",
+    "column_count",
+    "column_names_hash",
+    "content_sha256",
+    "load_status",
+}
+SCHEMA_REQUIRED_COLUMNS = {
+    "source_name",
+    "file_name",
+    "status",
+    "observed_column_count",
+}
 
 
 REQUIRED_REPOSITORY_FILES = (
@@ -251,6 +268,30 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
                 relative_path,
             )
         )
+
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/raw_file_inventory.csv",
+            INVENTORY_REQUIRED_COLUMNS,
+            expected_rows=len(EXPECTED_FILES),
+            require_nonblank_columns=INVENTORY_REQUIRED_COLUMNS,
+            unique_columns={"file_name"},
+            exact_values={"file_name": set(EXPECTED_FILES), "load_status": {"ok"}},
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/schema_validation.csv",
+            SCHEMA_REQUIRED_COLUMNS,
+            expected_rows=len(EXPECTED_FILES),
+            complete_statuses={"ok"},
+            require_nonblank_columns=SCHEMA_REQUIRED_COLUMNS,
+            unique_columns={"file_name", "source_name"},
+            exact_values={"file_name": set(EXPECTED_FILES), "status": {"ok"}},
+        )
+    )
 
     checks.append(
         _csv_contract(
