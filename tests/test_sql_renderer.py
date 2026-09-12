@@ -24,3 +24,14 @@ def test_sql_renderer_expands_configured_analysis_thresholds():
 def test_sql_renderer_fails_closed_on_missing_threshold():
     with pytest.raises(KeyError, match="MISSING"):
         render_sql_text("SELECT {{ MISSING }}", {})
+
+
+def test_category_analysis_uses_centralized_trajectory_thresholds():
+    sql = render_sql_file(
+        ROOT / "sql/08_analysis/category_analysis.sql",
+        ROOT / "config/analysis_thresholds.yaml",
+    )
+
+    assert "late_spend >= early_spend * 1.1" in sql
+    assert "late_spend <= early_spend * 0.9" in sql
+    assert "{{" not in sql
