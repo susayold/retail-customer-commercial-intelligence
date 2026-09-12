@@ -91,9 +91,12 @@ def storage_status(
         folder for folder in ARTIFACT_FOLDERS if not (artifacts / folder).is_dir()
     ]
     violations: list[str] = []
+    drive_root_available = drive is not None and drive.is_dir()
     if drive is None:
         violations.append("drive_root_not_declared")
     else:
+        if not drive_root_available:
+            violations.append("drive_root_missing_or_not_directory")
         if not _inside(data, drive):
             violations.append("data_root_outside_declared_drive_root")
         if not _inside(artifacts, drive):
@@ -111,6 +114,7 @@ def storage_status(
         "ready": not failures,
         "drive_root": str(drive) if drive is not None else None,
         "drive_root_declared": drive is not None,
+        "drive_root_available": drive_root_available,
         "source": source,
         "artifact_root": str(artifacts),
         "required_artifact_folders": list(ARTIFACT_FOLDERS),
@@ -141,7 +145,7 @@ def main() -> None:
         output = _resolved(args.output)
         if not _inside(output, _resolved(args.artifact_root)):
             raise SystemExit("Storage policy failed: --output must be inside artifact-root")
-        if result["drive_root_declared"] and not any(
+        if result["drive_root_available"] and not any(
             item in result["failures"]
             for item in (
                 "data_root_outside_declared_drive_root",
