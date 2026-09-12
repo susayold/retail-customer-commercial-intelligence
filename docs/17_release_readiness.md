@@ -21,6 +21,6 @@ The audit requires:
 - 04_qa_reports/uat_results.csv with exactly one pass row for each stable ID UAT-01 through UAT-12 (missing, unexpected or duplicate IDs fail the audit);
 - 04_qa_reports/root_cause_cases.csv with three completed cases, Drive evidence URI, run ID and limitation;
 - 04_qa_reports/executive_decisions.csv with five completed decisions, Drive evidence URI, run ID and limitation;
-- repository contracts for the three root-cause cases, five executive decisions, limitations, UAT, semantic model and governed measures.
+- repository contracts for the three root-cause cases, five executive decisions, limitations and UAT; the semantic model must validate as Drive-only with 29 curated tables, six pages, single-direction relationships, and all required governed measures present.
 
 The audit output is the release evidence index. It does not invent a finding, downgrade a failed QA result or treat a synthetic fixture as a real-data result.
