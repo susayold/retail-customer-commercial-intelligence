@@ -28,6 +28,7 @@ REQUIRED_ARTIFACT_FILES = (
     "04_qa_reports/statistics/stats_basket_by_segment.csv",
     "04_qa_reports/statistics/stats_promotion_state.csv",
     "04_qa_reports/statistics/stats_campaign_redemption.csv",
+    "04_qa_reports/statistics/statistics_run_log.csv",
 )
 
 REQUIRED_REPOSITORY_FILES = (
