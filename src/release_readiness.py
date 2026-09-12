@@ -8,6 +8,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 from src.export_powerbi import POWERBI_OUTPUT_NAMES
 from src.inventory import EXPECTED_FILES
 
@@ -62,6 +64,19 @@ REQUIRED_REPOSITORY_FILES = (
 
 REQUIRED_POWERBI_EXPORTS = tuple(
     f"{name}.parquet" for name in POWERBI_OUTPUT_NAMES.values()
+)
+
+REQUIRED_POWERBI_MEASURES = (
+    "Panel Net Spend",
+    "Active Panel Households",
+    "Total Recorded Discount",
+    "Trips per Active Household",
+    "Spend per Active Household",
+    "Spend per Basket",
+    "Private Label Share",
+    "Coupon Basket Rate",
+    "Category Household Penetration",
+    "Campaign Redemption Rate",
 )
 
 
@@ -225,6 +240,73 @@ def _csv_contract(
                 relative_path,
             )
     return _check(relative_path, True, f"{len(rows)} row(s) validated", relative_path)
+
+
+def _powerbi_semantic_check(repo_root: Path) -> dict[str, Any]:
+    path = repo_root / "powerbi/semantic_model.yaml"
+    if not path.is_file():
+        return _check("powerbi_semantic_model", False, "missing file", str(path))
+    try:
+        contract = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError) as exc:
+        return _check("powerbi_semantic_model", False, f"invalid YAML: {exc}", str(path))
+    if not isinstance(contract, dict):
+        return _check("powerbi_semantic_model", False, "YAML root must be an object", str(path))
+
+    expected_tables = {
+        output_name
+        for table_name, output_name in POWERBI_OUTPUT_NAMES.items()
+        if not table_name.startswith("export_")
+    }
+    tables = contract.get("tables") or []
+    actual_tables = {
+        item.get("name")
+        for item in tables
+        if isinstance(item, dict) and item.get("name")
+    }
+    relationships = contract.get("relationships") or []
+    pages = contract.get("pages") or []
+    errors: list[str] = []
+    if contract.get("storage_policy") != "Drive-only":
+        errors.append("storage_policy must be Drive-only")
+    if contract.get("source_folder") != "05_powerbi_exports":
+        errors.append("source_folder must be 05_powerbi_exports")
+    if contract.get("raw_source_allowed") is not False:
+        errors.append("raw_source_allowed must be false")
+    if len(tables) != len(expected_tables) or actual_tables != expected_tables:
+        errors.append(f"expected exactly {len(expected_tables)} curated tables")
+    if len(pages) != 6:
+        errors.append("expected exactly 6 pages")
+    if any(
+        not isinstance(item, dict) or item.get("cross_filter") != "single"
+        for item in relationships
+    ):
+        errors.append("relationships must use single cross-filter direction")
+    return _check(
+        "powerbi_semantic_model",
+        not errors,
+        "; ".join(errors) if errors else f"{len(tables)} curated tables and 6 pages validated",
+        str(path),
+    )
+
+
+def _powerbi_measures_check(repo_root: Path) -> dict[str, Any]:
+    path = repo_root / "powerbi/measures.dax"
+    if not path.is_file():
+        return _check("powerbi_measures", False, "missing file", str(path))
+    try:
+        dax = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        return _check("powerbi_measures", False, f"cannot read file: {exc}", str(path))
+    missing = [name for name in REQUIRED_POWERBI_MEASURES if name not in dax]
+    return _check(
+        "powerbi_measures",
+        not missing,
+        "required governed measures present"
+        if not missing
+        else f"missing measures: {', '.join(missing)}",
+        str(path),
+    )
 
 
 def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str, Any]:
@@ -405,6 +487,9 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
                 relative_path,
             )
         )
+
+    checks.append(_powerbi_semantic_check(repo_root))
+    checks.append(_powerbi_measures_check(repo_root))
 
     failures = [item for item in checks if not item["ready"]]
     return {
