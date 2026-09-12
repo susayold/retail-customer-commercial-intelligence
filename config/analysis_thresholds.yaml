@@ -1,0 +1,12 @@
+# Analysis thresholds. SQL models consume these values through src.sql_renderer.
+trajectory:
+  growing_factor: 1.10
+  declining_factor: 0.90
+segmentation:
+  promotion_coupon_basket_rate: 0.30
+  promotion_discount_share: 0.20
+  private_label_share: 0.60
+  occasional_max_frequency_quintile: 2
+  occasional_max_active_weeks: 8
+decision_alerts:
+  relative_decline_threshold: -0.10
