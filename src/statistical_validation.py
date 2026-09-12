@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import time
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 import duckdb
@@ -70,6 +73,41 @@ def write_rows(path: Path, fieldnames: list[str], rows: list[dict[str, object]])
         writer.writerows(rows)
 
 
+def write_statistics_run_log(
+    path: Path,
+    run_id: str,
+    started_at: str,
+    finished_at: str,
+    status: str,
+    database: Path,
+    output_files: list[str],
+    error: str = "",
+) -> None:
+    write_rows(
+        path,
+        [
+            "run_id",
+            "started_at_utc",
+            "finished_at_utc",
+            "status",
+            "database",
+            "output_files",
+            "error",
+        ],
+        [
+            {
+                "run_id": run_id,
+                "started_at_utc": started_at,
+                "finished_at_utc": finished_at,
+                "status": status,
+                "database": str(database.expanduser().resolve()),
+                "output_files": "|".join(output_files),
+                "error": error,
+            }
+        ],
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--database", type=Path, required=True)
@@ -77,8 +115,15 @@ def main() -> None:
     args = parser.parse_args()
 
     output_dir = args.artifact_root / "04_qa_reports" / "statistics"
-    connection = duckdb.connect(str(args.database), read_only=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    run_id = uuid.uuid4().hex
+    started_at = datetime.now(timezone.utc).isoformat()
+    started_clock = time.perf_counter()
+    status = "success"
+    error_message = ""
+    connection = None
     try:
+        connection = duckdb.connect(str(args.database), read_only=True)
         basket_rows = connection.execute(
             """
             SELECT basket_net_spend, COALESCE(segment, 'Unknown') AS segment
@@ -209,8 +254,30 @@ def main() -> None:
             ["campaign_type", "n_recipients", "redeemers", "redemption_rate", "ci_low", "ci_high"],
             campaign_stats,
         )
+    except Exception as caught:
+        status = "failed"
+        error_message = repr(caught)
+        raise
     finally:
-        connection.close()
+        if connection is not None:
+            connection.close()
+        finished_at = datetime.now(timezone.utc).isoformat()
+        output_files = sorted(
+            path.name
+            for path in output_dir.glob("stats_*.csv")
+            if path.is_file()
+        )
+        write_statistics_run_log(
+            output_dir / "statistics_run_log.csv",
+            run_id,
+            started_at,
+            finished_at,
+            status,
+            args.database,
+            output_files,
+            error_message,
+        )
+        _ = time.perf_counter() - started_clock
 
 
 if __name__ == "__main__":
