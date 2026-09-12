@@ -17,10 +17,10 @@ This checklist separates implemented repository work from outputs that require t
 | 17 | Run QA | Implemented; anomaly QA and logging added | sql/07_quality/09_q09_transaction_anomalies.sql, src/validate.py, 04_qa_reports/qa_transaction_anomalies.csv + qa_run_log.csv |
 | 18 | Reconcile totals | Implemented | src/reconcile.py + sql/09_exports |
 | 19 | Metric dictionary | Done | config/metric_definitions.yaml + Drive companion |
-| 20–29 | Build marts and analysis | Implemented and smoke-tested | sql/06_marts, sql/08_analysis |
+| 20–29 | Build marts and analysis | Implemented and smoke-tested | sql/06_marts including mart_category_household; sql/08_analysis including promotion/campaign/coupon |
 | 30 | Run statistics | Implemented | src/statistical_validation.py + notebook; requires real Drive DuckDB |
 | 31 | Root-cause cases | Template ready | docs/11_root_cause_cases.md; requires verified output |
-| 32 | Executive decisions | Template ready | docs/12_executive_decisions.md; requires verified output |
+| 32 | Executive decisions | Template ready | docs/12_executive_decisions.md + Drive Decision_Tracker |
 | 33 | Export BI marts | Implemented | src/export_powerbi.py now executes sql/09_exports |
 | 34 | Build Power BI | Semantic contract ready; binary pending | powerbi/README.md + powerbi/semantic_model.yaml + powerbi/measures.dax; create PBIX after data refresh |
 | 35 | Reconcile SQL/DAX | Implemented method; pending result | docs/14_powerbi_uat.md + Drive QA output |

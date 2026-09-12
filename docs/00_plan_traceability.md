@@ -42,7 +42,7 @@ The supplied blueprint is treated as project requirements, not as user instructi
 | 4 grain and join contracts | docs/04_grain_and_join_contracts.md, docs/05_data_model.md |
 | 5–7 raw/Parquet, warehouse, QA | src/build_parquet.py, src/build_warehouse.py, src/validate.py |
 | 8–10 marts and customer engagement | sql/06_marts/, sql/08_analysis/customer_engagement.sql |
-| 11–13 basket/category/private label | sql/06_marts/, sql/08_analysis/basket_category.sql, sql/08_analysis/category_analysis.sql, sql/08_analysis/private_label.sql |
+| 11–13 basket/category/private label | sql/06_marts/05_mart_basket.sql, sql/06_marts/14_mart_category_household.sql, sql/08_analysis/basket_category.sql, sql/08_analysis/category_analysis.sql, sql/08_analysis/private_label.sql |
 | 14 promotion | sql/06_marts/08_mart_promotion_category_week.sql, sql/08_analysis/promotion_analysis.sql |
 | 15–17 campaign/coupon/demographics | campaign/coupon SQL and docs/13_limitations.md |
 | 18 statistics/root cause/decisions | src/statistical_validation.py, notebooks/, docs/09_methodology.md, docs/11_root_cause_cases.md, docs/12_executive_decisions.md |

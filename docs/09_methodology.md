@@ -27,6 +27,12 @@ Use bootstrap or proportion confidence intervals, Mann–Whitney/Kruskal–Walli
 
 The data is observational. Promotion and campaign recipients may be selected. Use associated with, observed response, descriptive difference and matched observational comparison. Do not write causal lift or ROI without verified experimental/cost data.
 
+## Category household and penetration
+
+`mart_category_household` is one row per observed household × department × commodity. It supports distinct buying households, household penetration against all observed panel households, category baskets, purchase frequency, spend per buying household, coupon-basket rate and private-label share without summing household-week records as if they were unique buyers.
+
+`analysis_category_decomposition` compares early and late observation windows using distinct buyers and category baskets. The decomposition separates changes in buyers, baskets per buying household and spend per category basket. Early/late labels use observation weeks, not real calendar seasonality.
+
 ## Promotion dependency
 
 Promotion dependency is reported by department and commodity as two descriptive shares:
