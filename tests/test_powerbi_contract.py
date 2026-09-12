@@ -25,6 +25,13 @@ def test_powerbi_model_contract_is_curated_and_six_pages():
     assert "Analysis_Coupon_Repeat_Category" in coupon_sources
     assert "Analysis_Category_Decomposition" in contract["pages"][3]["source_tables"]
     assert "Analysis_Promotion_Dependency" in contract["pages"][4]["source_tables"]
+    table_grains = {item["name"]: item.get("grain") for item in contract["tables"]}
+    assert table_grains["Mart_Category_Weekly"] == "week_number, department, commodity"
+    assert table_grains["Mart_Brand_Category"] == "department, commodity, brand_type"
+    assert table_grains["Mart_Promotion_Category_Week"] == (
+        "week_number, department, commodity, promo_state_group"
+    )
+    assert table_grains["Mart_Decision_Alerts"] == "metric, scope"
 
 
 def test_powerbi_dax_contract_contains_governed_measures():
