@@ -101,6 +101,18 @@ def main() -> None:
 
         stages: list[tuple[str, list[str]]] = [
             (
+                "inventory",
+                [
+                    sys.executable,
+                    "-m",
+                    "src.inventory",
+                    "--input",
+                    str(data_root),
+                    "--output",
+                    str(qa_root / "raw_file_inventory.csv"),
+                ],
+            ),
+            (
                 "schema",
                 [
                     sys.executable,
@@ -112,18 +124,6 @@ def main() -> None:
                     str(contracts),
                     "--output",
                     str(qa_root / "schema_validation.csv"),
-                ],
-            ),
-            (
-                "inventory",
-                [
-                    sys.executable,
-                    "-m",
-                    "src.inventory",
-                    "--input",
-                    str(data_root),
-                    "--output",
-                    str(qa_root / "raw_file_inventory.csv"),
                 ],
             ),
             (
@@ -176,6 +176,16 @@ def main() -> None:
                     str(artifact_root),
                     "--sql-dir",
                     str(sql_dir),
+                ],
+            ),
+            (
+                "quality_gate",
+                [
+                    sys.executable,
+                    "-m",
+                    "src.enforce_quality_gate",
+                    "--artifact-root",
+                    str(artifact_root),
                 ],
             ),
             (
