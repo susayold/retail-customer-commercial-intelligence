@@ -43,5 +43,5 @@ CROSS JOIN basket_counts b
 JOIN category_counts a ON a.commodity = p.commodity_a
 JOIN category_counts bc ON bc.commodity = p.commodity_b
 CROSS JOIN basket_counts bc2
-WHERE p.pair_baskets >= 100
-  AND p.pair_baskets / NULLIF(b.total_baskets, 0) >= 0.01;
+WHERE p.pair_baskets >= {{ BASKET_CATEGORY_PAIR_MIN_BASKETS }}
+  AND p.pair_baskets / NULLIF(b.total_baskets, 0) >= {{ BASKET_CATEGORY_PAIR_MIN_SUPPORT }};
