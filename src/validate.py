@@ -94,6 +94,7 @@ def main() -> None:
     database_dir.mkdir(parents=True, exist_ok=True)
     database = database_dir / "retail_intelligence.duckdb"
     run_id = uuid.uuid4().hex[:12]
+    validation_started = time.perf_counter()
     run_log: list[dict[str, object]] = []
     model_paths = sorted(
         path
@@ -145,7 +146,7 @@ def main() -> None:
                     "validate_pipeline",
                     None,
                     None,
-                    time.perf_counter(),
+                    validation_started,
                     errors=f"{type(exc).__name__}: {exc}",
                 )
             )
