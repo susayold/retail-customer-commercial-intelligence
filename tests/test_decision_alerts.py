@@ -36,16 +36,19 @@ def test_decision_alerts_apply_threshold_to_relative_variance():
 
         row = connection.execute(
             """
-            SELECT baseline, current, absolute_variance,
+            SELECT baseline, current, variance, absolute_variance,
                    relative_variance, threshold, severity
             FROM mart_decision_alerts
             WHERE metric = 'panel_net_spend_decline'
             """
         ).fetchone()
-        baseline, current, absolute_variance, relative_variance, threshold, severity = row
+        baseline, current, variance, absolute_variance,
+        relative_variance, threshold, severity = row
         assert baseline == pytest.approx(100.0)
         assert current == pytest.approx(85.0)
+        assert variance == pytest.approx(-15.0)
         assert absolute_variance == pytest.approx(-15.0)
+        assert absolute_variance == pytest.approx(variance)
         assert relative_variance == pytest.approx(-0.15)
         assert float(threshold) == pytest.approx(-0.10)
         assert severity == "high"
