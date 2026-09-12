@@ -17,3 +17,4 @@
 15. Promotion findings use associated with, not caused.
 16. Demographic findings are limited to households with demographic records and include coverage.
 17. No COGS, campaign cost, inventory or geography is invented.
+18. v1 decision alerts are limited to panel net spend, active households and trips per household week-over-week declines. Each alert exposes metric, baseline, current, absolute variance, relative variance, threshold, severity and scope; the -10% threshold is applied to relative variance. Optional category, campaign, promotion-dependency and private-label alerts remain disabled until their denominators and real-source QA are verified.
