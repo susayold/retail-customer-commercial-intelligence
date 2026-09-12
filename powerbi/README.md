@@ -46,14 +46,14 @@ Use single-direction relationships wherever possible:
 ~~~DAX
 Panel Net Spend = SUM(Mart_Basket[basket_net_spend])
 Panel Gross Spend = SUM(Mart_Basket[basket_gross_spend])
-Recorded Discount = SUM(Mart_Basket[basket_discount_value])
-Discount Rate = DIVIDE([Recorded Discount], [Panel Gross Spend])
+Total Recorded Discount = SUM(Mart_Basket[basket_discount_value])
+Discount Rate = DIVIDE([Total Recorded Discount], [Panel Gross Spend])
 
 Baskets = DISTINCTCOUNT(Mart_Basket[basket_id])
-Active Households = DISTINCTCOUNT(Mart_Basket[household_key])
+Active Panel Households = DISTINCTCOUNT(Mart_Basket[household_key])
 Spend per Basket = DIVIDE([Panel Net Spend], [Baskets])
-Trips per Household = DIVIDE([Baskets], [Active Households])
-Spend per Household = DIVIDE([Panel Net Spend], [Active Households])
+Trips per Active Household = DIVIDE([Baskets], [Active Panel Households])
+Spend per Active Household = DIVIDE([Panel Net Spend], [Active Panel Households])
 
 Private Label Spend = SUM(Mart_Panel_Weekly[private_label_spend])
 Private Label Share = DIVIDE([Private Label Spend], SUM(Mart_Panel_Weekly[panel_net_spend]))
