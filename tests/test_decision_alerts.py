@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 
+from src.sql_renderer import render_sql_file
 from src.utils.duckdb_client import connect
 
 
@@ -29,9 +30,10 @@ def test_decision_alerts_apply_threshold_to_relative_variance():
                 (2, 85.0, 95.0, 1.9, 44.7368421053),
             ],
         )
-        sql = (
-            ROOT / "sql/06_marts/13_mart_decision_alerts.sql"
-        ).read_text(encoding="utf-8")
+        sql = render_sql_file(
+            ROOT / "sql/06_marts/13_mart_decision_alerts.sql",
+            ROOT / "config/analysis_thresholds.yaml",
+        )
         connection.execute(sql)
 
         output_columns = {
