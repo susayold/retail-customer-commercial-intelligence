@@ -1,8 +1,10 @@
 from pathlib import Path
 
+from src.sql_renderer import render_sql_file
 from src.utils.duckdb_client import connect, register_raw_views
 
 ROOT = Path(__file__).resolve().parents[1]
+THRESHOLDS = ROOT / "config/analysis_thresholds.yaml"
 
 
 def test_full_sql_chain_runs_on_synthetic_fixture():
@@ -17,7 +19,7 @@ def test_full_sql_chain_runs_on_synthetic_fixture():
         )
         qa_paths = sorted((sql_root / "07_quality").glob("*.sql"))
         for sql_path in model_paths + qa_paths:
-            connection.execute(sql_path.read_text(encoding="utf-8"))
+            connection.execute(render_sql_file(sql_path, THRESHOLDS))
         export_paths = sorted((sql_root / "09_exports").glob("*.sql"))
         for sql_path in export_paths:
             connection.execute(sql_path.read_text(encoding="utf-8"))
