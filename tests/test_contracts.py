@@ -86,6 +86,7 @@ def test_makefile_exposes_drive_storage_and_quality_gate_targets():
     assert "src.enforce_quality_gate" in makefile
     assert "release-audit:" in makefile
     assert "src.release_readiness" in makefile
+    assert "src.reconcile" in makefile
     for target in (
         "schema",
         "inventory",
@@ -97,6 +98,7 @@ def test_makefile_exposes_drive_storage_and_quality_gate_targets():
         "quality-gate",
         "stats",
         "powerbi",
+        "reconcile",
         "release-audit",
     ):
         target_block = makefile.split(f"{target}:\n", 1)[1].split("\n\n", 1)[0]
