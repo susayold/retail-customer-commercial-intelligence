@@ -60,6 +60,12 @@ Private Label Share = DIVIDE([Private Label Spend], SUM(Mart_Panel_Weekly[panel_
 Coupon Baskets = CALCULATE([Baskets], Mart_Basket[has_coupon_discount] = TRUE())
 Coupon Basket Rate = DIVIDE([Coupon Baskets], [Baskets])
 
+Category Household Penetration =
+DIVIDE(
+    SUM(Analysis_Category_Penetration[buying_households]),
+    SUM(Analysis_Category_Penetration[panel_households])
+)
+
 Campaign Recipients = DISTINCTCOUNT(Mart_Campaign_Household[household_key])
 Campaign Redeemers = CALCULATE([Campaign Recipients], Mart_Campaign_Household[redeemed_coupon_flag] = TRUE())
 Campaign Redemption Rate = DIVIDE([Campaign Redeemers], [Campaign Recipients])
