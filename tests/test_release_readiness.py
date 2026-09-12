@@ -92,7 +92,7 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
     write_csv(
         qa_root / "uat_results.csv",
         ["check_id", "status"],
-        [{"check_id": f"UAT-{index:02d}", "status": "pass"} for index in range(12)],
+        [{"check_id": f"UAT-{index:02d}", "status": "pass"} for index in range(1, 13)],
     )
     write_csv(
         qa_root / "root_cause_cases.csv",
@@ -183,3 +183,25 @@ def test_release_readiness_rejects_blank_decision_evidence(tmp_path):
         if item["name"] == "04_qa_reports/executive_decisions.csv"
     )
     assert "blank" in decision_check["reason"]
+
+def test_release_readiness_rejects_invalid_uat_ids(tmp_path):
+    artifact_root = tmp_path / "artifacts"
+    repo_root = tmp_path / "repo"
+    seed_complete_delivery(artifact_root, repo_root)
+    uat = artifact_root / "04_qa_reports" / "uat_results.csv"
+    uat.write_text(
+        "check_id,status\n"
+        + "".join(f"UAT-{index:02d},pass\n" for index in range(1, 12))
+        + "UAT-99,pass\n",
+        encoding="utf-8",
+    )
+
+    result = evaluate_release_readiness(artifact_root, repo_root)
+
+    assert result["ready"] is False
+    uat_check = next(
+        item
+        for item in result["failures"]
+        if item["name"] == "04_qa_reports/uat_results.csv"
+    )
+    assert "UAT-12" in uat_check["reason"]
