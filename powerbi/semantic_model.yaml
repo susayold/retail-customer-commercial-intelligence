@@ -126,6 +126,14 @@ relationships:
     to: Mart_Panel_Weekly[week_number]
     cardinality: one_to_many
     cross_filter: single
+  - from: Dim_Week[week_number]
+    to: Mart_Category_Weekly[week_number]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Week[week_number]
+    to: Mart_Promotion_Category_Week[week_number]
+    cardinality: one_to_many
+    cross_filter: single
   - from: Dim_Day[day_key]
     to: Mart_Basket[day_key]
     cardinality: one_to_many
