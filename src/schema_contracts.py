@@ -9,6 +9,8 @@ from pathlib import Path
 
 import yaml
 
+from src.storage_paths import require_drive_path
+
 
 def read_header(path: Path) -> list[str]:
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
@@ -82,12 +84,15 @@ def main() -> None:
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--contracts", type=Path, default=Path("config/source_contracts.yaml"))
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--drive-root", type=Path, required=True)
     args = parser.parse_args()
 
-    rows = validate_headers(args.input, args.contracts)
-    write_report(rows, args.output)
+    input_root = require_drive_path(args.input, args.drive_root, "--input")
+    output_path = require_drive_path(args.output, args.drive_root, "--output")
+    rows = validate_headers(input_root, args.contracts)
+    write_report(rows, output_path)
     failures = [row for row in rows if row["status"] != "ok"]
-    print({"sources": len(rows), "failures": len(failures), "output": str(args.output)})
+    print({"sources": len(rows), "failures": len(failures), "output": str(output_path)})
     if failures:
         raise SystemExit("Schema validation failed; inspect the Drive QA report")
 
