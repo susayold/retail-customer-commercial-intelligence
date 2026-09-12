@@ -4,7 +4,7 @@ This report is completed from Drive outputs after the source run. The planning c
 
 ## Required evidence
 
-- raw_file_inventory.csv: eight files, size, rows, columns, header hash, content SHA-256 and load status;
+- raw_file_inventory.csv: eight files, size, rows, columns, header hash, content SHA-256, planning expectation/delta and load status;
 - schema_validation.csv: required columns, missing columns, unexpected columns, duplicate headers and contract status;
 - source_profile_summary.csv: types, row counts and column counts;
 - source_null_profile.csv: null/blank rate, distinct count and min/max profile;
