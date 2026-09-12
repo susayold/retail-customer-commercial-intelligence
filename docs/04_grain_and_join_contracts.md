@@ -11,7 +11,7 @@
 | bridge_coupon_product_campaign | coupon UPC × product × campaign | three-column key | none at exact grain | flattening into customer exposure |
 | fct_coupon_redemption | one redemption event | event fields | source duplicate audit | many-to-many coupon mapping |
 | mart_household_weekly | household × week | two-column key | none | mixing with line grain |
-| mart_category_weekly | commodity × week | two-column key | none | category filters changing denominator |
+| mart_category_weekly | department × commodity × week | three-column key | none | category filters changing denominator |
 
 ## Join rules
 
