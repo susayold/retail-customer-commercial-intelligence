@@ -35,7 +35,7 @@ Verify the four fields for every campaign:
 - post_14d_observable;
 - post_28d_observable.
 
-Unobservable periods must be NULL in the household mart and excluded from averages.
+A during period is observable only when the full campaign interval is covered; unobservable periods must be NULL in the household mart and excluded from averages.
 
 ## Reconciliation file
 
