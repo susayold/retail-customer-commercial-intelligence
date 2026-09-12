@@ -4,7 +4,7 @@ test:
 	$(PYTHON) -m pytest -q
 
 storage:
-	$(PYTHON) -m src.storage_policy --data-root "$$$RETAIL_DATA_ROOT" --artifact-root "$$$RETAIL_ARTIFACT_ROOT" --drive-root "$$$RETAIL_DRIVE_ROOT" --repo-root "." --output "$$$RETAIL_ARTIFACT_ROOT/04_qa_reports/storage_status.json"
+	$(PYTHON) -m src.storage_policy --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT" --repo-root "." --output "$$RETAIL_ARTIFACT_ROOT/04_qa_reports/storage_status.json"
 
 schema:
 	$(PYTHON) -m src.schema_contracts --input "$$RETAIL_DATA_ROOT" --contracts config/source_contracts.yaml --output "$$RETAIL_ARTIFACT_ROOT/04_qa_reports/schema_validation.csv" --drive-root "$$RETAIL_DRIVE_ROOT"
@@ -37,9 +37,9 @@ powerbi:
 	$(PYTHON) -m src.export_powerbi --artifact-root "$$RETAIL_ARTIFACT_ROOT" --format parquet --drive-root "$$RETAIL_DRIVE_ROOT"
 
 release-audit:
-	$(PYTHON) -m src.release_readiness --artifact-root "$$$RETAIL_ARTIFACT_ROOT" --repo-root "."
+	$(PYTHON) -m src.release_readiness --artifact-root "$$RETAIL_ARTIFACT_ROOT" --repo-root "." --drive-root "$$RETAIL_DRIVE_ROOT"
 
 run:
-	$(PYTHON) -m src.run_pipeline --data-root "$$$RETAIL_DATA_ROOT" --artifact-root "$$$RETAIL_ARTIFACT_ROOT" --drive-root "$$$RETAIL_DRIVE_ROOT" --repo-root "." --with-tests
+	$(PYTHON) -m src.run_pipeline --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT" --repo-root "." --with-tests
 
 all: run
