@@ -8,7 +8,7 @@ This checklist separates implemented repository work from outputs that require t
 | 02 | Download data | Blocked by source availability | Put licensed CSVs in Drive 01_raw_source |
 | 03 | Inventory files | Implemented | src/inventory.py; run to Drive QA |
 | 04 | Validate schemas | Implemented | src/schema_contracts.py + config/source_contracts.yaml |
-| 05 | Profile sources | Implemented | src/profile_sources.py; row/type/null/distinct/range outputs |
+| 05 | Profile sources | Implemented | src/profile_sources.py; row/type/null/distinct/range/cardinality outputs |
 | 06 | Document grain | Done | docs/04_grain_and_join_contracts.md, docs/05_data_model.md |
 | 07 | Document join risks | Done | docs/04_grain_and_join_contracts.md |
 | 08 | Convert CSV to Parquet | Implemented | src/build_parquet.py; Drive output only |

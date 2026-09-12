@@ -48,6 +48,17 @@ def main() -> None:
             )
             """
         )
+        connection.execute(
+            """
+            CREATE OR REPLACE TABLE source_cardinality (
+                source_name VARCHAR,
+                column_name VARCHAR,
+                row_count BIGINT,
+                distinct_count BIGINT,
+                distinct_pct DOUBLE
+            )
+            """
+        )
 
         for source_name, source_filename in RAW_SOURCES.items():
             columns = connection.execute(
@@ -79,6 +90,7 @@ def main() -> None:
                 min_value = row[offset + 2]
                 max_value = row[offset + 3]
                 null_pct = null_count / row_count if row_count else None
+                distinct_pct = distinct_count / row_count if row_count else None
                 connection.execute(
                     "INSERT INTO source_null_profile VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     [
@@ -93,8 +105,16 @@ def main() -> None:
                         None if max_value is None else str(max_value),
                     ],
                 )
+                connection.execute(
+                    "INSERT INTO source_cardinality VALUES (?, ?, ?, ?, ?)",
+                    [source_name, column_name, row_count, distinct_count, distinct_pct],
+                )
 
-        for table_name in ("source_profile_summary", "source_null_profile"):
+        for table_name in (
+            "source_profile_summary",
+            "source_null_profile",
+            "source_cardinality",
+        ):
             output_path = qa_dir / f"{table_name}.csv"
             connection.execute(
                 f"COPY (SELECT * FROM {table_name}) TO ? (HEADER, DELIMITER ',')",
