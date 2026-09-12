@@ -26,3 +26,12 @@ Use bootstrap or proportion confidence intervals, Mann–Whitney/Kruskal–Walli
 ## Causal language
 
 The data is observational. Promotion and campaign recipients may be selected. Use associated with, observed response, descriptive difference and matched observational comparison. Do not write causal lift or ROI without verified experimental/cost data.
+
+## Promotion dependency
+
+Promotion dependency is reported by department and commodity as two descriptive shares:
+
+- observed panel sales occurring in display/mailer-supported states divided by total observed panel sales;
+- product-store-weeks in display/mailer-supported states divided by all product-store-weeks.
+
+The promotion mart is built from the product-store-week skeleton, so zero-sale weeks remain in the denominator. These measures describe association and support commercial monitoring; they do not imply causal lift, profitability or ROI.
