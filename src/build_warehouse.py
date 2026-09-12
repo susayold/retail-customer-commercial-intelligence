@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from src.sql_renderer import render_sql_file
+from src.storage_paths import require_drive_path
 from src.utils.duckdb_client import connect, register_raw_views
 
 CREATE_TABLE_RE = re.compile(
@@ -91,17 +92,24 @@ def main() -> None:
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--database", type=Path, default=None)
+    parser.add_argument("--drive-root", type=Path, required=True)
     parser.add_argument("--sql-dir", type=Path, default=Path("sql"))
     parser.add_argument(
         "--thresholds", type=Path, default=Path("config/analysis_thresholds.yaml")
     )
     args = parser.parse_args()
 
-    warehouse_dir = args.artifact_root / "03_duckdb_and_marts"
-    qa_dir = args.artifact_root / "04_qa_reports"
+    data_root = require_drive_path(args.data_root, args.drive_root, "--data-root")
+    artifact_root = require_drive_path(args.artifact_root, args.drive_root, "--artifact-root")
+    warehouse_dir = artifact_root / "03_duckdb_and_marts"
+    qa_dir = artifact_root / "04_qa_reports"
     warehouse_dir.mkdir(parents=True, exist_ok=True)
     qa_dir.mkdir(parents=True, exist_ok=True)
-    database = args.database or warehouse_dir / "retail_intelligence.duckdb"
+    database = (
+        require_drive_path(args.database, args.drive_root, "--database")
+        if args.database is not None
+        else warehouse_dir / "retail_intelligence.duckdb"
+    )
     thresholds_path = args.thresholds.expanduser().resolve()
     log_path = qa_dir / "pipeline_run.log"
     run_id = uuid.uuid4().hex
@@ -114,7 +122,7 @@ def main() -> None:
     total_read = 0
     total_written = 0
     try:
-        register_raw_views(connection, args.data_root)
+        register_raw_views(connection, data_root)
         model_paths = sorted(
             path for path in args.sql_dir.rglob("*.sql")
             if "09_exports" not in path.parts
