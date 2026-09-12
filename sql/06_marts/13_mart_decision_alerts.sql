@@ -19,9 +19,9 @@ SELECT
     panel_net_spend - prior_spend AS variance,
     panel_net_spend - prior_spend AS absolute_variance,
     panel_net_spend / NULLIF(prior_spend, 0) - 1 AS relative_variance,
-    -0.10 AS threshold,
+    {{ DECISION_ALERTS_RELATIVE_DECLINE_THRESHOLD }} AS threshold,
     CASE
-        WHEN panel_net_spend / NULLIF(prior_spend, 0) - 1 < -0.10 THEN 'high'
+        WHEN panel_net_spend / NULLIF(prior_spend, 0) - 1 < {{ DECISION_ALERTS_RELATIVE_DECLINE_THRESHOLD }} THEN 'high'
         ELSE 'normal'
     END AS severity,
     'observation_week=' || CAST(week_number AS VARCHAR) AS scope
@@ -35,9 +35,9 @@ SELECT
     active_households - prior_households,
     active_households - prior_households,
     active_households / NULLIF(prior_households, 0) - 1,
-    -0.10,
+    {{ DECISION_ALERTS_RELATIVE_DECLINE_THRESHOLD }},
     CASE
-        WHEN active_households / NULLIF(prior_households, 0) - 1 < -0.10 THEN 'high'
+        WHEN active_households / NULLIF(prior_households, 0) - 1 < {{ DECISION_ALERTS_RELATIVE_DECLINE_THRESHOLD }} THEN 'high'
         ELSE 'normal'
     END,
     'observation_week=' || CAST(week_number AS VARCHAR)
@@ -51,9 +51,9 @@ SELECT
     trips_per_household - prior_trips,
     trips_per_household - prior_trips,
     trips_per_household / NULLIF(prior_trips, 0) - 1,
-    -0.10,
+    {{ DECISION_ALERTS_RELATIVE_DECLINE_THRESHOLD }},
     CASE
-        WHEN trips_per_household / NULLIF(prior_trips, 0) - 1 < -0.10 THEN 'medium'
+        WHEN trips_per_household / NULLIF(prior_trips, 0) - 1 < {{ DECISION_ALERTS_RELATIVE_DECLINE_THRESHOLD }} THEN 'medium'
         ELSE 'normal'
     END,
     'observation_week=' || CAST(week_number AS VARCHAR)
