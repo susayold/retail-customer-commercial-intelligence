@@ -44,7 +44,7 @@ The promotion mart is built from the product-store-week skeleton, so zero-sale w
 
 ## Campaign response by segment
 
-`analysis_campaign_segment` preserves the campaign funnel at campaign × campaign type × observed customer segment. It reports recipient and redeemer household denominators, redemption rate, pre/during/post observable row counts, and demographic coverage. Unobservable windows remain excluded from averages, and the output is interpreted as observed response rather than causal campaign lift.
+`analysis_campaign_segment` preserves the campaign funnel at campaign × campaign type × observed customer segment. It reports recipient and redeemer household denominators, redemption rate, pre/during/post observable row counts, and demographic coverage. A during window is observable only when the full campaign interval is inside the transaction observation range; unobservable windows remain excluded from averages. The output is interpreted as observed response rather than causal campaign lift.
 
 ## Coupon analytics
 
