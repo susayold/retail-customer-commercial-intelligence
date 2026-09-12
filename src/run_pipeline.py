@@ -89,6 +89,8 @@ def main() -> None:
         str(artifact_root),
         "--repo-root",
         str(repo_root),
+        "--output",
+        str(qa_root / "storage_status.json"),
     ]
     run_command("storage_gate", storage_command, cwd=repo_root)
 
