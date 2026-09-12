@@ -43,5 +43,8 @@ def test_one_command_runner_uses_drive_roots_for_data_artifacts():
         "src.export_powerbi",
         "pipeline_orchestration.log",
         "artifact_root",
+        "cwd=str(repo_root)",
+        "contracts =",
+        "sql_dir =",
     ):
         assert token in runner
