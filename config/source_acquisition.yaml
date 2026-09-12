@@ -1,0 +1,27 @@
+# Configuration only: no credentials and no source records belong here.
+dataset:
+  name: dunnhumby_the_complete_journey
+  manifest_version: "1.0"
+
+official:
+  landing_page: https://www.dunnhumby.com/source-files/
+  # Operational asset URL observed from the official page. Re-check the
+  # landing page and update this value if the publisher rotates the asset.
+  direct_asset_url: https://downloads.ctfassets.net/psj0p18eh7z1/3e9OAF7F9ONT4pwJc1luEw/d56af8aabad51bdb9888aad0240bd105/dunnhumby_The-Complete-Journey.zip
+
+kaggle:
+  dataset_slug: frtgnn/dunnhumby-the-complete-journey
+
+drive:
+  raw_folder: 01_raw_source
+  docs_folder: 06_source_docs
+  staging_folder: 06_source_docs/acquisition_staging
+
+policy:
+  exact_file_set: true
+  reject_zero_byte: true
+  reject_duplicate_expected_names: true
+  reject_extra_raw_files: true
+  compute_sha256: true
+  overwrite_existing: false
+  chunk_size_bytes: 8388608
