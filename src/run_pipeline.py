@@ -173,7 +173,7 @@ def main() -> None:
                     "--artifact-root",
                     str(artifact_root),
                     "--sql-dir",
-                    str(args.sql_dir),
+                    str(sql_dir),
                 ],
             ),
             (
@@ -197,7 +197,7 @@ def main() -> None:
                     "--artifact-root",
                     str(artifact_root),
                     "--sql-dir",
-                    str(args.sql_dir),
+                    str(sql_dir),
                     "--format",
                     "parquet",
                 ],
