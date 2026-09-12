@@ -29,3 +29,13 @@ def test_inventory_records_content_checksum(tmp_path):
     result = inspect_csv(source)
     assert len(result["content_sha256"]) == 64
     assert result["content_sha256"] != result["column_names_hash"]
+
+
+
+def test_inventory_reports_planning_row_count_delta(tmp_path):
+    source = tmp_path / "source.csv"
+    source.write_text("id,value\n1,a\n", encoding="utf-8")
+    result = inspect_csv(source, expected_row_count=1)
+    assert result["expected_row_count"] == 1
+    assert result["row_count_delta"] == 0
+    assert result["planning_expectation_status"] == "match"
