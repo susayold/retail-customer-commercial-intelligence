@@ -2,6 +2,7 @@ import csv
 import json
 from pathlib import Path
 
+from src.inventory import EXPECTED_FILES
 from src.release_readiness import (
     REQUIRED_POWERBI_EXPORTS,
     evaluate_release_readiness,
@@ -27,9 +28,61 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
     (qa_root / "qa_quality_gate.json").write_text(
         json.dumps({"ready": True}), encoding="utf-8"
     )
+    write_csv(
+        qa_root / "raw_file_inventory.csv",
+        [
+            "file_name",
+            "file_size_bytes",
+            "row_count",
+            "expected_row_count",
+            "row_count_delta",
+            "planning_expectation_status",
+            "column_count",
+            "column_names_hash",
+            "content_sha256",
+            "load_status",
+        ],
+        [
+            {
+                "file_name": name,
+                "file_size_bytes": 10,
+                "row_count": 1,
+                "expected_row_count": 1,
+                "row_count_delta": 0,
+                "planning_expectation_status": "match",
+                "column_count": 1,
+                "column_names_hash": "column-hash",
+                "content_sha256": f"sha-{index}",
+                "load_status": "ok",
+            }
+            for index, name in enumerate(EXPECTED_FILES)
+        ],
+    )
+    write_csv(
+        qa_root / "schema_validation.csv",
+        [
+            "source_name",
+            "file_name",
+            "status",
+            "missing_columns",
+            "unexpected_columns",
+            "duplicate_columns",
+            "observed_column_count",
+        ],
+        [
+            {
+                "source_name": Path(name).stem,
+                "file_name": name,
+                "status": "ok",
+                "missing_columns": "",
+                "unexpected_columns": "",
+                "duplicate_columns": "",
+                "observed_column_count": 1,
+            }
+            for name in EXPECTED_FILES
+        ],
+    )
     for name in (
-        "raw_file_inventory.csv",
-        "schema_validation.csv",
         "source_profile_summary.csv",
         "source_cardinality.csv",
         "qa_run_log.csv",
@@ -183,6 +236,30 @@ def test_release_readiness_rejects_blank_decision_evidence(tmp_path):
         if item["name"] == "04_qa_reports/executive_decisions.csv"
     )
     assert "blank" in decision_check["reason"]
+
+def test_release_readiness_rejects_incomplete_inventory(tmp_path):
+    artifact_root = tmp_path / "artifacts"
+    repo_root = tmp_path / "repo"
+    seed_complete_delivery(artifact_root, repo_root)
+    inventory = artifact_root / "04_qa_reports" / "raw_file_inventory.csv"
+    inventory.write_text(
+        inventory.read_text(encoding="utf-8").replace(
+            "transaction_data.csv,10,1,1,0,match,1,column-hash,sha-0,ok",
+            "transaction_data.csv,10,1,1,0,match,1,column-hash,sha-0,missing",
+        ),
+        encoding="utf-8",
+    )
+
+    result = evaluate_release_readiness(artifact_root, repo_root)
+
+    assert result["ready"] is False
+    inventory_check = next(
+        item
+        for item in result["failures"]
+        if item["name"] == "04_qa_reports/raw_file_inventory.csv"
+    )
+    assert "load_status" in inventory_check["reason"]
+
 
 def test_release_readiness_rejects_invalid_uat_ids(tmp_path):
     artifact_root = tmp_path / "artifacts"
