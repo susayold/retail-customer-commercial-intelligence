@@ -22,6 +22,7 @@ QA_TABLES = (
     "qa_demographic_coverage",
     "qa_reference_coverage",
     "qa_transaction_anomalies",
+    "qa_layer_reconciliation",
 )
 
 RUN_LOG_FIELDS = [
