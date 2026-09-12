@@ -23,4 +23,22 @@ The audit requires:
 - 04_qa_reports/executive_decisions.csv with five completed decisions, Drive evidence URI, run ID and limitation;
 - repository contracts for the three root-cause cases, five executive decisions, limitations and UAT; the semantic model must validate as Drive-only with 29 curated tables, six pages, single-direction relationships, and all required governed measures present.
 
-The audit output is the release evidence index. It does not invent a finding, downgrade a failed QA result or treat a synthetic fixture as a real-data result.
+## SQL–Power BI reconciliation sequence
+
+Complete the reconciliation only after the Drive-backed pipeline has run and Power BI has been refreshed:
+
+~~~powershell
+$env:RETAIL_SQL_RECONCILIATION = "$env:RETAIL_ARTIFACT_ROOT/04_qa_reports/sql_metric_totals.csv"
+$env:RETAIL_BI_RECONCILIATION = "$env:RETAIL_ARTIFACT_ROOT/04_qa_reports/powerbi_metric_totals.csv"
+make reconcile
+~~~
+
+Both input files and the generated `powerbi_reconciliation.csv` must be under the explicit Drive root. The target fails when a required metric is missing, duplicated, outside its tolerance, or has an invalid numeric value. The eight required metrics are Panel Net Spend, Baskets, Active Panel Households, Spend per Basket, Private Label Share, Campaign Recipients, Campaign Redeemers and Redemption Rate.
+
+After reconciliation, complete the 12 UAT checks, three root-cause cases and five executive decision records with Drive evidence URIs, then run the release audit:
+
+~~~powershell
+make release-audit
+~~~
+
+Do not create tag `v1.0.0` until the audit returns pass. The audit output is the release evidence index. It does not invent a finding, downgrade a failed QA result or treat a synthetic fixture as a real-data result.
