@@ -45,6 +45,15 @@ def cohens_d(left: np.ndarray, right: np.ndarray) -> float:
     return float((left.mean() - right.mean()) / np.sqrt(pooled_variance))
 
 
+
+def mann_whitney_u(left: np.ndarray, right: np.ndarray) -> tuple[float, float]:
+    """Return the two-sided Mann–Whitney U statistic and p-value."""
+    if len(left) == 0 or len(right) == 0:
+        return (float("nan"), float("nan"))
+    result = stats.mannwhitneyu(left, right, alternative="two-sided")
+    return float(result.statistic), float(result.pvalue)
+
+
 def wilson_interval(successes: int, total: int, z: float = 1.96) -> tuple[float, float]:
     if total == 0:
         return (float("nan"), float("nan"))
@@ -55,6 +64,25 @@ def wilson_interval(successes: int, total: int, z: float = 1.96) -> tuple[float,
         proportion * (1 - proportion) / total + z**2 / (4 * total**2)
     ) / denominator
     return float(centre - margin), float(centre + margin)
+
+
+def chi_square_test(table: np.ndarray) -> tuple[float, float, float]:
+    """Return chi-square statistic, p-value and Cramér's V for a contingency table."""
+    table = np.asarray(table, dtype=float)
+    if (
+        table.ndim != 2
+        or table.shape[0] < 2
+        or table.shape[1] < 2
+        or np.any(table < 0)
+        or np.any(table.sum(axis=1) == 0)
+        or np.any(table.sum(axis=0) == 0)
+    ):
+        return (float("nan"), float("nan"), float("nan"))
+    statistic, p_value, _, _ = stats.chi2_contingency(table, correction=False)
+    dimension = min(table.shape[0] - 1, table.shape[1] - 1)
+    total = float(table.sum())
+    cramers_v = float(np.sqrt(statistic / (total * dimension))) if total and dimension else float("nan")
+    return float(statistic), float(p_value), cramers_v
 
 
 def normalized_group_label(value: object) -> str:
@@ -193,6 +221,15 @@ def main() -> None:
                 dtype=float,
             )
         promotion_values = [values for values in promotion_groups.values() if len(values)]
+        none_values = promotion_groups.get("none", np.array([], dtype=float))
+        mann_whitney_by_state: dict[str, tuple[float, float, float]] = {}
+        for state, values in promotion_groups.items():
+            if state == "none" or len(values) == 0 or len(none_values) == 0:
+                mann_whitney_by_state[state] = (float("nan"), float("nan"), float("nan"))
+                continue
+            u_stat, p_value = mann_whitney_u(values, none_values)
+            rank_biserial = 1.0 - (2.0 * u_stat / (len(values) * len(none_values)))
+            mann_whitney_by_state[state] = (u_stat, p_value, float(rank_biserial))
         if len(promotion_values) >= 2:
             kruskal_stat, kruskal_p = stats.kruskal(*promotion_values)
             total_n = sum(len(values) for values in promotion_values)
@@ -215,6 +252,9 @@ def main() -> None:
                 "kruskal_wallis_stat": float(kruskal_stat),
                 "kruskal_wallis_p_value": float(kruskal_p),
                 "effect_size_eta_squared": eta_squared,
+                "mann_whitney_u_vs_none": mann_whitney_by_state[state][0],
+                "mann_whitney_p_value_vs_none": mann_whitney_by_state[state][1],
+                "effect_size_rank_biserial_vs_none": mann_whitney_by_state[state][2],
             }
             for state, values in promotion_groups.items()
         ]
@@ -222,7 +262,9 @@ def main() -> None:
             output_dir / "stats_promotion_state.csv",
             ["promo_state_group", "n", "mean_panel_sales_per_product_store_week",
              "median_panel_sales_per_product_store_week", "kruskal_wallis_stat",
-             "kruskal_wallis_p_value", "effect_size_eta_squared"],
+             "kruskal_wallis_p_value", "effect_size_eta_squared",
+             "mann_whitney_u_vs_none", "mann_whitney_p_value_vs_none",
+             "effect_size_rank_biserial_vs_none"],
             promotion_stats,
         )
 
@@ -253,6 +295,20 @@ def main() -> None:
                 "ci_low": lower,
                 "ci_high": upper,
             })
+        campaign_table = np.array(
+            [
+                [sum(1 for row in campaign_rows if normalized_group_label(row[0]) == campaign_type and int(row[1])),
+                 sum(1 for row in campaign_rows if normalized_group_label(row[0]) == campaign_type and not int(row[1]))]
+                for campaign_type in sorted({normalized_group_label(row[0]) for row in campaign_rows})
+            ],
+            dtype=float,
+        )
+        chi_square_stat, chi_square_p, cramers_v = chi_square_test(campaign_table)
+        for row in campaign_stats:
+            row["chi_square_statistic"] = chi_square_stat
+            row["chi_square_p_value"] = chi_square_p
+            row["effect_size_cramers_v"] = cramers_v
+
         write_rows(
             output_dir / "stats_campaign_redemption.csv",
             ["campaign_type", "n_recipients", "redeemers", "redemption_rate", "ci_low", "ci_high"],
