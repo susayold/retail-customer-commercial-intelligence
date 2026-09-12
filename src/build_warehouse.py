@@ -10,6 +10,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
+from src.sql_renderer import render_sql_file
 from src.utils.duckdb_client import connect, register_raw_views
 
 CREATE_TABLE_RE = re.compile(
@@ -91,6 +92,9 @@ def main() -> None:
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--database", type=Path, default=None)
     parser.add_argument("--sql-dir", type=Path, default=Path("sql"))
+    parser.add_argument(
+        "--thresholds", type=Path, default=Path("config/analysis_thresholds.yaml")
+    )
     args = parser.parse_args()
 
     warehouse_dir = args.artifact_root / "03_duckdb_and_marts"
@@ -98,6 +102,7 @@ def main() -> None:
     warehouse_dir.mkdir(parents=True, exist_ok=True)
     qa_dir.mkdir(parents=True, exist_ok=True)
     database = args.database or warehouse_dir / "retail_intelligence.duckdb"
+    thresholds_path = args.thresholds.expanduser().resolve()
     log_path = qa_dir / "pipeline_run.log"
     run_id = uuid.uuid4().hex
     logger = configure_logger(log_path)
@@ -115,7 +120,7 @@ def main() -> None:
             if "09_exports" not in path.parts
         )
         for sql_path in model_paths:
-            sql_text = sql_path.read_text(encoding="utf-8")
+            sql_text = render_sql_file(sql_path, thresholds_path)
             file_started = time.perf_counter()
             available = available_relations(connection)
             inputs = referenced_relations(sql_text, available)
