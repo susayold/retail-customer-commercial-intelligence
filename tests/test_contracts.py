@@ -101,7 +101,8 @@ def test_makefile_exposes_drive_storage_and_quality_gate_targets():
         "release-audit",
     ):
         target_block = makefile.split(f"{target}:\n", 1)[1].split("\n\n", 1)[0]
-        drive_root_token = '--drive-root ' + '"' + '
+        drive_root_token = "--drive-root " + chr(34) + "$" * 2 + "RETAIL_DRIVE_ROOT" + chr(34)
+        assert drive_root_token in target_block
 
 def test_all_data_stages_receive_drive_root():
     runner = (ROOT / "src/run_pipeline.py").read_text(encoding="utf-8")
