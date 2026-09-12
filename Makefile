@@ -31,6 +31,9 @@ stats:
 	$(PYTHON) -m src.statistical_validation --database "$$RETAIL_ARTIFACT_ROOT/03_duckdb_and_marts/retail_intelligence.duckdb" --artifact-root "$$RETAIL_ARTIFACT_ROOT"
 
 powerbi:
-	$(PYTHON) -m src.export_powerbi --artifact-root "$$RETAIL_ARTIFACT_ROOT" --format parquet
+	$(PYTHON) -m src.export_powerbi --artifact-root "$RETAIL_ARTIFACT_ROOT" --format parquet
 
-all: storage schema inventory profile parquet warehouse segment validate stats powerbi test
+run:
+	$(PYTHON) -m src.run_pipeline --data-root "$RETAIL_DATA_ROOT" --artifact-root "$RETAIL_ARTIFACT_ROOT" --repo-root "." --with-tests
+
+all: run
