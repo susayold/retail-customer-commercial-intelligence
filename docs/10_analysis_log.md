@@ -26,3 +26,4 @@
 | pending | Power BI/UAT | Drive 05_powerbi_exports | pending | refresh only from curated marts |
 
 | 2026-09-12 | Decision alert semantics | sql/06_marts/13_mart_decision_alerts.sql + tests/test_decision_alerts.py | implemented | alert thresholds now use relative variance while preserving absolute variance; CI contract test added |
+| 2026-09-12 | Runner path hardening | src/run_pipeline.py + tests/test_contracts.py | implemented | resolves repository, SQL/config and Drive roots; subprocess stages execute with repository cwd; CI contract passes |
