@@ -62,8 +62,8 @@ def main() -> None:
     parser.add_argument("--with-tests", action="store_true")
     args = parser.parse_args()
 
-    data_root = args.data_root
-    artifact_root = args.artifact_root
+    data_root = args.data_root.resolve()
+    artifact_root = args.artifact_root.resolve()
     repo_root = args.repo_root.resolve()
     contracts = (
         args.contracts
