@@ -21,6 +21,8 @@ def test_transaction_anomaly_qa_is_registered_and_covers_plan_checks():
         "missing_product",
         "missing_household",
         "missing_basket",
+        "day_key > 711",
+        "week_number > 102",
     ):
         assert audit_name in sql
 
