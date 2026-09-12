@@ -87,3 +87,12 @@ def test_powerbi_tables_match_exporter_contract():
         if not table_name.startswith("export_")
     }
     assert semantic_tables == exported_curated_tables
+
+
+
+def test_sql_reconciliation_uses_governed_panel_household_label():
+    sql = (
+        ROOT / "sql/09_exports/01_powerbi_metric_reconciliation.sql"
+    ).read_text(encoding="utf-8")
+    assert "'Active Panel Households'" in sql
+    assert "'Active Households'" not in sql
