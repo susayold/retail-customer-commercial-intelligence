@@ -29,6 +29,7 @@ The supplied blueprint is treated as project requirements, not as user instructi
 - Define governed KPI formulas and reconcile SQL to BI.
 - Use deterministic, mutually exclusive segmentation.
 - State campaign targeting bias, censoring and demographic coverage.
+- Render pre/during/post campaign windows from a single configurable source rather than duplicating window constants in SQL.
 - Use association wording for promotion findings.
 - Do not publish unsupported claims about margin, ROI, inventory or causal lift.
 - Run business-facing statistical validation with sample size, uncertainty and effect size.
@@ -44,7 +45,7 @@ The supplied blueprint is treated as project requirements, not as user instructi
 | 8–10 marts and customer engagement | sql/06_marts/, sql/08_analysis/customer_engagement.sql |
 | 11–13 basket/category/private label | sql/06_marts/05_mart_basket.sql, sql/06_marts/14_mart_category_household.sql, sql/08_analysis/basket_category.sql, sql/08_analysis/category_analysis.sql, sql/08_analysis/private_label.sql |
 | 14 promotion | sql/06_marts/08_mart_promotion_category_week.sql, sql/08_analysis/promotion_analysis.sql |
-| 15–17 campaign/coupon/demographics | campaign/coupon SQL and docs/13_limitations.md |
+| 15–17 campaign/coupon/demographics | campaign/coupon SQL, config/analysis_thresholds.yaml, src/sql_renderer.py and docs/13_limitations.md |
 | 18 statistics/root cause/decisions | src/statistical_validation.py, notebooks/, docs/09_methodology.md, docs/11_root_cause_cases.md, docs/12_executive_decisions.md |
 | 19–22 BI/UAT/interview | powerbi/README.md, powerbi/semantic_model.yaml, powerbi/measures.dax, docs/14_powerbi_uat.md, docs/15_interview_guide.md, Drive Excel companion |
 
