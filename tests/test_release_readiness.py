@@ -39,6 +39,15 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
         "pipeline complete\n", encoding="utf-8"
     )
 
+    for name in (
+        "stats_basket_by_segment.csv",
+        "stats_promotion_state.csv",
+        "stats_campaign_redemption.csv",
+    ):
+        stats_path = qa_root / "statistics" / name
+        stats_path.parent.mkdir(parents=True, exist_ok=True)
+        stats_path.write_text("header\\nrow\\n", encoding="utf-8")
+
     write_csv(
         qa_root / "qa_layer_reconciliation.csv",
         ["audit_name", "status"],
