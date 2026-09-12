@@ -32,6 +32,18 @@ def test_powerbi_model_contract_is_curated_and_six_pages():
         "week_number, department, commodity, promo_state_group"
     )
     assert table_grains["Mart_Decision_Alerts"] == "metric, scope"
+    relationships = {
+        (item["from"], item["to"])
+        for item in contract["relationships"]
+    }
+    assert (
+        "Dim_Week[week_number]",
+        "Mart_Category_Weekly[week_number]",
+    ) in relationships
+    assert (
+        "Dim_Week[week_number]",
+        "Mart_Promotion_Category_Week[week_number]",
+    ) in relationships
 
 
 def test_powerbi_dax_contract_contains_governed_measures():
