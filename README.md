@@ -61,6 +61,8 @@ Facts + dimensions + coupon bridge
         ↓
 QA + reconciliation
         ↓
+Blocking quality gate
+        ↓
 Analytical marts
         ↓
 SQL/statistics + Power BI
@@ -98,7 +100,7 @@ $env:RETAIL_ARTIFACT_ROOT = "D:\path\to\Drive\Retail DA - Customer & Commercial 
 python -m src.run_pipeline --data-root $env:RETAIL_DATA_ROOT --artifact-root $env:RETAIL_ARTIFACT_ROOT --repo-root "." --with-tests
 ~~~
 
-The D path above is a runtime mount example; the persistent source of truth remains Drive. No raw or curated data is written into the GitHub checkout.
+The D path above is a runtime mount example; the persistent source of truth remains Drive. The runner writes storage_status.json and qa_quality_gate.json to Drive and stops before statistics/BI when blocking checks fail. No raw or curated data is written into the GitHub checkout.
 
 ## 8. Repository map
 
