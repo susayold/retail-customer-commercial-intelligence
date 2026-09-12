@@ -27,3 +27,21 @@ def test_storage_policy_disallows_local_workspace_data():
 def test_segments_have_fallback():
     rules = yaml.safe_load((ROOT / "config/segmentation_rules.yaml").read_text())
     assert any("Low-Engagement" in item["name"] for item in rules["rules"])
+
+
+def test_one_command_runner_uses_drive_roots_for_data_artifacts():
+    runner = (ROOT / "src/run_pipeline.py").read_text(encoding="utf-8")
+    for token in (
+        "src.storage_policy",
+        "src.schema_contracts",
+        "src.inventory",
+        "src.profile_sources",
+        "src.build_parquet",
+        "src.build_warehouse",
+        "src.validate",
+        "src.statistical_validation",
+        "src.export_powerbi",
+        "pipeline_orchestration.log",
+        "artifact_root",
+    ):
+        assert token in runner
