@@ -24,6 +24,12 @@ def test_full_sql_chain_runs_on_synthetic_fixture():
         assert connection.execute("SELECT COUNT(*) FROM mart_panel_weekly").fetchone()[0] > 0
         assert connection.execute("SELECT COUNT(*) FROM mart_campaign_summary").fetchone()[0] > 0
         assert connection.execute("SELECT COUNT(*) FROM qa_grain_audit").fetchone()[0] == 3
+        assert connection.execute("SELECT COUNT(*) FROM qa_layer_reconciliation").fetchone()[0] == 9
+        assert set(
+            connection.execute(
+                "SELECT DISTINCT status FROM qa_layer_reconciliation"
+            ).fetchall()
+        ) <= {("pass",), ("review",)}
         assert connection.execute("SELECT COUNT(*) FROM export_powerbi_metric_reconciliation").fetchone()[0] == 8
         assert connection.execute("SELECT COUNT(*) FROM export_powerbi_decision_alerts").fetchone()[0] >= 0
     finally:
