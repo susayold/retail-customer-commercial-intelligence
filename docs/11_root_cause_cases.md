@@ -130,3 +130,13 @@ Cases A–C are complete only when each has:
 4. an action and monitoring KPI;
 5. an explicit limitation.
 
+## Verified real-data run — 2026-09-13
+
+The Drive-backed run completed with source run ID `run_20260913T001329Z_69411005`. The three cases are recorded in `04_qa_reports/root_cause_cases.csv` and are linked to the QA and curated export evidence.
+
+- Case A: no decline was observed between the first and last 13-week windows. Panel Net Spend moved from `$384,068.32` to `$1,185,148.81` (`+208.58%`); the largest reconciled driver movement was Trips per Active Household (`+99.49%`). This is an accounting decomposition, not causal attribution.
+- Case B: the largest relative observed erosion was `DRUG GM / LAWN AND GARDEN SHOP` (`-99.58%` spend), with buying households down 27 and category baskets down 29.
+- Case C: campaign 6 (TypeC) had the weakest observed redemption among campaigns with at least 50 recipients: 1/65 (`1.54%`), with 65 post-28-day observable rows.
+
+The blocking QA gate is `READY`; anomalies remain retained for review rather than deleted. The Drive evidence index is the `04_qa_reports` folder and the exact artifact names are listed in the CSV.
+

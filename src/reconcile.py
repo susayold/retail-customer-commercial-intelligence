@@ -39,6 +39,11 @@ def main() -> None:
     parser.add_argument("--bi", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--tolerance", type=float, default=1e-6)
+    parser.add_argument(
+        "--comparison-scope",
+        default="curated_export_snapshot",
+        help="Evidence scope, e.g. curated_export_snapshot or native_powerbi_refresh",
+    )
     parser.add_argument("--drive-root", type=Path, required=True)
     args = parser.parse_args()
 
@@ -53,7 +58,15 @@ def main() -> None:
     with output_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(
             handle,
-            fieldnames=["metric", "sql_value", "powerbi_value", "difference", "tolerance", "status"],
+            fieldnames=[
+                "metric",
+                "sql_value",
+                "powerbi_value",
+                "difference",
+                "tolerance",
+                "status",
+                "comparison_scope",
+            ],
         )
         writer.writeheader()
         for metric in metrics:
@@ -69,6 +82,7 @@ def main() -> None:
                 "difference": difference,
                 "tolerance": args.tolerance,
                 "status": status,
+                "comparison_scope": args.comparison_scope,
             })
     if failures:
         raise SystemExit(f"Reconciliation failed for {failures} metric(s); inspect {output_path}")

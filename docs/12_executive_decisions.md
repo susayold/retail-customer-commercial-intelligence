@@ -34,3 +34,9 @@ Every completed row must state:
 | D05 | pending | pending | pending | pending | waiting for real source |
 
 No row may be marked complete from synthetic fixtures alone. The final project requires at least five evidence-backed decisions and an explicit limitation on every row.
+
+## Verified real-data run — 2026-09-13
+
+The five evidence-backed decisions are recorded in `04_qa_reports/executive_decisions.csv` with source run ID `run_20260913T001329Z_69411005`. They are observational decisions with explicit actions, monitoring KPIs and limitations; no causal lift, ROI or market-share claim is made.
+
+The curated-export SQL/BI parity file contains all eight required metrics and all rows pass at tolerance `0.01`. Native Power BI visual refresh and interaction UAT remain a separate human review step.

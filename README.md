@@ -123,11 +123,11 @@ powerbi/                semantic model, DAX measures, UAT and export instruction
 | Milestone | Scope | Status |
 |---|---|---|
 | M1 | inventory, source contracts, profiling, warehouse, QA | scaffolded; run against Drive data |
-| M2 | engagement, segmentation, basket/category analytics | SQL contracts ready; findings pending data run |
-| M3 | promotion, campaign, coupon analytics | SQL contracts ready; findings pending data run |
-| M4 | Power BI, UAT, decisions, interview story | design ready; verified outputs pending data run |
+| M2 | engagement, segmentation, basket/category analytics | real-data marts, statistics and evidence verified in Drive |
+| M3 | promotion, campaign, coupon analytics | real-data promotion/campaign/coupon outputs verified in Drive |
+| M4 | Power BI, UAT, decisions, interview story | 31 curated exports and export-level parity verified; native PBIX/UAT pending |
 
-No numeric CV bullets are included until the full data run produces verified numbers.
+Numeric CV bullets are available in `docs/19_verified_cv_bullets.md`; they are explicitly scoped to the observed panel and must not be presented as retailer-wide or causal results.
 
 ## 10. KPI guardrails
 

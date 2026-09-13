@@ -22,7 +22,7 @@ This dictionary distinguishes raw fields from curated fields. Raw source names a
 | COMMODITY_DESC | product | commodity descriptor | affinity level |
 | CAMPAIGN | campaign | campaign identifier | recipient targeting bias |
 | COUPON_UPC | coupon/redemption | coupon identifier | many-to-many bridge |
-| AGE_DESC etc. | demographics | supplied demographic descriptors | partial coverage |
+| classification_1..5 / HOMEOWNER_DESC / KID_CATEGORY_DESC | demographics | source-supplied demographic descriptors; classification_1..5 are anonymized fields mapped positionally to the legacy age, marital, income, household-composition and household-size roles | partial coverage |
 
 ## Curated fields
 

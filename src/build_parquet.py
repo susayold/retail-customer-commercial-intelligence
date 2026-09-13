@@ -41,6 +41,11 @@ def count_parquet_rows(connection: duckdb.DuckDBPyConnection, path: Path) -> int
     return int(connection.execute("SELECT COUNT(*) FROM read_parquet(?)", [path.as_posix()]).fetchone()[0])
 
 
+def duckdb_string_literal(value: str) -> str:
+    """Return a safely quoted DuckDB string literal for a controlled file path."""
+    return "'" + value.replace("'", "''") + "'"
+
+
 def log_run(logger: logging.Logger, run_id: str, file_name: str, rows_read: int, rows_written: int, duration_seconds: float, warnings: str = "", errors: str = "") -> None:
     logger.info(
         "run_id=%s timestamp=%s file=%s rows_read=%s rows_written=%s duration_seconds=%.3f warnings=%s errors=%s",
@@ -91,8 +96,8 @@ def main() -> None:
                 source = source_path.as_posix()
                 target = target_path.as_posix()
                 connection.execute(
-                    "COPY (SELECT * FROM read_csv_auto(?, header=true, union_by_name=true)) TO ? (FORMAT PARQUET, COMPRESSION ZSTD)",
-                    [source, target],
+                    f"COPY (SELECT * FROM read_csv_auto({duckdb_string_literal(source)}, header=true, union_by_name=true)) "
+                    f"TO {duckdb_string_literal(target)} (FORMAT PARQUET, COMPRESSION ZSTD)",
                 )
                 rows_written = count_parquet_rows(connection, target_path)
                 if rows_written != rows_read:

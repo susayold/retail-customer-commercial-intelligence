@@ -4,7 +4,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_grain_contract_documented_for_core_facts():
-    text = (ROOT / "docs/04_grain_and_join_contracts.md").read_text()
+    text = (ROOT / "docs/04_grain_and_join_contracts.md").read_text(encoding="utf-8")
     for phrase in (
         "one product line in basket",
         "one basket",

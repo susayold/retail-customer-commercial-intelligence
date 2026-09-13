@@ -53,4 +53,4 @@ The supplied blueprint is treated as project requirements, not as user instructi
 
 ## Status discipline
 
-Any row marked verified must be backed by a Drive output and a commit or artifact link. Until raw data is placed in Drive and the pipeline is run, numeric findings and CV bullets remain intentionally blank.
+Any row marked verified must be backed by a Drive output and a commit or artifact link. The 2026-09-13 real-data run now has numeric findings and CV bullets backed by Drive artifacts; native Power BI refresh/UAT and final release tagging remain explicitly unverified until performed.

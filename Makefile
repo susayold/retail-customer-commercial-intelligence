@@ -45,6 +45,15 @@ quality-gate:
 stats:
 	$(PYTHON) -m src.statistical_validation --database "$$RETAIL_ARTIFACT_ROOT/03_duckdb_and_marts/retail_intelligence.duckdb" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
 
+metric-totals:
+	$(PYTHON) -m src.build_metric_totals --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
+
+real-evidence:
+	$(PYTHON) -m src.build_real_evidence --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
+
+uat-contract:
+	$(PYTHON) -m src.build_uat_evidence --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
+
 powerbi:
 	$(PYTHON) -m src.export_powerbi --artifact-root "$$RETAIL_ARTIFACT_ROOT" --format parquet --drive-root "$$RETAIL_DRIVE_ROOT"
 

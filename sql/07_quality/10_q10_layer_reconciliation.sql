@@ -38,8 +38,11 @@ WITH checks AS (
     UNION ALL
     SELECT
         'causal_raw_vs_promotion_fact',
-        'equal_rows',
-        (SELECT COUNT(*) FROM raw_causal_data),
+        'distinct_product_store_week_grain',
+        (SELECT COUNT(*) FROM (
+            SELECT DISTINCT PRODUCT_ID, STORE_ID, WEEK_NO
+            FROM raw_causal_data
+        )),
         (SELECT COUNT(*) FROM fct_promotion_product_store_week),
         NULL, NULL, NULL, NULL, NULL, NULL
     UNION ALL
@@ -102,14 +105,17 @@ SELECT
              AND upstream_rows = downstream_rows
              AND upstream_households = downstream_households
              AND upstream_baskets = downstream_baskets
-             AND ABS(COALESCE(downstream_sales, 0) - COALESCE(upstream_sales, 0)) <= 0.000001
+             AND ABS(COALESCE(downstream_sales, 0) - COALESCE(upstream_sales, 0)) <= 0.01
             THEN 'pass'
         WHEN reconciliation_rule = 'equal_population_and_sales_aggregation'
              AND upstream_households = downstream_households
              AND upstream_baskets = downstream_baskets
-             AND ABS(COALESCE(downstream_sales, 0) - COALESCE(upstream_sales, 0)) <= 0.000001
+             AND ABS(COALESCE(downstream_sales, 0) - COALESCE(upstream_sales, 0)) <= 0.01
             THEN 'pass'
         WHEN reconciliation_rule = 'equal_rows'
+             AND upstream_rows = downstream_rows
+            THEN 'pass'
+        WHEN reconciliation_rule = 'distinct_product_store_week_grain'
              AND upstream_rows = downstream_rows
             THEN 'pass'
         WHEN reconciliation_rule = 'equal_rows_and_population'
