@@ -74,7 +74,7 @@ def _all_zero(path: Path, column: str) -> bool:
 def _git_commit(repo_root: Path) -> str:
     try:
         result = subprocess.run(
-            ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
+            ["git", "-c", f"safe.directory={repo_root}", "-C", str(repo_root), "rev-parse", "HEAD"],
             check=True,
             capture_output=True,
             text=True,
@@ -124,6 +124,10 @@ def write_data_readiness(
     source_ready = _read_json(docs_root / "source_ready.json")
     quality_gate = _read_json(qa_root / "qa_quality_gate.json")
     acquisition_manifest = docs_root / "acquisition_manifest.json"
+    parts_manifest = warehouse_root / "retail_intelligence.duckdb.parts_manifest.json"
+    database_exists = database.is_file()
+    database_sha256 = _sha256(database) if database_exists else ""
+    database_size_bytes = database.stat().st_size if database_exists else 0
 
     source_gate = (
         source_ready.get("status") == "READY"
@@ -150,7 +154,9 @@ def write_data_readiness(
     blocking_issues = sum(
         not gate for gate in (source_gate, curated_gate, warehouse_gate, marts_gate)
     )
-    data_ready = blocking_issues == 0 and quality_gate.get("ready") is True
+    semantic_ready = quality_gate.get("semantic_ready", True) is True
+    semantic_blocking_issues = 0 if semantic_ready else 1
+    data_ready = blocking_issues == 0 and semantic_blocking_issues == 0 and quality_gate.get("ready") is True
 
     qa_outputs = sorted(
         str(path.relative_to(artifact_root)).replace("\\", "/")
@@ -166,6 +172,11 @@ def write_data_readiness(
         "raw_files": raw_files,
         "parquet_files": parquet_files,
         "database_path": str(database.relative_to(artifact_root)).replace("\\", "/"),
+        "database_artifact": str(database.relative_to(artifact_root)).replace("\\", "/"),
+        "database_sha256": database_sha256,
+        "database_size_bytes": database_size_bytes,
+        "database_storage_mode": "split" if parts_manifest.is_file() else "full",
+        "parts_manifest": str(parts_manifest.relative_to(artifact_root)).replace("\\", "/") if parts_manifest.is_file() else "",
         "qa_outputs": qa_outputs,
         "started_at": started_at,
         "completed_at": completed_at,
@@ -178,7 +189,8 @@ def write_data_readiness(
         "curated_gate": "PASS" if curated_gate else "FAIL",
         "warehouse_gate": "PASS" if warehouse_gate else "FAIL",
         "marts_gate": "PASS" if marts_gate else "FAIL",
-        "blocking_issues": blocking_issues,
+        "blocking_issues": blocking_issues + semantic_blocking_issues,
+        "semantic_gate": "PASS" if semantic_ready else "FAIL",
         "pipeline_run_id": pipeline_run_id,
         "verified_at": completed_at,
         "qa_warnings": quality_gate.get("warnings", []),

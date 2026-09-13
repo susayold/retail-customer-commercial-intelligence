@@ -46,6 +46,7 @@ def test_one_command_runner_uses_drive_roots_for_data_artifacts():
     tokens = (
         'src.storage_policy', 'src.schema_contracts', 'src.inventory',
         'src.profile_sources', 'src.build_parquet', 'src.build_warehouse',
+        'src.semantic_qa',
         'src.validate', 'src.enforce_quality_gate', 'src.statistical_validation',
         'src.export_powerbi', 'pipeline_orchestration.log', 'artifact_root',
         'drive_root', 'storage_status.json', 'storage_gate',
@@ -82,7 +83,7 @@ def test_standalone_data_writers_require_drive_boundary():
     stage_paths = (
         "src/inventory.py", "src/schema_contracts.py", "src/profile_sources.py",
         "src/build_parquet.py", "src/build_warehouse.py", "src/validate.py",
-        "src/enforce_quality_gate.py", "src/statistical_validation.py",
+        "src/enforce_quality_gate.py", "src/semantic_qa.py", "src/statistical_validation.py",
         "src/export_powerbi.py", "src/segment_customers.py", "src/reconcile.py",
         "src/release_readiness.py",
     )

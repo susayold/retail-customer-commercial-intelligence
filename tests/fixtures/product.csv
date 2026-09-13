@@ -1,4 +1,8 @@
 PRODUCT_ID,MANUFACTURER,DEPARTMENT,BRAND,COMMODITY_DESC,SUB_COMMODITY_DESC,CURR_SIZE_OF_PRODUCT
-101,10,Grocery,PRIVATE,Snacks,Chips,100 g
-102,11,Grocery,NATIONAL,Beverages,Tea,500 ml
+101,10,Grocery,Private,Snacks,Chips,100 g
+102,11,Grocery,National,Beverages,Tea,500 ml
 103,12,Health,NATIONAL,Personal Care,Soap,1 bar
+104,13,Grocery, private ,Snacks,Crackers,200 g
+105,14,Grocery,PRIVATE,Beverages,Coffee,250 g
+106,15,Health, national ,Personal Care,Shampoo,300 ml
+107,16,Health,National,First Aid,Bandages,10 ct

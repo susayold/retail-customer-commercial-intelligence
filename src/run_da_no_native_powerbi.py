@@ -81,6 +81,14 @@ def main() -> None:
         ("powerbi_analytical_exports", [sys.executable, "-m", "src.export_powerbi", "--artifact-root", str(artifact_root), "--sql-dir", str(repo_root / "sql"), "--format", "parquet", *common]),
         ("metric_totals", [sys.executable, "-m", "src.build_metric_totals", "--artifact-root", str(artifact_root), *common]),
         (
+            "semantic_qa",
+            [sys.executable, "-m", "src.semantic_qa", "--data-root", str(data_root), "--artifact-root", str(artifact_root), "--thresholds", str(repo_root / "config" / "analysis_thresholds.yaml"), "--pipeline-run-id", pipeline_run_id, *common],
+        ),
+        (
+            "semantic_quality_gate",
+            [sys.executable, "-m", "src.enforce_quality_gate", "--artifact-root", str(artifact_root), "--require-semantic", *common],
+        ),
+        (
             "data_readiness",
             [sys.executable, "-m", "src.write_data_readiness", "--artifact-root", str(artifact_root), *common, "--repo-root", str(repo_root), "--pipeline-run-id", pipeline_run_id, "--started-at", started_at],
         ),
@@ -100,7 +108,11 @@ def main() -> None:
                 handle.flush()
                 raise
 
-    run_stage("tests_final", [sys.executable, "-m", "pytest", "-q"], repo_root)
+    # Windows hosts can deny the default %TEMP% pytest discovery directory.
+    # Keep the test scratch location beside the Drive-backed run so the final
+    # cleanup can remove it without touching user data elsewhere.
+    pytest_basetemp = artifact_root.parent / f".pytest_{pipeline_run_id}"
+    run_stage("tests_final", [sys.executable, "-m", "pytest", "-q", "--basetemp", str(pytest_basetemp)], repo_root)
     print(json.dumps({"status": "DA_ANALYSIS_READY", "pipeline_run_id": pipeline_run_id, "orchestration_log": str(orchestration_log)}, ensure_ascii=False))
 
 

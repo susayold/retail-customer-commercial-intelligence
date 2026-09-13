@@ -25,6 +25,7 @@ QA_TABLES = (
     "qa_reference_coverage",
     "qa_transaction_anomalies",
     "qa_layer_reconciliation",
+    "qa_brand_domain",
 )
 
 RUN_LOG_FIELDS = [

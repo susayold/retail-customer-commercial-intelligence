@@ -17,7 +17,7 @@ This dictionary distinguishes raw fields from curated fields. Raw source names a
 | COUPON_MATCH_DISC | transaction | source coupon match discount | audit signs first |
 | display | promotion | raw display code | categorical, not ordinal |
 | mailer | promotion | raw mailer code | categorical, not ordinal |
-| BRAND | product | private/national brand code | no margin inference |
+| BRAND | product | raw private/national brand code | raw value preserved; normalize with `UPPER(TRIM(BRAND))` before semantic comparisons |
 | DEPARTMENT | product | department descriptor | source-defined |
 | COMMODITY_DESC | product | commodity descriptor | affinity level |
 | CAMPAIGN | campaign | campaign identifier | recipient targeting bias |
@@ -26,6 +26,7 @@ This dictionary distinguishes raw fields from curated fields. Raw source names a
 
 ## Curated fields
 
+- `brand_type_raw` preserves the production source value exactly; `brand_type` is the governed `UPPER(TRIM(BRAND))` value used by downstream metrics.
 - retail_discount_value, coupon_discount_value, coupon_match_discount_value: absolute values after sign audit.
 - gross_spend_before_recorded_discounts: descriptive reconstruction only.
 - transaction_hour: parsed TRANS_TIME hour.

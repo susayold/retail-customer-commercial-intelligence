@@ -87,7 +87,7 @@ Drive subfolders:
 - 05_powerbi_exports: PBIX/PDF/Excel exports.
 - 06_source_docs: source notes and evidence.
 
-GitHub stores code, configuration, SQL, documentation, tests and small synthetic fixtures only. Raw source data is never committed to this public repository. The pipeline requires explicit Drive-backed input/output paths; it does not default to the repository or Codex workspace for data artifacts. Every data-writing CLI and Make target, including standalone inventory, Parquet, warehouse, QA, statistics, Power BI and release-audit commands, requires an explicit `--drive-root` and rejects an unavailable or repository-backed root. The [Drive-native Excel companion](https://docs.google.com/spreadsheets/d/16Iz47jiHM2nl5gGuhP5Py_xbNjLVLO5FaFpiL-_dR4k/edit) includes Metric Dictionary, Decision Tracker, UAT Checklist, Plan Status for all 44 plan steps, Source Register for the eight expected files, and the six planned output tabs. Power BI semantic structure (29 curated tables exported as 31 Drive artifacts, including reconciliation outputs) and governed measures are versioned in `powerbi/semantic_model.yaml` and `powerbi/measures.dax`.
+GitHub stores code, configuration, SQL, documentation, tests and small synthetic fixtures only. Raw source data is never committed to this public repository. The pipeline requires explicit Drive-backed input/output paths; it does not default to the repository or Codex workspace for data artifacts. Every data-writing CLI and Make target, including standalone inventory, Parquet, warehouse, QA, statistics, Power BI and release-audit commands, requires an explicit `--drive-root` and rejects an unavailable or repository-backed root. The rebuild now adds a centralized `UPPER(TRIM(BRAND))` semantic contract, raw-to-warehouse/export private-label reconciliation, brand-domain QA and segment-integrity QA. The [Drive-native Excel companion](https://docs.google.com/spreadsheets/d/16Iz47jiHM2nl5gGuhP5Py_xbNjLVLO5FaFpiL-_dR4k/edit) includes Metric Dictionary, Decision Tracker, UAT Checklist, Plan Status for all 44 plan steps, Source Register for the eight expected files, and the six planned output tabs. Power BI semantic structure (29 curated tables exported as 31 Drive artifacts, including reconciliation outputs) and governed measures are versioned in `powerbi/semantic_model.yaml` and `powerbi/measures.dax`.
 
 For Drive-only source acquisition, use the [Colab ingestion notebook](https://colab.research.google.com/github/susayold/retail-customer-commercial-intelligence/blob/main/notebooks/drive_ingest_source.ipynb). It streams the official package into the Drive project, extracts the eight CSVs into `01_raw_source`, and writes provenance metadata to Drive; it does not save raw data in the Colab runtime or repository.
 
@@ -103,7 +103,7 @@ $env:RETAIL_ARTIFACT_ROOT = "$env:RETAIL_DRIVE_ROOT"
 python -m src.run_pipeline --data-root $env:RETAIL_DATA_ROOT --artifact-root $env:RETAIL_ARTIFACT_ROOT --drive-root $env:RETAIL_DRIVE_ROOT --repo-root "." --with-tests
 ~~~
 
-The D path above is a runtime mount example; the persistent source of truth remains Drive. The runner writes storage_status.json and qa_quality_gate.json to Drive and stops before statistics/BI when blocking checks fail. No raw or curated data is written into the GitHub checkout. After the human-reviewed UAT, SQL/DAX reconciliation, root-cause and decision evidence are placed in Drive, run `make release-audit`; it writes release_readiness.json and fails closed until the final release contract is complete.
+The D path above is a runtime mount example; the persistent source of truth remains Drive. The runner writes storage_status.json and qa_quality_gate.json to Drive and stops before statistics/BI when blocking checks fail. No raw or curated data is written into the GitHub checkout. The local rebuild completed with `DA_ANALYSIS_READY`, `DATA_READY`, 31 analytical exports, 8/8 reconciled metrics and 100 passing tests. Native Power BI interaction UAT remains intentionally deferred; release audit should therefore remain false only for the documented UAT review rows. After the human-reviewed UAT, run `make release-audit` again.
 
 ## 8. Repository map
 
@@ -125,7 +125,7 @@ powerbi/                semantic model, DAX measures, UAT and export instruction
 | M1 | inventory, source contracts, profiling, warehouse, QA | scaffolded; run against Drive data |
 | M2 | engagement, segmentation, basket/category analytics | real-data marts, statistics and evidence verified in Drive |
 | M3 | promotion, campaign, coupon analytics | real-data promotion/campaign/coupon outputs verified in Drive |
-| M4 | Power BI, UAT, decisions, interview story | 31 curated exports and export-level parity verified; native PBIX/UAT pending |
+| M4 | Power BI, UAT, decisions, interview story | 31 curated exports, export-level parity and non-native evidence verified; native PBIX/UAT pending |
 
 Numeric CV bullets are available in `docs/19_verified_cv_bullets.md`; they are explicitly scoped to the observed panel and must not be presented as retailer-wide or causal results.
 
@@ -148,7 +148,7 @@ A decision-facing number must trace:
 source → raw → staging → fact/dimension/bridge → metric definition → mart → SQL → Power BI → finding → recommendation
 ~~~
 
-The final quality gate requires eight sources inventoried, schemas and grains validated, fan-out tests passing, SQL/DAX reconciled, campaign observability handled, demographic coverage disclosed, zero-sale promotion weeks preserved and three root-cause cases supported by at least five evidence-backed decisions.
+The final data-layer gate requires eight sources inventoried, schemas and grains validated, fan-out tests passing, SQL/export metrics reconciled, raw private-label semantics independently checked, campaign observability handled, demographic coverage disclosed, zero-sale promotion weeks preserved and three root-cause cases supported by at least five evidence-backed decisions.
 
 ## 12. License and source rights
 

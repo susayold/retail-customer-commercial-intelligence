@@ -16,11 +16,11 @@ The audit requires:
 
 - storage policy ready and blocking QA gate ready;
 - `06_source_docs/data_run_manifest.json` with the source, run, raw, curated, warehouse and QA lineage fields;
-- `06_source_docs/data_ready.json` with `DATA_READY`, source/curated/warehouse/marts gates set to `PASS` and zero blocking issues;
+- `06_source_docs/data_ready.json` with `DATA_READY`, source/curated/warehouse/marts/semantic gates set to `PASS` and zero blocking issues;
 - inventory with exactly the eight expected filenames and `load_status=ok`, schema validation with exactly those filenames and `status=ok`, source profile/cardinality rows, a non-empty error-free QA run log, layer reconciliation and statistics outputs;
 - all 31 declared Power BI exports;
 - 04_qa_reports/powerbi_reconciliation.csv with exactly the eight required metrics and pass status;
-- 04_qa_reports/uat_results.csv with exactly one pass row for each stable ID UAT-01 through UAT-12 (missing, unexpected or duplicate IDs fail the audit);
+- 04_qa_reports/uat_results.csv with exactly one row for each stable ID UAT-01 through UAT-12. The non-native run may mark only UAT-03, 04, 05, 06, 07, 09, 10 and 12 as `review`; the release audit then remains false for that single intentional native-Power-BI-UAT check.
 - 04_qa_reports/root_cause_cases.csv with three completed cases, Drive evidence URI, run ID and limitation;
 - 04_qa_reports/executive_decisions.csv with five completed decisions, Drive evidence URI, run ID and limitation;
 - repository contracts for the three root-cause cases, five executive decisions, limitations and UAT; the semantic model must validate as Drive-only with 29 curated tables, six pages, single-direction relationships, and all required governed measures present.
@@ -37,10 +37,10 @@ make reconcile
 
 Both input files and the generated `powerbi_reconciliation.csv` must be under the explicit Drive root. The target fails when a required metric is missing, duplicated, outside its tolerance, or has an invalid numeric value. The eight required metrics are Panel Net Spend, Baskets, Active Panel Households, Spend per Basket, Private Label Share, Campaign Recipients, Campaign Redeemers and Redemption Rate.
 
-After reconciliation, complete the 12 UAT checks, three root-cause cases and five executive decision records with Drive evidence URIs, then run the release audit:
+After reconciliation, complete the non-native checks, three root-cause cases and five executive decision records with Drive evidence URIs, then run the release audit. Native Power BI interaction checks remain review rows until a human opens and refreshes the PBIX:
 
 ~~~powershell
 make release-audit
 ~~~
 
-Do not create tag `v1.0.0` until the audit returns pass. The audit output is the release evidence index. It does not invent a finding, downgrade a failed QA result or treat a synthetic fixture as a real-data result.
+Do not create tag `v1.0.0` until native UAT is complete and the audit returns pass. In the current non-native scope, `DA_ANALYSIS_READY=true` and `DATA_READY` can coexist with `release_readiness=false`; the only expected failure is the documented native UAT review state. The audit does not invent a finding, downgrade a failed QA result or treat a synthetic fixture as a real-data result.

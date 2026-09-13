@@ -87,7 +87,11 @@ def main() -> None:
             ("validate", [sys.executable, "-m", "src.validate", "--data-root", str(data_root), "--artifact-root", str(artifact_root), "--sql-dir", str(sql_dir), "--thresholds", str(thresholds), "--drive-root", str(drive_root)]),
             ("quality_gate", [sys.executable, "-m", "src.enforce_quality_gate", "--artifact-root", str(artifact_root), "--drive-root", str(drive_root)]),
             ("statistics", [sys.executable, "-m", "src.statistical_validation", "--database", str(database), "--artifact-root", str(artifact_root), "--drive-root", str(drive_root)]),
+            ("real_evidence", [sys.executable, "-m", "src.build_real_evidence", "--artifact-root", str(artifact_root), "--drive-root", str(drive_root)]),
             ("powerbi_exports", [sys.executable, "-m", "src.export_powerbi", "--artifact-root", str(artifact_root), "--sql-dir", str(sql_dir), "--format", "parquet", "--drive-root", str(drive_root)]),
+            ("metric_totals", [sys.executable, "-m", "src.build_metric_totals", "--artifact-root", str(artifact_root), "--drive-root", str(drive_root)]),
+            ("semantic_qa", [sys.executable, "-m", "src.semantic_qa", "--data-root", str(data_root), "--artifact-root", str(artifact_root), "--thresholds", str(thresholds), "--pipeline-run-id", pipeline_run_id, "--drive-root", str(drive_root)]),
+            ("semantic_quality_gate", [sys.executable, "-m", "src.enforce_quality_gate", "--artifact-root", str(artifact_root), "--drive-root", str(drive_root), "--require-semantic"]),
         ]
         for stage, command in stages:
             started = time.perf_counter()
