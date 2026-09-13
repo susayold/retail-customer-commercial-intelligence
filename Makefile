@@ -54,6 +54,9 @@ real-evidence:
 uat-contract:
 	$(PYTHON) -m src.build_uat_evidence --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
 
+data-ready:
+	$(PYTHON) -m src.write_data_readiness --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT" --repo-root "." --pipeline-run-id "$$RETAIL_PIPELINE_RUN_ID" --started-at "$$RETAIL_PIPELINE_STARTED_AT"
+
 powerbi:
 	$(PYTHON) -m src.export_powerbi --artifact-root "$$RETAIL_ARTIFACT_ROOT" --format parquet --drive-root "$$RETAIL_DRIVE_ROOT"
 

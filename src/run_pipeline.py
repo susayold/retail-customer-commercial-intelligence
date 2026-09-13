@@ -9,6 +9,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from uuid import uuid4
 
 
 def run_command(stage: str, command: list[str], cwd: Path | None = None) -> None:
@@ -43,6 +44,8 @@ def main() -> None:
     contracts = args.contracts if args.contracts.is_absolute() else repo_root / args.contracts
     sql_dir = args.sql_dir if args.sql_dir.is_absolute() else repo_root / args.sql_dir
     thresholds = args.thresholds if args.thresholds.is_absolute() else repo_root / args.thresholds
+    pipeline_run_id = f"run_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}_{uuid4().hex[:8]}"
+    pipeline_started_at = datetime.now(timezone.utc).isoformat()
     qa_root = artifact_root / "04_qa_reports"
     parquet_root = artifact_root / "02_curated_parquet"
     database = artifact_root / "03_duckdb_and_marts" / "retail_intelligence.duckdb"
@@ -102,7 +105,30 @@ def main() -> None:
             log_event(log_handle, "tests", "start", command=test_command)
             run_command("tests", test_command, cwd=repo_root)
             log_event(log_handle, "tests", "complete", duration_seconds=round(time.perf_counter() - started, 3))
-    print(json.dumps({"status": "complete", "orchestration_log": str(log_path)}))
+        data_ready_command = [
+            sys.executable,
+            "-m",
+            "src.write_data_readiness",
+            "--artifact-root",
+            str(artifact_root),
+            "--drive-root",
+            str(drive_root),
+            "--repo-root",
+            str(repo_root),
+            "--pipeline-run-id",
+            pipeline_run_id,
+            "--started-at",
+            pipeline_started_at,
+        ]
+        started = time.perf_counter()
+        log_event(log_handle, "data_readiness", "start", command=data_ready_command)
+        try:
+            run_command("data_readiness", data_ready_command, cwd=repo_root)
+        except subprocess.CalledProcessError as error:
+            log_event(log_handle, "data_readiness", "failed", return_code=error.returncode, duration_seconds=round(time.perf_counter() - started, 3))
+            raise
+        log_event(log_handle, "data_readiness", "complete", duration_seconds=round(time.perf_counter() - started, 3))
+    print(json.dumps({"status": "complete", "pipeline_run_id": pipeline_run_id, "orchestration_log": str(log_path)}))
 
 
 if __name__ == "__main__":
