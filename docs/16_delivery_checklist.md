@@ -31,7 +31,7 @@ This checklist separates implemented repository work from outputs that require t
 | 40 | Finalize limitations | Done | docs/13_limitations.md |
 | 41 | Prepare interview guide | Done | docs/15_interview_guide.md |
 | 42 | Verified CV bullets | Done — verified with limits | docs/19_verified_cv_bullets.md uses only Drive-backed outputs and labels panel/observational scope |
-| 43 | Clean rebuild from raw | Done — verified | src/run_pipeline.py + Makefile `run`; full runner completed with storage gate, source gate, QA gate, statistics, exports and tests |
+| 43 | Clean rebuild from raw | Done — verified | src/run_pipeline.py + Makefile `run`; full runner completed with storage gate, source gate, QA gate, statistics, exports and tests; Drive `data_run_manifest.json` and `data_ready.json` recorded |
 | 44 | Tag v1.0.0 | Pending by design | Run src/release_readiness.py / Makefile `release-audit`; it fail-closes on missing Drive QA, SQL/DAX reconciliation, 12 UAT checks, 3 root-cause cases, 5 decisions or 31 Power BI exports; tag only after the Drive audit is ready |
 
 ## Live Drive tracker

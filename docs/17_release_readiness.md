@@ -15,6 +15,8 @@ The command writes 04_qa_reports/release_readiness.json to the Drive artifact ro
 The audit requires:
 
 - storage policy ready and blocking QA gate ready;
+- `06_source_docs/data_run_manifest.json` with the source, run, raw, curated, warehouse and QA lineage fields;
+- `06_source_docs/data_ready.json` with `DATA_READY`, source/curated/warehouse/marts gates set to `PASS` and zero blocking issues;
 - inventory with exactly the eight expected filenames and `load_status=ok`, schema validation with exactly those filenames and `status=ok`, source profile/cardinality rows, a non-empty error-free QA run log, layer reconciliation and statistics outputs;
 - all 31 declared Power BI exports;
 - 04_qa_reports/powerbi_reconciliation.csv with exactly the eight required metrics and pass status;

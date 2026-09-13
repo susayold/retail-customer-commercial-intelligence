@@ -24,7 +24,9 @@ def write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, object]]) 
 
 def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
     qa_root = artifact_root / "04_qa_reports"
+    source_docs_root = artifact_root / "06_source_docs"
     qa_root.mkdir(parents=True, exist_ok=True)
+    source_docs_root.mkdir(parents=True, exist_ok=True)
     (artifact_root / "05_powerbi_exports").mkdir(parents=True, exist_ok=True)
 
     (qa_root / "storage_status.json").write_text(
@@ -32,6 +34,37 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
     )
     (qa_root / "qa_quality_gate.json").write_text(
         json.dumps({"ready": True}), encoding="utf-8"
+    )
+    (source_docs_root / "data_ready.json").write_text(
+        json.dumps(
+            {
+                "status": "DATA_READY",
+                "source_gate": "PASS",
+                "curated_gate": "PASS",
+                "warehouse_gate": "PASS",
+                "marts_gate": "PASS",
+                "blocking_issues": 0,
+            }
+        ),
+        encoding="utf-8",
+    )
+    (source_docs_root / "data_run_manifest.json").write_text(
+        json.dumps(
+            {
+                "source_manifest_sha": "manifest-sha",
+                "source_ready_verified_at": "2026-09-12T00:00:00+00:00",
+                "repo_commit_sha": "repo-sha",
+                "pipeline_run_id": "run-001",
+                "raw_files": list(EXPECTED_FILES),
+                "parquet_files": list(EXPECTED_FILES),
+                "database_path": "03_duckdb_and_marts/retail_intelligence.duckdb",
+                "qa_outputs": ["04_qa_reports/qa_quality_gate.json"],
+                "started_at": "2026-09-12T00:00:00+00:00",
+                "completed_at": "2026-09-12T00:00:01+00:00",
+                "status": "SUCCESS",
+            }
+        ),
+        encoding="utf-8",
     )
     write_csv(
         qa_root / "raw_file_inventory.csv",

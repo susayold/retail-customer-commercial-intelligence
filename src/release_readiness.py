@@ -35,6 +35,29 @@ REQUIRED_ARTIFACT_FILES = (
     "04_qa_reports/statistics/statistics_run_log.csv",
 )
 
+REQUIRED_DATA_READY_FIELDS = (
+    "status",
+    "source_gate",
+    "curated_gate",
+    "warehouse_gate",
+    "marts_gate",
+    "blocking_issues",
+)
+
+REQUIRED_DATA_RUN_MANIFEST_FIELDS = (
+    "source_manifest_sha",
+    "source_ready_verified_at",
+    "repo_commit_sha",
+    "pipeline_run_id",
+    "raw_files",
+    "parquet_files",
+    "database_path",
+    "qa_outputs",
+    "started_at",
+    "completed_at",
+    "status",
+)
+
 REQUIRED_UAT_CHECK_IDS = tuple(f"UAT-{index:02d}" for index in range(1, 13))
 
 INVENTORY_REQUIRED_COLUMNS = {
@@ -347,6 +370,51 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
             "ready" if quality_error is None and quality is not None and quality.get("ready") is True
             else (quality_error or "blocking quality gate is not ready"),
             str(quality_path),
+        )
+    )
+
+    data_ready_path = artifact_root / "06_source_docs/data_ready.json"
+    data_ready, data_ready_error = _read_json(data_ready_path)
+    data_ready_ok = (
+        data_ready_error is None
+        and data_ready is not None
+        and all(data_ready.get(field) not in (None, "", []) for field in REQUIRED_DATA_READY_FIELDS)
+        and data_ready.get("status") == "DATA_READY"
+        and data_ready.get("source_gate") == "PASS"
+        and data_ready.get("curated_gate") == "PASS"
+        and data_ready.get("warehouse_gate") == "PASS"
+        and data_ready.get("marts_gate") == "PASS"
+        and data_ready.get("blocking_issues") == 0
+    )
+    checks.append(
+        _check(
+            "data_ready_marker",
+            data_ready_ok,
+            "DATA_READY with all four gates PASS"
+            if data_ready_ok
+            else (data_ready_error or "data_ready.json is missing required PASS fields"),
+            str(data_ready_path),
+        )
+    )
+
+    manifest_path = artifact_root / "06_source_docs/data_run_manifest.json"
+    data_run_manifest, manifest_error = _read_json(manifest_path)
+    manifest_ok = (
+        manifest_error is None
+        and data_run_manifest is not None
+        and all(data_run_manifest.get(field) not in (None, "", []) for field in REQUIRED_DATA_RUN_MANIFEST_FIELDS)
+        and data_run_manifest.get("status") == "SUCCESS"
+        and len(data_run_manifest.get("raw_files", [])) == len(EXPECTED_FILES)
+        and len(data_run_manifest.get("parquet_files", [])) == len(EXPECTED_FILES)
+    )
+    checks.append(
+        _check(
+            "data_run_manifest",
+            manifest_ok,
+            "required run manifest fields present"
+            if manifest_ok
+            else (manifest_error or "data_run_manifest.json is missing required fields"),
+            str(manifest_path),
         )
     )
 
