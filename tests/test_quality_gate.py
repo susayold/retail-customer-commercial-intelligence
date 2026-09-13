@@ -38,6 +38,14 @@ def seed_quality_outputs(qa_root: Path, grain_violation: int = 0) -> None:
         ["audit_name", "violating_rows"],
         [{"audit_name": "quantity_outlier", "violating_rows": 3}],
     )
+    write_csv(
+        qa_root / "qa_brand_domain.csv",
+        ["brand_type", "product_count", "transaction_rows", "panel_net_spend", "is_expected_domain", "status"],
+        [
+            {"brand_type": "PRIVATE", "product_count": 1, "transaction_rows": 1, "panel_net_spend": 10, "is_expected_domain": "true", "status": "pass"},
+            {"brand_type": "NATIONAL", "product_count": 1, "transaction_rows": 1, "panel_net_spend": 10, "is_expected_domain": "true", "status": "pass"},
+        ],
+    )
 
 
 def test_quality_gate_blocks_grain_failures_but_keeps_review_warnings(tmp_path):
@@ -70,6 +78,11 @@ def test_quality_gate_rejects_empty_quality_outputs(tmp_path):
     write_csv(qa_root / "qa_reference_coverage.csv", ["audit_name", "violating_rows"], [])
     write_csv(qa_root / "qa_layer_reconciliation.csv", ["audit_name", "status"], [])
     write_csv(qa_root / "qa_transaction_anomalies.csv", ["audit_name", "violating_rows"], [])
+    write_csv(
+        qa_root / "qa_brand_domain.csv",
+        ["brand_type", "product_count", "transaction_rows", "panel_net_spend", "is_expected_domain", "status"],
+        [],
+    )
 
     result = evaluate_quality_gate(qa_root)
 

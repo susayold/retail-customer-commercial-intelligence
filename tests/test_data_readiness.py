@@ -43,7 +43,7 @@ def test_write_data_readiness_emits_manifest_and_marker(tmp_path):
     )
     (docs_root / "acquisition_manifest.json").write_text("{}", encoding="utf-8")
     (qa_root / "qa_quality_gate.json").write_text(json.dumps({"ready": True, "warnings": []}), encoding="utf-8")
-    for name in ("qa_source_reconciliation.csv", "qa_layer_reconciliation.csv", "qa_key_audit.csv", "qa_grain_audit.csv"):
+    for name in ("qa_source_reconciliation.csv", "qa_layer_reconciliation.csv", "qa_key_audit.csv", "qa_grain_audit.csv", "qa_brand_domain.csv"):
         write_status_csv(qa_root / name)
 
     for source_name in EXPECTED_FILES:

@@ -48,6 +48,9 @@ stats:
 metric-totals:
 	$(PYTHON) -m src.build_metric_totals --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
 
+semantic-qa:
+	$(PYTHON) -m src.semantic_qa --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --thresholds config/analysis_thresholds.yaml --pipeline-run-id "$$RETAIL_PIPELINE_RUN_ID" --drive-root "$$RETAIL_DRIVE_ROOT"
+
 real-evidence:
 	$(PYTHON) -m src.build_real_evidence --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
 
