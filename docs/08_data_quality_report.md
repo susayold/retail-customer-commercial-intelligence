@@ -30,6 +30,10 @@ The data-quality workflow starts only after the Drive source gate reports READY.
 - qa_layer_reconciliation.csv: raw → staging → fact row counts, household/basket populations and sales totals with pass/review status;
 - qa_campaign_observability.csv: pre/during/post window availability;
 - qa_demographic_coverage.csv: coverage and covered/uncovered behavior comparison;
+- qa_brand_domain.csv: expected PRIVATE/NATIONAL domain counts and spend after brand normalization;
+- qa_private_label_reconciliation.csv: independent raw semantic baseline reconciled to warehouse and export;
+- qa_segment_integrity.csv and qa_segment_distribution.csv: one assignment per 2,500 households plus distribution;
+- qa_private_label_summary.csv: private-label candidate versus final segment assignment and precedence note;
 - powerbi_reconciliation.csv: SQL/DAX metric differences;
 - qa_run_log.csv: run_id, timestamp, QA file, rows read/written, duration, warnings and errors;
 - pipeline_run.log: source/model run_id, timestamp, file, rows read/written, duration, warnings and errors.
@@ -42,4 +46,4 @@ The acquisition layer additionally fails closed on zero-byte sources, corrupt/no
 
 ## Interpretation
 
-Do not delete anomalies before documenting them. Treat source scale from the blueprint as a planning expectation only. A result becomes verified only when the output exists in Drive and the corresponding code is committed to GitHub. Promotion and campaign findings remain observational associations, not causal claims.
+Do not delete anomalies before documenting them. A result becomes verified only when the output exists in Drive and the corresponding code is committed to GitHub. The corrected run retains the three source anomaly groups (18,850 zero-sale rows, 14,466 non-positive-quantity rows and 39,872 quantity outliers) as review warnings. Promotion and campaign findings remain observational associations, not causal claims.

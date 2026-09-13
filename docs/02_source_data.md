@@ -13,7 +13,7 @@
 | product.csv | product | manufacturer, department, brand, commodity | 92K |
 | hh_demographic.csv | household demographic record | household and demographic descriptors | 801 |
 
-These are planning expectations from the supplied blueprint, not verified results. After acquisition, the Drive inventory records the observed count, delta, column count, header hash and content SHA-256 for every file.
+The 2026-09-14 official-source rebuild verified the planning scale: 2,595,732 transaction rows, 36,786,524 causal rows, 92,353 products, 801 demographic records and the full eight-file set. The Drive inventory records the observed count, delta, column count, header hash and content SHA-256 for every file.
 
 ## Exact source contract
 
@@ -58,7 +58,7 @@ A successful run writes these metadata artifacts to 06_source_docs:
 - acquisition_run.log: append-only JSONL run events;
 - source_ready.json: READY marker consumed by the pipeline gate.
 
-The current project remains PRE-DATA until those artifacts exist and verify successfully. The connected Drive check on 2026-09-12 found 01_raw_source empty; no raw or curated data is stored locally.
+The corrected project source gate is READY. The rebuild used the official archive (`dunnhumby_The-Complete-Journey.zip`, SHA-256 `5e0a3d72…0558f9a`) and promoted the exact eight-file raw set to Drive. Raw and curated production data are not committed to GitHub and are removed from the local staging area after delivery.
 
 ## Acquisition QA
 

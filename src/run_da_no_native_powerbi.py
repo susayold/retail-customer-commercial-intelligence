@@ -108,7 +108,11 @@ def main() -> None:
                 handle.flush()
                 raise
 
-    run_stage("tests_final", [sys.executable, "-m", "pytest", "-q"], repo_root)
+    # Windows hosts can deny the default %TEMP% pytest discovery directory.
+    # Keep the test scratch location beside the Drive-backed run so the final
+    # cleanup can remove it without touching user data elsewhere.
+    pytest_basetemp = artifact_root.parent / f".pytest_{pipeline_run_id}"
+    run_stage("tests_final", [sys.executable, "-m", "pytest", "-q", "--basetemp", str(pytest_basetemp)], repo_root)
     print(json.dumps({"status": "DA_ANALYSIS_READY", "pipeline_run_id": pipeline_run_id, "orchestration_log": str(orchestration_log)}, ensure_ascii=False))
 
 

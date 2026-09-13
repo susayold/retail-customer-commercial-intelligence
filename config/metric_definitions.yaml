@@ -37,7 +37,7 @@ metrics:
     formula: buying households / active panel households
     grain: category and selected period
   private_label_share:
-    name: Private Label Spend Share
+    name: Private Label Share
     formula: private_label_spend / panel_net_spend
     grain: selected period
   campaign_redemption_rate:

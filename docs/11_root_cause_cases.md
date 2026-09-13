@@ -1,6 +1,6 @@
 # Root-cause case studies
 
-These cases are decision templates until the Drive data run produces verified outputs. Never replace a placeholder with a number unless the linked Drive artifact, QA status and metric definition are available.
+These cases are populated from the verified Drive-backed non-native rebuild. Every numeric claim below is scoped to the observed panel, linked to Drive evidence and paired with its limitation.
 
 ## Evidence contract for every case
 
@@ -40,10 +40,10 @@ What explains a change in Panel Net Spend: fewer active panel households, fewer 
 
 | Driver | Baseline | Current | Absolute change | Contribution / interpretation |
 |---|---:|---:|---:|---|
-| Active Panel Households | pending | pending | pending | pending |
-| Trips per Active Household | pending | pending | pending | pending |
-| Spend per Basket | pending | pending | pending | pending |
-| Panel Net Spend | pending | pending | pending | identity must reconcile |
+| Active Panel Households | 1,739 | 2,326 | +587 | Reconciled panel denominator |
+| Trips per Active Household | 8.00 | 15.96 | +99.49% | Largest driver movement in the selected windows |
+| Spend per Basket | $27.60 | $31.92 | +15.65% | Mix-sensitive accounting component |
+| Panel Net Spend | $384,068.32 | $1,185,148.81 | +208.58% | Identity reconciles within QA tolerance |
 
 ### Decision rule
 
@@ -76,10 +76,10 @@ Is a category weakening because fewer households buy it, buying households visit
 
 | Diagnostic | Baseline | Current | Change | Interpretation |
 |---|---:|---:|---:|---|
-| Buying households / penetration | pending | pending | pending | pending |
-| Trips per buying household | pending | pending | pending | pending |
-| Spend per category basket | pending | pending | pending | pending |
-| Category spend | pending | pending | pending | pending |
+| Buying households / penetration | 28 | 1 | -27 | Largest observed erosion category |
+| Trips per buying household | 1.07 | 1.00 | -0.07 | Category decomposition branch |
+| Spend per category basket | $15.68 | $1.98 | -87.37% | Mix-sensitive, within-panel |
+| Category spend | $470.42 | $1.98 | -99.58% | DRUG GM / LAWN AND GARDEN SHOP |
 
 ### Decision rule
 
@@ -107,10 +107,10 @@ Which campaign or customer segment shows the strongest observed response after a
 
 | Funnel stage | Numerator | Denominator | Rate | Observable rows | Interpretation |
 |---|---:|---:|---:|---:|---|
-| Campaign reach | pending | eligible panel households | pending | pending | exposure, not response |
-| Redemption | pending | recipient households | pending | pending | campaign/coupon response |
-| Related-product purchase | pending | redeemers / mapped events | pending | pending | bridge-controlled |
-| Observed repeat | pending | eligible prior purchasers | pending | pending | first-observed logic |
+| Campaign reach | 65 | eligible panel households | 65 eligible recipients | 65 post-28-day observable rows | exposure, not response |
+| Redemption | 1 | recipient households | 1.54% | 65 post-28-day observable rows | campaign/coupon response |
+| Related-product purchase | see export | redeemers / mapped events | see export | bridge-controlled | bridge-controlled |
+| Observed repeat | see export | eligible prior purchasers | see export | observability retained | first-observed logic |
 
 ### Decision rule
 
@@ -130,13 +130,15 @@ Cases A–C are complete only when each has:
 4. an action and monitoring KPI;
 5. an explicit limitation.
 
-## Verified real-data run — 2026-09-13
+## Verified real-data run — 2026-09-14
 
-The Drive-backed run completed with source run ID `run_20260913T001329Z_69411005`. The three cases are recorded in `04_qa_reports/root_cause_cases.csv` and are linked to the QA and curated export evidence.
+The Drive-backed run completed with source run ID `source_rebuild_20260914_private_label` and pipeline run ID `da_no_native_20260913T213859Z_341c1744`. The three cases are recorded in `04_qa_reports/root_cause_cases.csv` and are linked to the QA and curated export evidence.
 
 - Case A: no decline was observed between the first and last 13-week windows. Panel Net Spend moved from `$384,068.32` to `$1,185,148.81` (`+208.58%`); the largest reconciled driver movement was Trips per Active Household (`+99.49%`). This is an accounting decomposition, not causal attribution.
 - Case B: the largest relative observed erosion was `DRUG GM / LAWN AND GARDEN SHOP` (`-99.58%` spend), with buying households down 27 and category baskets down 29.
 - Case C: campaign 6 (TypeC) had the weakest observed redemption among campaigns with at least 50 recipients: 1/65 (`1.54%`), with 65 post-28-day observable rows.
 
 The blocking QA gate is `READY`; anomalies remain retained for review rather than deleted. The Drive evidence index is the `04_qa_reports` folder and the exact artifact names are listed in the CSV.
+
+The semantic repair is also complete: `Private`/`National` production values are normalized centrally, raw private-label share is independently reconciled at `27.7663%`, and segmentation assigns exactly one label to each of 2,500 households. The private-label candidate set is 28 households at the configured 60% threshold; precedence leaves 15 final `Private-Label Loyal` assignments.
 
