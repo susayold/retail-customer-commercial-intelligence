@@ -29,6 +29,37 @@
   const registerDrill = (payload) => { const id = `d${++drillId}`; drills.set(id, payload); return id; };
   const drillAttr = (payload) => `data-drill-id="${registerDrill(payload)}"`;
 
+  const uiIcon = (kind = "metric") => {
+    const common = 'viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
+    const svg = {
+      cart: `<svg ${common}><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.3L21 7H7"/><circle cx="10" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>`,
+      home: `<svg ${common}><path d="M3 11.2 12 4l9 7.2"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg>`,
+      users: `<svg ${common}><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.2"/><path d="M3.5 19c.5-4 2.6-6 5.5-6s5 2 5.5 6"/><path d="M14.5 14.5c2.7-.2 4.8 1.3 5.5 4.5"/></svg>`,
+      basket: `<svg ${common}><path d="M4 9h16l-1.5 10h-13z"/><path d="m8 9 4-5 4 5"/><path d="M8.5 13v3M12 13v3M15.5 13v3"/></svg>`,
+      tag: `<svg ${common}><path d="M3 12.2 11.2 4H20v8.8L11.8 21z"/><circle cx="16.2" cy="7.8" r="1.2"/></svg>`,
+      campaign: `<svg ${common}><path d="M4 13h4l9 5V6l-9 5H4z"/><path d="m8 13 1 6h3l-1.5-5.2"/><path d="M20 9v6"/></svg>`,
+      store: `<svg ${common}><path d="M4 9h16l-1-5H5z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>`,
+      clock: `<svg ${common}><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg>`,
+      bars: `<svg ${common}><path d="M5 20V11M10 20V6M15 20v-9M20 20V3"/></svg>`,
+      road: `<svg ${common}><path d="M8 21 10.5 3M16 21 13.5 3"/><path d="M12 5v3M12 11v3M12 17v2"/></svg>`,
+      coins: `<svg ${common}><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v4c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 10v4c0 1.7 3.1 3 7 3s7-1.3 7-3v-4"/><path d="M5 14v3c0 1.7 3.1 3 7 3s7-1.3 7-3v-3"/></svg>`,
+      trend: `<svg ${common}><path d="M4 17 9 12l3 3 7-8"/><path d="M15 7h4v4"/></svg>`,
+      box: `<svg ${common}><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg>`,
+      shield: `<svg ${common}><path d="M12 3 19 6v5c0 4.8-2.8 8-7 10-4.2-2-7-5.2-7-10V6z"/><path d="m9 12 2 2 4-5"/></svg>`,
+      document: `<svg ${common}><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>`,
+      metric: `<svg ${common}><circle cx="12" cy="12" r="8"/><path d="M8 13h8M12 9v8"/></svg>`,
+    }[kind] || "";
+    return svg.replaceAll("<path ", '<path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ')
+      .replaceAll("<circle ", '<circle fill="none" stroke="currentColor" stroke-width="1.8" ')
+      .replaceAll("<ellipse ", '<ellipse fill="none" stroke="currentColor" stroke-width="1.8" ');
+  };
+  const navIcon = (key) => uiIcon({ overview: "home", customer: "users", basket: "basket", category: "tag", promotion: "campaign", campaign: "campaign", root: "clock" }[key] || "metric");
+  const kpiIcon = (kind) => uiIcon(kind || "metric");
+  const barCell = (value, maxValue, formatter = compactMoney) => {
+    const width = Math.max(4, Math.min(100, (Number(value) || 0) / Math.max(Number(maxValue) || 1, 1) * 100));
+    return `<div class="metric-bar-cell"><span class="metric-bar-track"><i style="width:${width}%"></i></span><b>${esc(formatter(value))}</b></div>`;
+  };
+
   function svgBar(rows, key, labelKey, options = {}) {
     if (!rows?.length) return '<div class="empty">No source-backed rows match the selected filters.</div>';
     const horizontal = options.horizontal !== false;
@@ -41,13 +72,13 @@
       limit.forEach((r, i) => {
         const y = 5 + i * rowH, w = Math.max(2, (Number(r[key]) || 0) / max * barWidth), text = String(r[labelKey] ?? "");
         const payload = { title: text, subtitle: options.title, data: r, source: options.source || "Source-backed aggregate" };
-        body += `<text x="${left - 8}" y="${y + 17}" text-anchor="end">${esc(text.length > 21 ? `${text.slice(0, 20)}…` : text)}</text><line class="axis" x1="${left}" x2="${width - 22}" y1="${y + 23}" y2="${y + 23}"/><rect class="bar" ${drillAttr(payload)} x="${left}" y="${y + 7}" width="${w}" height="16" rx="7" fill="${colors[i % colors.length]}"/><text x="${Math.min(left + w + 6, width - 35)}" y="${y + 19}" fill="#0b6f55">${esc(options.format ? options.format(r[key]) : num(r[key], 0))}</text>`;
+        body += `<text x="${left - 8}" y="${y + 17}" text-anchor="end">${esc(text.length > 21 ? `${text.slice(0, 20)}…` : text)}</text><line class="axis" x1="${left}" x2="${width - 22}" y1="${y + 23}" y2="${y + 23}"/><rect class="bar" ${drillAttr(payload)} x="${left}" y="${y + 7}" width="${w}" height="16" rx="7" fill="${options.color || colors[i % colors.length]}"/><text x="${Math.min(left + w + 6, width - 35)}" y="${y + 19}" fill="#0b6f55">${esc(options.format ? options.format(r[key]) : num(r[key], 0))}</text>`;
       });
     } else {
       const base = height - 35, chartH = base - 18, groupW = (width - 55) / limit.length;
       limit.forEach((r, i) => {
         const x = 34 + i * groupW + groupW * .18, barH = (Number(r[key]) || 0) / max * chartH, payload = { title: r[labelKey], subtitle: options.title, data: r, source: options.source || "Source-backed aggregate" };
-        body += `<line class="axis" x1="30" x2="${width - 18}" y1="${base}" y2="${base}"/><rect class="bar" ${drillAttr(payload)} x="${x}" y="${base - barH}" width="${groupW * .62}" height="${Math.max(2, barH)}" rx="4" fill="${colors[i % colors.length]}"/><text x="${x + groupW * .31}" y="${base + 17}" text-anchor="middle">${esc(String(r[labelKey] ?? "").slice(0, 13))}</text><text x="${x + groupW * .31}" y="${Math.max(11, base - barH - 5)}" text-anchor="middle" fill="#0b6f55">${esc(options.format ? options.format(r[key]) : num(r[key], 0))}</text>`;
+        body += `<line class="axis" x1="30" x2="${width - 18}" y1="${base}" y2="${base}"/><rect class="bar" ${drillAttr(payload)} x="${x}" y="${base - barH}" width="${groupW * .62}" height="${Math.max(2, barH)}" rx="4" fill="${options.color || colors[i % colors.length]}"/><text x="${x + groupW * .31}" y="${base + 17}" text-anchor="middle">${esc(String(r[labelKey] ?? "").slice(0, 13))}</text><text x="${x + groupW * .31}" y="${Math.max(11, base - barH - 5)}" text-anchor="middle" fill="#0b6f55">${esc(options.format ? options.format(r[key]) : num(r[key], 0))}</text>`;
       });
     }
     return `${body}</svg>`;
@@ -111,7 +142,7 @@
       const lower = hasDelta
         ? `<div class="kpi-delta ${direction}"><span>${direction === "down" ? "▼" : "▲"} ${esc(x.delta)}</span><small>${esc(x.deltaLabel || "vs previous period")}</small></div>`
         : `<div class="kpi-note">${esc(x.note || "Source-backed metric")}</div>`;
-      return `<div class="kpi"><div class="kpi-top"><span class="kpi-icon">${x.icon || "●"}</span><span>${esc(x.label)}</span></div><div class="kpi-value">${x.value}</div>${lower}${sparkline(x.spark || [])}</div>`;
+      return `<div class="kpi"><div class="kpi-top"><span class="kpi-icon">${kpiIcon(x.iconType || "metric")}</span><span>${esc(x.label)}</span></div><div class="kpi-value">${x.value}</div>${lower}${sparkline(x.spark || [])}</div>`;
     }).join("")}</div>`;
   }
   function note(text) { return `<div class="data-note">${esc(text)}</div>`; }
@@ -175,15 +206,15 @@
       `Promotion-state results are observational associations; the highest observed sales state is ${promo[0]?.label || "—"}.`,
     ];
     return `${kpis([
-      { icon: "▥", label: "Panel Net Spend", value: compactMoney(k.panel_net_spend), delta: period.spend == null ? null : signedPct(period.spend), deltaRaw: period.spend, deltaLabel: period.label, spark: spark("panel_net_spend"), note: "Observed panel total" },
-      { icon: "▣", label: "Observed Baskets", value: num(k.baskets / 1000, 1) + "K", delta: period.baskets == null ? null : signedPct(period.baskets), deltaRaw: period.baskets, deltaLabel: period.label, spark: spark("baskets"), note: "Distinct observed baskets" },
-      { icon: "♟", label: "Active Panel Households", value: num(k.active_households / 1000, 1) + "K", delta: period.active == null ? null : signedPct(period.active), deltaRaw: period.active, deltaLabel: period.label, spark: spark("active_households"), note: "Observed household denominator" },
-      { icon: "↗", label: "Trips per Household", value: num(k.trips_per_household, 2), delta: period.trips == null ? null : signedPct(period.trips), deltaRaw: period.trips, deltaLabel: period.label, spark: spark("trips_per_household"), note: "Baskets / active households" },
-      { icon: "▤", label: "Spend per Basket", value: money(k.spend_per_basket, 2), delta: period.spendPerBasket == null ? null : signedPct(period.spendPerBasket), deltaRaw: period.spendPerBasket, deltaLabel: period.label, spark: spark("spend_per_basket"), note: "Net spend / basket" },
-      { icon: "◆", label: "Private Label Share", value: pct(k.private_label_share), note: "Observed brand mix" },
+      { iconType: "bars", label: "Panel Net Spend", value: compactMoney(k.panel_net_spend), delta: period.spend == null ? null : signedPct(period.spend), deltaRaw: period.spend, deltaLabel: period.label, spark: spark("panel_net_spend"), note: "Observed panel total" },
+      { iconType: "cart", label: "Observed Baskets", value: num(k.baskets / 1000, 1) + "K", delta: period.baskets == null ? null : signedPct(period.baskets), deltaRaw: period.baskets, deltaLabel: period.label, spark: spark("baskets"), note: "Distinct observed baskets" },
+      { iconType: "users", label: "Active Panel Households", value: num(k.active_households / 1000, 1) + "K", delta: period.active == null ? null : signedPct(period.active), deltaRaw: period.active, deltaLabel: period.label, spark: spark("active_households"), note: "Observed household denominator" },
+      { iconType: "road", label: "Trips per Household", value: num(k.trips_per_household, 2), delta: period.trips == null ? null : signedPct(period.trips), deltaRaw: period.trips, deltaLabel: period.label, spark: spark("trips_per_household"), note: "Baskets / active households" },
+      { iconType: "basket", label: "Spend per Basket", value: money(k.spend_per_basket, 2), delta: period.spendPerBasket == null ? null : signedPct(period.spendPerBasket), deltaRaw: period.spendPerBasket, deltaLabel: period.label, spark: spark("spend_per_basket"), note: "Net spend / basket" },
+      { iconType: "coins", label: "Private Label Share", value: pct(k.private_label_share), note: "Observed brand mix" },
     ])}
       <div class="grid overview-row overview-top">${card("Sales Trend", `${legend(["Panel Net Spend", "Observed Baskets"])}<div class="chart">${svgCombo(bands, "panel_net_spend", "baskets", { title: "Panel net spend and baskets by observation window", barColor: colors[0], lineColor: colors[1], barFormat: compactMoney, lineFormat: compact, source: "Mart_Panel_Weekly" })}</div>`, "overview-chart")}${card("Sales by Promotion State", `${legend(promo.map((r) => r.label))}${donut(promo, "panel_sales", "label", "Observed sales")}`)}${card("Sales by Department", table(departments.slice(0, 6), [{ key: "department", label: "Department" }, { key: "spend", label: "Sales", number: true, render: compactMoney }, { key: "private_share", label: "PL share", number: true, render: pct }], "Mart_Brand_Category"))}</div>
-      <div class="grid overview-row">${card("Top 10 Product Categories by Sales", `<div class="chart">${svgBar(topCategories.filter((r) => state.commodity === "All" || r.commodity === state.commodity), "spend", "commodity", { title: "Top commodities by panel net spend", format: compactMoney, source: "Mart_Category_Household" })}</div>`)}${card("Customer Segment Contribution", donut(d.segments, "spend", "segment", "Panel spend"))}${card("Top 10 Commodities by Sales", table(d.top_commodities.slice(0, 10), [{ key: "commodity", label: "Commodity" }, { key: "department", label: "Department" }, { key: "spend", label: "Sales", number: true, render: compactMoney }, { key: "penetration", label: "Penetration", number: true, render: pct }], "Mart_Category_Household"))}</div>
+      <div class="grid overview-row">${card("Top 10 Product Categories by Sales", `<div class="chart">${svgBar(topCategories.filter((r) => state.commodity === "All" || r.commodity === state.commodity), "spend", "commodity", { title: "Top commodities by panel net spend", format: compactMoney, color: "#46b97b", source: "Mart_Category_Household" })}</div>`)}${card("Customer Segment Contribution", donut(d.segments, "spend", "segment", "Panel spend"))}${card("Top 10 Commodities by Sales", (() => { const rows = d.top_commodities.slice(0, 10), maxSpend = Math.max(...rows.map((r) => Number(r.spend) || 0), 1); return table(rows, [{ key: "commodity", label: "Commodity" }, { key: "department", label: "Department" }, { key: "spend", label: "Sales", number: true, render: (v) => barCell(v, maxSpend, compactMoney) }, { key: "penetration", label: "Penetration", number: true, render: pct }], "Mart_Category_Household"); })())}</div>
       <div class="grid overview-row">${card("Promotion Performance", `${legend(["Promotion sales", "Sales / PSW"])}<div class="chart">${svgCombo(promo, "panel_sales", "sales_per_product_store_week", { title: "Promotion-state sales and sales per product-store-week", barColor: colors[0], lineColor: colors[3], barFormat: compactMoney, lineFormat: money, source: "Mart_Promotion_Category_Week" })}</div>`)}${card("Customer Base & Basket Activity", `${legend(["Active households", "Baskets"])}<div class="chart">${svgCombo(customerBands, "active_households", "baskets", { title: "Active households and baskets by observation window", barColor: colors[0], lineColor: colors[1], source: "Mart_Panel_Weekly" })}</div>`)}${card("Key Takeaways", `<div class="takeaways">${takeaways.map((text, i) => `<div class="insight-row"><div class="insight-badge">${i + 1}</div><div><span>${esc(text)}</span></div></div>`).join("")}</div>${note("Click a bar, donut slice, point or table row to open the source-backed drill-through drawer.")}`, "insight")}</div>`;
   }
 
@@ -257,7 +288,7 @@
   function render() {
     drills.clear();
     const page = pages[state.page], content = { overview, customer, basket, category, promotion, campaign, root }[state.page]();
-    document.getElementById("app").innerHTML = `<div class="app page-${state.page}"><aside class="sidebar"><div class="brand"><div class="brand-mark">🛒</div><div class="brand-copy"><strong>RETAIL CUSTOMER</strong><span>&amp; Commercial Intelligence</span></div></div><nav class="nav">${Object.entries(pages).map(([key, p]) => `<button class="${key === state.page ? "active" : ""}" data-page="${key}"><span class="nav-icon">${icons[key]}</span><span class="nav-label">${p.label}</span></button>`).join("")}</nav><div class="sidebar-foot"><b>Retail Customer<br/>&amp; Commercial Intelligence</b><span>v1.0 | Powered by Data</span></div></aside><main class="content"><header class="topbar"><div class="title-block"><div class="eyebrow">Source-backed retail intelligence</div><h1>${page.title}</h1><p class="subtitle">${page.subtitle}</p></div>${renderFilters()}<div class="slogan">Understand<br/>Customers.<br/>Grow Smarter.</div></header>${content}<div class="footer-line">Source: Drive-curated retail marts · ${esc(DATA.meta.observation_index.label)} · click a chart mark or table row for drill-down · observational association only.</div></main></div><div class="drawer-backdrop" id="drawerBackdrop"><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><button class="drawer-close" id="drawerClose" aria-label="Close">×</button><div class="eyebrow">Power BI-style drill-through</div><h2 id="drawerTitle">Detail</h2><p class="drawer-subtitle" id="drawerSubtitle"></p><div id="drawerBody"></div></aside></div>`;
+    document.getElementById("app").innerHTML = `<div class="app page-${state.page}"><aside class="sidebar"><div class="brand"><div class="brand-mark">${uiIcon("cart")}</div><div class="brand-copy"><strong>RETAIL CUSTOMER</strong><span>&amp; Commercial Intelligence</span></div></div><nav class="nav">${Object.entries(pages).map(([key, p]) => `<button class="${key === state.page ? "active" : ""}" data-page="${key}"><span class="nav-icon">${navIcon(key)}</span><span class="nav-label">${p.label}</span></button>`).join("")}</nav><div class="sidebar-foot"><b>Retail Customer<br/>&amp; Commercial Intelligence</b><span>v1.0 | Powered by Data</span></div></aside><main class="content"><header class="topbar"><div class="title-block"><div class="eyebrow">Source-backed retail intelligence</div><h1>${page.title}</h1><p class="subtitle">${page.subtitle}</p></div>${renderFilters()}<div class="slogan">Understand<br/>Customers.<br/>Grow Smarter.</div></header>${content}<div class="footer-line">Source: Drive-curated retail marts · ${esc(DATA.meta.observation_index.label)} · click a chart mark or table row for drill-down · observational association only.</div></main></div><div class="drawer-backdrop" id="drawerBackdrop"><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><button class="drawer-close" id="drawerClose" aria-label="Close">×</button><div class="eyebrow">Power BI-style drill-through</div><h2 id="drawerTitle">Detail</h2><p class="drawer-subtitle" id="drawerSubtitle"></p><div id="drawerBody"></div></aside></div>`;
     bindEvents();
   }
 
