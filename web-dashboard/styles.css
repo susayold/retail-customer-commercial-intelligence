@@ -526,3 +526,115 @@ tbody tr:hover { background: #ecfaf5; }
   .page-overview .overview-row:not(.overview-top) { grid-template-columns: 1fr; }
   .page-overview .overview-row > :last-child { grid-column: auto; }
 }
+
+
+/* PAGE 1 — exact reference pass 2 */
+.page-overview {
+  min-width: 1180px;
+  grid-template-columns: 186px minmax(0, 1fr);
+  background: #f3f8f8;
+}
+.page-overview .sidebar {
+  background: linear-gradient(180deg,#095b47 0%,#064f40 52%,#064038 100%);
+}
+.page-overview .brand { min-height: 101px; padding-bottom: 10px; }
+.page-overview .brand-mark { width: 54px; height: 54px; color:#37d88f; }
+.page-overview .brand-mark svg { width: 46px; height: 46px; }
+.page-overview .nav button { min-height: 53px; padding: 11px 15px; }
+.page-overview .nav-icon { display:grid; place-items:center; width:22px; height:22px; }
+.page-overview .nav-icon svg { width:20px; height:20px; }
+.page-overview .content { padding:0 10px 13px; overflow:hidden; }
+.page-overview .topbar {
+  min-height: 88px;
+  padding: 12px 9px 8px;
+  border-bottom: 1px solid #e5eeee;
+}
+.page-overview h1 { font-size: 27px; }
+.page-overview .subtitle { font-size: 12.5px; margin-top:7px; }
+.page-overview .slogan { font-size:12px; min-width:128px; }
+.page-overview .topbar > .filters { gap:7px; min-width:505px; }
+.page-overview .overview-filters .overview-window { min-width:176px; }
+.page-overview .overview-filters .filter { min-width:118px; }
+.page-overview .filter select,.page-overview .filter input { min-height:29px; font-size:10.5px; }
+.page-overview .kpis {
+  grid-template-columns: repeat(6,minmax(0,1fr));
+  gap: 8px;
+  margin: 8px 0 9px;
+}
+.page-overview .kpi {
+  min-height: 105px;
+  padding: 10px 10px 9px;
+  border-radius: 9px;
+  box-shadow: 0 4px 15px rgba(24,79,77,.045);
+}
+.page-overview .kpi-top { font-size:10.5px; gap:8px; }
+.page-overview .kpi-icon { width:36px; height:36px; color:#087255; background:#dff5ec; }
+.page-overview .kpi-icon svg { width:22px; height:22px; }
+.page-overview .kpi:nth-child(6) .kpi-icon { color:#ec8a24; background:#fff1de; }
+.page-overview .kpi-value {
+  margin: 7px 0 3px 44px;
+  font-size: 25px;
+  color:#0a5947;
+}
+.page-overview .kpi-delta,.page-overview .kpi-note {
+  margin-left:44px;
+  min-height:15px;
+  font-size:9.5px;
+}
+.page-overview .kpi-delta small { font-size:7.5px; }
+.page-overview .kpi-spark { right:6px; bottom:6px; width:64px; height:27px; }
+.page-overview .grid { gap:8px; margin-bottom:8px; }
+.page-overview .overview-top { grid-template-columns: 1.25fr .91fr 1.02fr; }
+.page-overview .overview-row:not(.overview-top) { grid-template-columns: .96fr .93fr 1.11fr; }
+.page-overview .overview-row .card {
+  min-height: 225px;
+  height: 225px;
+}
+.page-overview .card {
+  padding: 10px 12px;
+  border-radius: 9px;
+  border-color:#e7eeee;
+  box-shadow:0 4px 14px rgba(23,75,81,.035);
+}
+.page-overview .card h2 { font-size:14px; margin-bottom:5px; }
+.page-overview .legend { font-size:8.8px; gap:9px; margin:1px 0 2px; }
+.page-overview .chart,.page-overview .overview-row .chart { min-height:169px; }
+.page-overview .chart svg text { font-size:8.8px; }
+.page-overview .donut-wrap { min-height:169px; }
+.page-overview .donut { width:142px; height:142px; }
+.page-overview .donut-hole { inset:27px; }
+.page-overview .donut-legend { font-size:9px; gap:6px; }
+.page-overview .table-wrap { max-height:177px; }
+.page-overview table { font-size:9.4px; }
+.page-overview th { font-size:8.5px; padding:4px 5px; }
+.page-overview td { padding:4px 5px; }
+.page-overview .metric-bar-cell {
+  min-width: 118px;
+  display:grid;
+  grid-template-columns:minmax(48px,1fr) auto;
+  align-items:center;
+  gap:7px;
+}
+.page-overview .metric-bar-track {
+  display:block;
+  height:13px;
+  border-radius:3px;
+  background:#e6f0ee;
+  overflow:hidden;
+}
+.page-overview .metric-bar-track i {
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,#37b975,#6fd1a2);
+}
+.page-overview .metric-bar-cell b { font-weight:600; color:#315b63; }
+.page-overview .takeaways { gap:0; }
+.page-overview .insight-row { padding:4px 0; }
+.page-overview .insight-badge { width:22px; height:22px; }
+.page-overview .insight span { font-size:9px; line-height:1.22; }
+.page-overview .data-note { display:none; }
+.page-overview .footer-line { display:none; }
+@media (min-width: 1500px) {
+  .page-overview .overview-row .card { min-height:236px; height:236px; }
+  .page-overview .chart,.page-overview .overview-row .chart { min-height:180px; }
+}
