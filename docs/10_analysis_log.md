@@ -20,16 +20,17 @@
 | 2026-09-12 | Analysis mart Power BI coverage | src/export_powerbi.py + powerbi/semantic_model.yaml | implemented | category, promotion, campaign and coupon aggregates wired into 31 Drive exports and 29 semantic tables; refresh pending source |
 | 2026-09-12 | Root-cause templates | docs/11_root_cause_cases.md | implemented; findings pending | three case contracts define evidence, decision rules, actions and limitations |
 | 2026-09-12 | Executive decision slots | docs/12_executive_decisions.md + Drive Decision_Tracker | implemented; findings pending | five decision slots require verified Drive outputs and run IDs |
-| pending | Inventory/profile | Drive 04_qa_reports | pending | no eight-source CSVs present yet |
-| pending | QA/reconciliation | Drive 04_qa_reports | pending | stop on real-source grain/fan-out issues |
-| pending | Root causes/decisions | docs/11–12 | pending | populate findings only from verified results |
-| pending | Power BI/UAT | Drive 05_powerbi_exports | pending | refresh only from curated marts |
+| 2026-09-14 | Inventory/profile | Drive 04_qa_reports | verified | 8/8 sources, exact source checksums, schema PASS and cardinality evidence |
+| 2026-09-14 | Semantic private-label repair | sql/02_staging + src/semantic_qa.py + Drive QA | verified | `brand_type_raw` preserved; normalized `brand_type`; raw baseline reconciles to warehouse/export at 27.7663% share |
+| 2026-09-14 | QA/reconciliation | Drive 04_qa_reports | verified | blocking quality gate PASS; 8 governed metrics pass at 0.01 tolerance; anomaly groups retained as warnings |
+| 2026-09-14 | Root causes/decisions | docs/11–12 + Drive evidence | verified | 3 root-cause cases and 5 executive decisions regenerated |
+| 2026-09-14 | Power BI analytical exports | Drive 05_powerbi_exports | verified | 31 analytical exports regenerated; native PBIX interaction UAT intentionally pending |
 
 | 2026-09-12 | Decision alert semantics | sql/06_marts/13_mart_decision_alerts.sql + tests/test_decision_alerts.py | implemented | alert thresholds now use relative variance while preserving absolute variance; CI contract test added |
 | 2026-09-12 | Runner path hardening | src/run_pipeline.py + tests/test_contracts.py | implemented | resolves repository, SQL/config and Drive roots; subprocess stages execute with repository cwd; CI contract passes |
 | 2026-09-12 | Blocking QA gate | src/enforce_quality_gate.py + src/run_pipeline.py + tests/test_quality_gate.py | implemented | key duplicates, basket grain breaks, unmatched references and layer reconciliation review stop statistics/BI; retained transaction anomalies are warnings |
 | 2026-09-12 | Decision alert contract coverage | sql/06_marts/13_mart_decision_alerts.sql + tests/test_decision_alerts.py + docs/07_business_rules.md | implemented | plan-required fields and the three v1 alert metrics are asserted; relative threshold semantics and absolute sizing remain explicit; optional alert families are documented as disabled pending denominator/QA review |
-| 2026-09-13 | Real source acquisition and rebuild | official dunnhumby package → Drive 01_raw_source → Drive QA/Parquet/DuckDB/BI exports | verified | 8/8 files, source checksum PASS, blocking QA READY, 31 curated exports, 3 root-cause cases, 5 decisions, 91 tests passing; native Power BI refresh/UAT remains a human release gate |
+| 2026-09-13 | Real source acquisition and rebuild | official dunnhumby package → Drive 01_raw_source → Drive QA/Parquet/DuckDB/BI exports | verified | 8/8 files, source checksum PASS, blocking QA READY, 31 curated exports, 3 root-cause cases, 5 decisions, 100 tests passing; native Power BI refresh/UAT remains a human release gate |
 | 2026-09-12 | Centralized analysis thresholds | config/analysis_thresholds.yaml + src/sql_renderer.py + warehouse/QA smoke chain | implemented | trajectory, segmentation and decision-alert numeric thresholds are configuration-backed and rendered consistently in warehouse/validation execution and synthetic tests |
 
 | 2026-09-12 | Category trajectory threshold wiring | sql/08_analysis/category_analysis.sql + tests/test_sql_renderer.py | implemented | category decomposition now consumes the shared trajectory thresholds; SQL hardcode audit is clean |
@@ -42,3 +43,4 @@
 | 2026-09-12 | Standalone Drive-only stage guards | src/storage_paths.py + stage CLIs + Makefile + tests/test_storage_policy.py | implemented | every data-writing stage and release audit requires an available explicit Drive root; repository-backed and unmounted paths fail before writing artifacts |
 | 2026-09-12 | Standalone writer contract coverage | tests/test_contracts.py | implemented | all standalone data-writing CLIs are asserted to use the shared Drive path guard and require `--drive-root`; CI run 34674905452 passed |
 | 2026-09-12 | Release reconciliation runbook | docs/17_release_readiness.md + Makefile reconcile + tests/test_contracts.py | implemented | Drive-only SQL–Power BI input/output sequence is documented; release audit remains fail-closed; documentation contract test passed in CI run 34675574912 |
+| 2026-09-14 | Final private-label semantic closure | branch `fix/private-label-semantic-closure` + Drive run `da_no_native_20260913T213859Z_341c1744` | verified | DATA_READY, DA_ANALYSIS_READY and 100 tests passing; compact DuckDB, split parts, release audit and Drive promotion are published after final verification |

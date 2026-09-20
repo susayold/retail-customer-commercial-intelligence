@@ -17,4 +17,8 @@ Each metric has a defined population, grain, formula and limitation. All Power B
 | Campaign Redemption Rate | Recipient households with redemption | redeemers / recipients | campaign | not causal lift |
 | Promotion Dependency | Share of observed activity during promoted states | promoted activity / all activity | category/period | association only |
 
+## Semantic QA contract
+
+`BRAND` is normalized once in staging with `UPPER(TRIM(BRAND))`; the raw value remains available for audit. The independent raw baseline defines private label as `UPPER(TRIM(raw_product.BRAND)) = 'PRIVATE'`. The 2026-09-14 rebuild reconciled the raw baseline to the warehouse and analytical export: Private Label Share = `27.7663%`, with a positive private-label spend numerator and 2,496 buying households.
+
 Power BI measure names must use these labels. A missing denominator returns blank, not zero. Numerators and denominators are shown for reach/redemption rates.

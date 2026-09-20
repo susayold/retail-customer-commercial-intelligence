@@ -17,7 +17,8 @@
 12. Analyze campaign recipients, redemption and observable pre/during/post behavior.
 13. Validate selected differences with confidence intervals/effect sizes where useful.
 14. Write root-cause cases and decision recommendations.
-15. Export curated BI marts, reconcile SQL/DAX and complete UAT.
+15. Run an independent raw private-label semantic check and segment-integrity check.
+16. Export curated BI marts, reconcile SQL/export metrics and leave native Power BI interaction UAT explicitly pending.
 
 ## Statistical guardrails
 
@@ -28,6 +29,10 @@ Campaign pre/during/post windows are rendered from config/analysis_thresholds.ya
 ## Causal language
 
 The data is observational. Promotion and campaign recipients may be selected. Use associated with, observed response, descriptive difference and matched observational comparison. Do not write causal lift or ROI without verified experimental/cost data.
+
+## Private-label repair
+
+The production product source contains `Private` and `National` values. Staging preserves the raw field as `brand_type_raw` and creates the single governed value `brand_type = UPPER(TRIM(BRAND))`. Semantic QA independently recomputes the private-label baseline from raw CSVs, then reconciles its positive numerator and share to `mart_panel_weekly` and `Mart_Panel_Weekly.parquet`. This prevents a passing structural reconciliation from hiding a zero-valued business metric.
 
 ## Category household and penetration
 

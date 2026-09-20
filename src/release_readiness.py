@@ -24,6 +24,11 @@ REQUIRED_ARTIFACT_FILES = (
     "04_qa_reports/qa_run_log.csv",
     "04_qa_reports/qa_quality_gate.json",
     "04_qa_reports/qa_layer_reconciliation.csv",
+    "04_qa_reports/qa_brand_domain.csv",
+    "04_qa_reports/qa_private_label_reconciliation.csv",
+    "04_qa_reports/qa_segment_integrity.csv",
+    "04_qa_reports/qa_segment_distribution.csv",
+    "04_qa_reports/qa_private_label_summary.csv",
     "04_qa_reports/powerbi_reconciliation.csv",
     "04_qa_reports/uat_results.csv",
     "04_qa_reports/root_cause_cases.csv",
@@ -42,6 +47,7 @@ REQUIRED_DATA_READY_FIELDS = (
     "warehouse_gate",
     "marts_gate",
     "blocking_issues",
+    "semantic_gate",
 )
 
 REQUIRED_DATA_RUN_MANIFEST_FIELDS = (
@@ -59,6 +65,9 @@ REQUIRED_DATA_RUN_MANIFEST_FIELDS = (
 )
 
 REQUIRED_UAT_CHECK_IDS = tuple(f"UAT-{index:02d}" for index in range(1, 13))
+DEFERRED_NATIVE_POWERBI_UAT_IDS = {
+    "UAT-03", "UAT-04", "UAT-05", "UAT-06", "UAT-07", "UAT-09", "UAT-10", "UAT-12",
+}
 
 INVENTORY_REQUIRED_COLUMNS = {
     "file_name",
@@ -385,6 +394,7 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
         and data_ready.get("warehouse_gate") == "PASS"
         and data_ready.get("marts_gate") == "PASS"
         and data_ready.get("blocking_issues") == 0
+        and data_ready.get("semantic_gate") == "PASS"
     )
     checks.append(
         _check(
@@ -546,6 +556,52 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
     checks.append(
         _csv_contract(
             artifact_root,
+            "04_qa_reports/qa_brand_domain.csv",
+            {"brand_type", "product_count", "transaction_rows", "panel_net_spend", "is_expected_domain", "status"},
+            expected_rows=2,
+            require_pass_status=True,
+            unique_columns={"brand_type"},
+            exact_values={"brand_type": {"PRIVATE", "NATIONAL"}, "is_expected_domain": {"true"}},
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/qa_private_label_reconciliation.csv",
+            {"metric", "raw_semantic_value", "warehouse_value", "export_value", "warehouse_delta", "export_delta", "tolerance", "status"},
+            expected_rows=1,
+            require_pass_status=True,
+            exact_values={"metric": {"Private Label Share"}},
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/qa_segment_integrity.csv",
+            {"check_name", "expected_value", "actual_value", "status"},
+            minimum_rows=5,
+            require_pass_status=True,
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/qa_segment_distribution.csv",
+            {"segment", "households", "share_of_households", "observed_spend", "share_of_observed_spend", "baskets", "avg_basket"},
+            minimum_rows=1,
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
+            "04_qa_reports/qa_private_label_summary.csv",
+            {"pipeline_run_id", "panel_private_label_spend", "panel_private_label_share", "private_label_buying_households", "private_label_candidate_households", "final_private_label_loyal_households", "candidate_definition", "segment_precedence_note"},
+            expected_rows=1,
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
             "04_qa_reports/powerbi_reconciliation.csv",
             {"metric", "sql_value", "powerbi_value", "difference", "tolerance", "status"},
             expected_rows=8,
@@ -558,12 +614,43 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
             "04_qa_reports/uat_results.csv",
             {"check_id", "status"},
             expected_rows=len(REQUIRED_UAT_CHECK_IDS),
-            require_pass_status=True,
+            complete_statuses={"pass", "review"},
             require_nonblank_columns={"check_id"},
             unique_columns={"check_id"},
             exact_values={"check_id": set(REQUIRED_UAT_CHECK_IDS)},
         )
     )
+    uat_rows, _, uat_error = _read_csv(artifact_root / "04_qa_reports/uat_results.csv")
+    if uat_error is not None or uat_rows is None:
+        uat_gate = _check("native_powerbi_uat", False, "UAT evidence is missing or invalid", "04_qa_reports/uat_results.csv")
+    else:
+        review_ids = {
+            str(row.get("check_id", "")).strip()
+            for row in uat_rows
+            if str(row.get("status", "")).strip().lower() == "review"
+        }
+        invalid_status_ids = {
+            str(row.get("check_id", "")).strip()
+            for row in uat_rows
+            if str(row.get("status", "")).strip().lower() not in {"pass", "review"}
+        }
+        unexpected_review_ids = review_ids - DEFERRED_NATIVE_POWERBI_UAT_IDS
+        missing_deferred_ids = DEFERRED_NATIVE_POWERBI_UAT_IDS - review_ids
+        native_uat_ready = not review_ids and not invalid_status_ids
+        if review_ids == DEFERRED_NATIVE_POWERBI_UAT_IDS and not invalid_status_ids:
+            reason = "native Power BI UAT intentionally deferred: " + ", ".join(sorted(review_ids))
+        elif native_uat_ready:
+            reason = "all UAT checks are pass"
+        else:
+            reason = "invalid or unexpected UAT review state"
+            if unexpected_review_ids:
+                reason += "; unexpected review IDs: " + ", ".join(sorted(unexpected_review_ids))
+            if missing_deferred_ids and review_ids:
+                reason += "; missing deferred IDs: " + ", ".join(sorted(missing_deferred_ids))
+            if invalid_status_ids:
+                reason += "; invalid status IDs: " + ", ".join(sorted(invalid_status_ids))
+        uat_gate = _check("native_powerbi_uat", native_uat_ready, reason, "04_qa_reports/uat_results.csv")
+    checks.append(uat_gate)
     checks.append(
         _csv_contract(
             artifact_root,

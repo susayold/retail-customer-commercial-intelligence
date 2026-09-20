@@ -44,6 +44,7 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
                 "warehouse_gate": "PASS",
                 "marts_gate": "PASS",
                 "blocking_issues": 0,
+                "semantic_gate": "PASS",
             }
         ),
         encoding="utf-8",
@@ -214,6 +215,34 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
         qa_root / "qa_layer_reconciliation.csv",
         ["audit_name", "status"],
         [{"audit_name": "raw_vs_fact", "status": "pass"}],
+    )
+    write_csv(
+        qa_root / "qa_brand_domain.csv",
+        ["brand_type", "product_count", "transaction_rows", "panel_net_spend", "is_expected_domain", "status"],
+        [
+            {"brand_type": "PRIVATE", "product_count": 1, "transaction_rows": 1, "panel_net_spend": 1, "is_expected_domain": "true", "status": "pass"},
+            {"brand_type": "NATIONAL", "product_count": 1, "transaction_rows": 1, "panel_net_spend": 1, "is_expected_domain": "true", "status": "pass"},
+        ],
+    )
+    write_csv(
+        qa_root / "qa_private_label_reconciliation.csv",
+        ["metric", "raw_semantic_value", "warehouse_value", "export_value", "warehouse_delta", "export_delta", "tolerance", "status"],
+        [{"metric": "Private Label Share", "raw_semantic_value": 0.2, "warehouse_value": 0.2, "export_value": 0.2, "warehouse_delta": 0, "export_delta": 0, "tolerance": 0.000001, "status": "pass"}],
+    )
+    write_csv(
+        qa_root / "qa_segment_integrity.csv",
+        ["check_name", "expected_value", "actual_value", "status"],
+        [{"check_name": f"check-{index}", "expected_value": 1, "actual_value": 1, "status": "pass"} for index in range(5)],
+    )
+    write_csv(
+        qa_root / "qa_segment_distribution.csv",
+        ["segment", "households", "share_of_households", "observed_spend", "share_of_observed_spend", "baskets", "avg_basket"],
+        [{"segment": "High", "households": 1, "share_of_households": 1, "observed_spend": 10, "share_of_observed_spend": 1, "baskets": 1, "avg_basket": 10}],
+    )
+    write_csv(
+        qa_root / "qa_private_label_summary.csv",
+        ["pipeline_run_id", "panel_private_label_spend", "panel_private_label_share", "private_label_buying_households", "private_label_candidate_households", "final_private_label_loyal_households", "candidate_definition", "segment_precedence_note"],
+        [{"pipeline_run_id": "run-001", "panel_private_label_spend": 1, "panel_private_label_share": 0.2, "private_label_buying_households": 1, "private_label_candidate_households": 1, "final_private_label_loyal_households": 1, "candidate_definition": "test", "segment_precedence_note": "test"}],
     )
     write_csv(
         qa_root / "powerbi_reconciliation.csv",
