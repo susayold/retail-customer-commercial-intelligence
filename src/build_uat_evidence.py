@@ -16,6 +16,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--drive-root", type=Path, required=True)
+    parser.add_argument("--pipeline-run-id", required=True)
     args = parser.parse_args()
 
     artifact_root = require_drive_path(args.artifact_root, args.drive_root, "--artifact-root")
@@ -38,7 +39,7 @@ def main() -> None:
     with output.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(
             handle,
-            fieldnames=["check_id", "status", "evidence_uri", "evidence_file", "notes"],
+            fieldnames=["check_id", "status", "evidence_uri", "evidence_file", "pipeline_run_id", "notes"],
         )
         writer.writeheader()
         for check_id, status, evidence_file, notes in rows:
@@ -48,6 +49,7 @@ def main() -> None:
                     "status": status,
                     "evidence_uri": DRIVE_QA,
                     "evidence_file": evidence_file,
+                    "pipeline_run_id": args.pipeline_run_id,
                     "notes": notes,
                 }
             )

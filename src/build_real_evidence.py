@@ -34,6 +34,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--drive-root", type=Path, required=True)
+    parser.add_argument("--pipeline-run-id", default=None)
     args = parser.parse_args()
 
     artifact_root = require_drive_path(args.artifact_root, args.drive_root, "--artifact-root")
@@ -43,7 +44,7 @@ def main() -> None:
     source_ready = json.loads(
         (artifact_root / "06_source_docs" / "source_ready.json").read_text(encoding="utf-8")
     )
-    run_id = str(source_ready["run_id"])
+    run_id = str(args.pipeline_run_id or source_ready["run_id"])
 
     connection = duckdb.connect(str(database), read_only=True)
     try:

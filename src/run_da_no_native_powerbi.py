@@ -79,10 +79,10 @@ def main() -> None:
         ("governed_asset_audit", [sys.executable, "-m", "src.audit_governed_assets", "--database", str(database), "--artifact-root", str(artifact_root), *common, "--run-id", pipeline_run_id]),
         ("quality_gate", [sys.executable, "-m", "src.enforce_quality_gate", "--artifact-root", str(artifact_root), *common]),
         ("statistics", [sys.executable, "-m", "src.statistical_validation", "--database", str(database), "--artifact-root", str(artifact_root), *common]),
-        ("real_evidence", [sys.executable, "-m", "src.build_real_evidence", "--artifact-root", str(artifact_root), *common]),
+        ("real_evidence", [sys.executable, "-m", "src.build_real_evidence", "--artifact-root", str(artifact_root), "--pipeline-run-id", pipeline_run_id, *common]),
         ("powerbi_analytical_exports", [sys.executable, "-m", "src.export_powerbi", "--artifact-root", str(artifact_root), "--sql-dir", str(repo_root / "sql"), "--format", "parquet", "--run-id", pipeline_run_id, *common]),
-        ("metric_totals", [sys.executable, "-m", "src.build_metric_totals", "--artifact-root", str(artifact_root), *common]),
-        ("uat_contract", [sys.executable, "-m", "src.build_uat_evidence", "--artifact-root", str(artifact_root), *common]),
+        ("metric_totals", [sys.executable, "-m", "src.build_metric_totals", "--artifact-root", str(artifact_root), "--pipeline-run-id", pipeline_run_id, *common]),
+        ("uat_contract", [sys.executable, "-m", "src.build_uat_evidence", "--artifact-root", str(artifact_root), "--pipeline-run-id", pipeline_run_id, *common]),
         (
             "data_readiness",
             [sys.executable, "-m", "src.write_data_readiness", "--artifact-root", str(artifact_root), *common, "--repo-root", str(repo_root), "--pipeline-run-id", pipeline_run_id, "--started-at", started_at],

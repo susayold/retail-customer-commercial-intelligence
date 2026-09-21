@@ -27,17 +27,18 @@ def sql_literal(value: str) -> str:
     return "'" + value.replace("'", "''") + "'"
 
 
-def write_values(path: Path, values: list[tuple[str, float]]) -> None:
+def write_values(path: Path, values: list[tuple[str, float]], pipeline_run_id: str) -> None:
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle)
-        writer.writerow(["metric", "value"])
-        writer.writerows(values)
+        writer.writerow(["metric", "value", "pipeline_run_id"])
+        writer.writerows((metric, value, pipeline_run_id) for metric, value in values)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--drive-root", type=Path, required=True)
+    parser.add_argument("--pipeline-run-id", default="manual_metric_totals")
     args = parser.parse_args()
 
     artifact_root = require_drive_path(args.artifact_root, args.drive_root, "--artifact-root")
@@ -95,8 +96,8 @@ def main() -> None:
     if set(sql_metrics) != set(METRICS) or set(bi_metrics) != set(METRICS):
         raise SystemExit("Metric total output does not match the eight required metrics")
 
-    write_values(output_root / "sql_metric_totals.csv", sorted(sql_metrics.items()))
-    write_values(output_root / "powerbi_metric_totals.csv", sorted(bi_metrics.items()))
+    write_values(output_root / "sql_metric_totals.csv", sorted(sql_metrics.items()), args.pipeline_run_id)
+    write_values(output_root / "powerbi_metric_totals.csv", sorted(bi_metrics.items()), args.pipeline_run_id)
     print(
         {
             "sql_output": str(output_root / "sql_metric_totals.csv"),

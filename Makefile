@@ -52,13 +52,13 @@ stats:
 	$(PYTHON) -m src.statistical_validation --database "$$RETAIL_ARTIFACT_ROOT/03_duckdb_and_marts/retail_intelligence.duckdb" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
 
 metric-totals:
-	$(PYTHON) -m src.build_metric_totals --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
+	$(PYTHON) -m src.build_metric_totals --artifact-root "$$RETAIL_ARTIFACT_ROOT" --pipeline-run-id "$${RETAIL_PIPELINE_RUN_ID:-manual_metric_totals}" --drive-root "$$RETAIL_DRIVE_ROOT"
 
 real-evidence:
-	$(PYTHON) -m src.build_real_evidence --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
+	$(PYTHON) -m src.build_real_evidence --artifact-root "$$RETAIL_ARTIFACT_ROOT" --pipeline-run-id "$${RETAIL_PIPELINE_RUN_ID:-manual_evidence}" --drive-root "$$RETAIL_DRIVE_ROOT"
 
 uat-contract:
-	$(PYTHON) -m src.build_uat_evidence --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
+	$(PYTHON) -m src.build_uat_evidence --artifact-root "$$RETAIL_ARTIFACT_ROOT" --pipeline-run-id "$${RETAIL_PIPELINE_RUN_ID:-manual_uat}" --drive-root "$$RETAIL_DRIVE_ROOT"
 
 data-ready:
 	$(PYTHON) -m src.write_data_readiness --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT" --repo-root "." --pipeline-run-id "$$RETAIL_PIPELINE_RUN_ID" --started-at "$$RETAIL_PIPELINE_STARTED_AT"
