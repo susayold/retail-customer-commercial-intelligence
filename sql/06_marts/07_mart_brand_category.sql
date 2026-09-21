@@ -1,5 +1,6 @@
 CREATE OR REPLACE TABLE mart_brand_category AS
 SELECT
+    c.category_key,
     p.department,
     p.commodity,
     p.brand_type,
@@ -11,4 +12,7 @@ SELECT
         / NULLIF(SUM(t.gross_spend_before_recorded_discounts), 0) AS discount_rate
 FROM fct_transaction_line t
 LEFT JOIN dim_product p USING (product_id)
-GROUP BY p.department, p.commodity, p.brand_type;
+LEFT JOIN dim_category c
+    ON c.department = COALESCE(NULLIF(TRIM(p.department), ''), 'Unknown')
+   AND c.commodity = COALESCE(NULLIF(TRIM(p.commodity), ''), 'Unknown')
+GROUP BY c.category_key, p.department, p.commodity, p.brand_type;

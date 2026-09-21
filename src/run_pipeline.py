@@ -85,6 +85,7 @@ def main() -> None:
             ("parquet", [sys.executable, "-m", "src.build_parquet", "--input", str(data_root), "--output", str(parquet_root), "--inventory", str(qa_root / "raw_file_inventory.csv"), "--drive-root", str(drive_root)]),
             ("warehouse", [sys.executable, "-m", "src.build_warehouse", "--data-root", str(data_root), "--artifact-root", str(artifact_root), "--sql-dir", str(sql_dir), "--thresholds", str(thresholds), "--drive-root", str(drive_root)]),
             ("validate", [sys.executable, "-m", "src.validate", "--data-root", str(data_root), "--artifact-root", str(artifact_root), "--sql-dir", str(sql_dir), "--thresholds", str(thresholds), "--drive-root", str(drive_root)]),
+            ("governed_asset_audit", [sys.executable, "-m", "src.audit_governed_assets", "--database", str(database), "--artifact-root", str(artifact_root), "--drive-root", str(drive_root), "--run-id", pipeline_run_id]),
             ("quality_gate", [sys.executable, "-m", "src.enforce_quality_gate", "--artifact-root", str(artifact_root), "--drive-root", str(drive_root)]),
             ("statistics", [sys.executable, "-m", "src.statistical_validation", "--database", str(database), "--artifact-root", str(artifact_root), "--drive-root", str(drive_root)]),
             ("powerbi_exports", [sys.executable, "-m", "src.export_powerbi", "--artifact-root", str(artifact_root), "--sql-dir", str(sql_dir), "--format", "parquet", "--drive-root", str(drive_root)]),

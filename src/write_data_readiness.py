@@ -92,6 +92,7 @@ def write_data_readiness(
     qa_root = artifact_root / "04_qa_reports"
     docs_root = artifact_root / "06_source_docs"
     pbi_root = artifact_root / "05_powerbi_exports"
+    governed_audit = qa_root / "governed_asset_audit.json"
 
     raw_files = [
         _file_record(raw_root / name, artifact_root) for name in EXPECTED_FILES
@@ -127,8 +128,12 @@ def write_data_readiness(
         (pbi_root / name).is_file() or (pbi_root / name.replace(".parquet", ".csv")).is_file()
         for name in REQUIRED_POWERBI_EXPORTS
     )
+    governed_asset_gate = (
+        governed_audit.is_file()
+        and _read_json(governed_audit).get("status") == "PASS"
+    )
     blocking_issues = sum(
-        not gate for gate in (source_gate, curated_gate, warehouse_gate, marts_gate)
+        not gate for gate in (source_gate, curated_gate, warehouse_gate, marts_gate, governed_asset_gate)
     )
     data_ready = blocking_issues == 0 and quality_gate.get("ready") is True
 
@@ -137,6 +142,16 @@ def write_data_readiness(
         for path in qa_root.rglob("*")
         if path.is_file() and path.stat().st_size > 0
     )
+    export_files = [
+        _file_record(path, artifact_root)
+        for path in sorted(pbi_root.glob("*.parquet"))
+        if path.is_file()
+    ]
+    output_hashes = {
+        item["path"]: item["sha256"]
+        for item in export_files
+        if item.get("status") == "PRESENT"
+    }
     source_manifest_sha = _sha256(acquisition_manifest) if acquisition_manifest.is_file() else ""
     manifest = {
         "source_manifest_sha": source_manifest_sha,
@@ -147,6 +162,9 @@ def write_data_readiness(
         "parquet_files": parquet_files,
         "database_path": str(database.relative_to(artifact_root)).replace("\\", "/"),
         "qa_outputs": qa_outputs,
+        "output_files": export_files,
+        "output_hashes": output_hashes,
+        "governed_asset_audit": _file_record(governed_audit, artifact_root),
         "started_at": started_at,
         "completed_at": completed_at,
         "status": "SUCCESS" if data_ready else "FAILED",
@@ -158,6 +176,7 @@ def write_data_readiness(
         "curated_gate": "PASS" if curated_gate else "FAIL",
         "warehouse_gate": "PASS" if warehouse_gate else "FAIL",
         "marts_gate": "PASS" if marts_gate else "FAIL",
+        "governed_asset_gate": "PASS" if governed_asset_gate else "FAIL",
         "blocking_issues": blocking_issues,
         "pipeline_run_id": pipeline_run_id,
         "verified_at": completed_at,

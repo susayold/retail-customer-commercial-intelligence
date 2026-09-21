@@ -1,6 +1,7 @@
 CREATE OR REPLACE TABLE mart_category_household AS
 SELECT
     t.household_key,
+    c.category_key,
     p.department,
     p.commodity,
     MIN(t.day_key) AS first_observed_day,
@@ -26,4 +27,7 @@ SELECT
         AS private_label_spend
 FROM fct_transaction_line t
 LEFT JOIN dim_product p USING (product_id)
-GROUP BY t.household_key, p.department, p.commodity;
+LEFT JOIN dim_category c
+    ON c.department = COALESCE(NULLIF(TRIM(p.department), ''), 'Unknown')
+   AND c.commodity = COALESCE(NULLIF(TRIM(p.commodity), ''), 'Unknown')
+GROUP BY t.household_key, c.category_key, p.department, p.commodity;

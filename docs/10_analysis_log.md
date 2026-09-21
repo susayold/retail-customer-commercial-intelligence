@@ -9,7 +9,7 @@
 | 2026-09-12 | Statistical runner | src/statistical_validation.py | implemented | outputs CI/effect-size tables to Drive |
 | 2026-09-12 | BI companion | Drive-native Google Sheet | complete | six plan tabs plus tracker/UAT/readme |
 | 2026-09-12 | Plan tracking | Drive `Plan Status!A1:F45` | complete | all 44 plan items mapped with status and next action |
-| 2026-09-12 | Power BI semantic contract | powerbi/semantic_model.yaml + measures.dax | implemented | six-page model with 29 curated tables and governed DAX is data-free; refresh pending source |
+| 2026-09-21 | Governed P0 asset upgrade | sql/03_dimensions, sql/06_marts, sql/08_analysis, src/audit_governed_assets.py | implemented in code | category/segment dimensions, store-week, category-household-week, campaign denominators/CI, promotion audit, LMDI and decision register are now pipeline assets; Drive rerun pending |
 | 2026-09-12 | Power BI reconciliation hardening | exporter + sql/09_exports + tests | implemented | PascalCase export names and DISTINCTCOUNT-aligned populations |
 | 2026-09-12 | Profiling contract hardening | src/profile_sources.py | implemented | source_cardinality.csv added to Drive QA outputs |
 | 2026-09-12 | Source provenance hardening | src/inventory.py | implemented | inventory now records content SHA-256; real source inventory pending |
@@ -17,7 +17,7 @@
 | 2026-09-12 | End-to-end Drive runner | src/run_pipeline.py + Makefile | implemented | one-command storage gate through BI exports; real source run pending |
 | 2026-09-12 | Layer reconciliation hardening | sql/07_quality/10_q10_layer_reconciliation.sql + src/validate.py | implemented | raw/staging/fact populations and sales totals will be exported to Drive; real-source result pending |
 | 2026-09-12 | Category household mart | sql/06_marts/14_mart_category_household.sql + category_analysis.sql | implemented | distinct buyers, household penetration, baskets, frequency, spend/basket, private label and decomposition; real-source run pending |
-| 2026-09-12 | Analysis mart Power BI coverage | src/export_powerbi.py + powerbi/semantic_model.yaml | implemented | category, promotion, campaign and coupon aggregates wired into 31 Drive exports and 29 semantic tables; refresh pending source |
+| 2026-09-21 | Analysis mart Power BI coverage | src/export_powerbi.py + powerbi/semantic_model.yaml | implemented in code | governed category, promotion, campaign, root-cause and decision assets wired into 40 Drive exports and 38 semantic tables; refresh pending source |
 | 2026-09-12 | Root-cause templates | docs/11_root_cause_cases.md | implemented; findings pending | three case contracts define evidence, decision rules, actions and limitations |
 | 2026-09-12 | Executive decision slots | docs/12_executive_decisions.md + Drive Decision_Tracker | implemented; findings pending | five decision slots require verified Drive outputs and run IDs |
 | pending | Inventory/profile | Drive 04_qa_reports | pending | no eight-source CSVs present yet |

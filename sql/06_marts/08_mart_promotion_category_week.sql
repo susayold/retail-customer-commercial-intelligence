@@ -29,14 +29,18 @@ working_panel AS (
     LEFT JOIN dim_product p USING (product_id)
 )
 SELECT
-    commodity,
-    department,
-    week_number,
-    promo_state_group,
+    c.category_key,
+    working_panel.commodity,
+    working_panel.department,
+    working_panel.week_number,
+    working_panel.promo_state_group,
     COUNT(*) AS product_store_weeks,
     SUM(panel_sales) AS panel_sales,
     SUM(panel_units) AS panel_units,
     SUM(panel_buying_households) AS panel_buying_households,
     SUM(panel_baskets) AS panel_baskets
 FROM working_panel
-GROUP BY commodity, department, week_number, promo_state_group;
+LEFT JOIN dim_category c
+    ON c.department = COALESCE(NULLIF(TRIM(working_panel.department), ''), 'Unknown')
+   AND c.commodity = COALESCE(NULLIF(TRIM(working_panel.commodity), ''), 'Unknown')
+GROUP BY c.category_key, working_panel.commodity, working_panel.department, working_panel.week_number, working_panel.promo_state_group;

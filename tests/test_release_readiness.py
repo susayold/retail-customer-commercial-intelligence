@@ -35,6 +35,14 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
     (qa_root / "qa_quality_gate.json").write_text(
         json.dumps({"ready": True}), encoding="utf-8"
     )
+    (qa_root / "governed_asset_audit.json").write_text(
+        json.dumps({"status": "PASS"}), encoding="utf-8"
+    )
+    write_csv(
+        qa_root / "governed_asset_audit.csv",
+        ["run_id", "asset", "relation", "row_count", "status", "error"],
+        [{"run_id": "run-001", "asset": "dim_category", "relation": "dim_category", "row_count": 1, "status": "PASS", "error": ""}],
+    )
     (source_docs_root / "data_ready.json").write_text(
         json.dumps(
             {
@@ -43,6 +51,7 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
                 "curated_gate": "PASS",
                 "warehouse_gate": "PASS",
                 "marts_gate": "PASS",
+                "governed_asset_gate": "PASS",
                 "blocking_issues": 0,
             }
         ),
@@ -59,6 +68,8 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
                 "parquet_files": list(EXPECTED_FILES),
                 "database_path": "03_duckdb_and_marts/retail_intelligence.duckdb",
                 "qa_outputs": ["04_qa_reports/qa_quality_gate.json"],
+                "output_files": [{"path": "05_powerbi_exports/Dim_Day.parquet", "sha256": "sha"}],
+                "output_hashes": {"05_powerbi_exports/Dim_Day.parquet": "sha"},
                 "started_at": "2026-09-12T00:00:00+00:00",
                 "completed_at": "2026-09-12T00:00:01+00:00",
                 "status": "SUCCESS",

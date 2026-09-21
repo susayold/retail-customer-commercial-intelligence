@@ -20,10 +20,22 @@ tables:
     role: dimension
     source_file: Dim_Product.parquet
     key: product_id
+  - name: Dim_Store
+    role: dimension
+    source_file: Dim_Store.parquet
+    key: store_id
   - name: Dim_Campaign
     role: dimension
     source_file: Dim_Campaign.parquet
     key: campaign_id
+  - name: Dim_Category
+    role: dimension
+    source_file: Dim_Category.parquet
+    key: category_key
+  - name: Dim_Segment
+    role: dimension
+    source_file: Dim_Segment.parquet
+    key: segment
   - name: Mart_Panel_Weekly
     role: aggregate
     source_file: Mart_Panel_Weekly.parquet
@@ -47,7 +59,15 @@ tables:
   - name: Mart_Category_Household
     role: aggregate
     source_file: Mart_Category_Household.parquet
-    grain: household_key, department, commodity
+    grain: household_key, category_key
+  - name: Mart_Category_Household_Weekly
+    role: aggregate
+    source_file: Mart_Category_Household_Weekly.parquet
+    grain: household_key, week_number, category_key
+  - name: Mart_Store_Weekly
+    role: aggregate
+    source_file: Mart_Store_Weekly.parquet
+    grain: store_id, week_number
   - name: Analysis_Category_Penetration
     role: aggregate
     source_file: Analysis_Category_Penetration.parquet
@@ -72,6 +92,18 @@ tables:
     role: aggregate
     source_file: Analysis_Promotion_Dependency.parquet
     grain: department, commodity
+  - name: Analysis_Promotion_Universe_Audit
+    role: audit
+    source_file: Analysis_Promotion_Universe_Audit.parquet
+    grain: total_rows
+  - name: Analysis_Root_Cause_LMDI
+    role: analysis
+    source_file: Analysis_Root_Cause_LMDI.parquet
+    grain: decision_id, driver
+  - name: Analysis_Executive_Decisions
+    role: decision
+    source_file: Analysis_Executive_Decisions.parquet
+    grain: decision_id
   - name: Mart_Campaign_Household
     role: factless_event
     source_file: Mart_Campaign_Household.parquet
@@ -88,6 +120,10 @@ tables:
     role: aggregate
     source_file: Analysis_Campaign_Segment.parquet
     grain: campaign_id, customer_segment
+  - name: Analysis_Campaign_Denominators
+    role: aggregate
+    source_file: Analysis_Campaign_Denominators.parquet
+    grain: campaign_id, campaign_type
   - name: Mart_Coupon_Summary
     role: aggregate
     source_file: Mart_Coupon_Summary.parquet
@@ -134,6 +170,14 @@ relationships:
     to: Mart_Promotion_Category_Week[week_number]
     cardinality: one_to_many
     cross_filter: single
+  - from: Dim_Week[week_number]
+    to: Mart_Category_Household_Weekly[week_number]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Week[week_number]
+    to: Mart_Store_Weekly[week_number]
+    cardinality: one_to_many
+    cross_filter: single
   - from: Dim_Day[day_key]
     to: Mart_Basket[day_key]
     cardinality: one_to_many
@@ -156,6 +200,42 @@ relationships:
     cross_filter: single
   - from: Dim_Household[household_key]
     to: Mart_Category_Household[household_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Household[household_key]
+    to: Mart_Category_Household_Weekly[household_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Store[store_id]
+    to: Mart_Store_Weekly[store_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Category[category_key]
+    to: Mart_Category_Weekly[category_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Category[category_key]
+    to: Mart_Category_Household[category_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Category[category_key]
+    to: Mart_Category_Household_Weekly[category_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Category[category_key]
+    to: Mart_Brand_Category[category_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Category[category_key]
+    to: Mart_Promotion_Category_Week[category_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Segment[segment]
+    to: Mart_Customer_Segment[segment]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Segment[segment]
+    to: Mart_Campaign_Household[segment]
     cardinality: one_to_many
     cross_filter: single
   - from: Dim_Campaign[campaign_id]
@@ -193,14 +273,14 @@ relationships:
 
 pages:
   - name: Executive Customer & Commercial Health
-    source_tables: [Mart_Panel_Weekly, Mart_Basket, Mart_Decision_Alerts]
+    source_tables: [Mart_Panel_Weekly, Mart_Basket, Mart_Decision_Alerts, Analysis_Root_Cause_LMDI, Analysis_Executive_Decisions]
   - name: Customer Engagement & Segmentation
-    source_tables: [Mart_Household_Summary, Mart_Customer_Segment]
+    source_tables: [Mart_Household_Summary, Mart_Customer_Segment, Dim_Segment]
   - name: Basket & Category Intelligence
-    source_tables: [Mart_Basket, Mart_Category_Weekly, Mart_Category_Household, Analysis_Category_Penetration, Analysis_Category_Decomposition, Mart_Cross_Category_Pair]
+    source_tables: [Mart_Basket, Mart_Category_Weekly, Mart_Category_Household, Mart_Category_Household_Weekly, Dim_Category, Analysis_Category_Penetration, Analysis_Category_Decomposition, Mart_Cross_Category_Pair]
   - name: Category, Brand & Private Label
-    source_tables: [Mart_Category_Weekly, Mart_Category_Household, Analysis_Category_Penetration, Analysis_Category_Decomposition, Mart_Brand_Category, Mart_Panel_Weekly]
+    source_tables: [Mart_Category_Weekly, Mart_Category_Household, Mart_Category_Household_Weekly, Dim_Category, Analysis_Category_Penetration, Analysis_Category_Decomposition, Mart_Brand_Category, Mart_Panel_Weekly]
   - name: Promotion & Merchandising
-    source_tables: [Mart_Promotion_Category_Week, Analysis_Promotion_Association, Analysis_Promotion_Dependency, Mart_Brand_Category]
+    source_tables: [Mart_Promotion_Category_Week, Analysis_Promotion_Association, Analysis_Promotion_Dependency, Analysis_Promotion_Universe_Audit, Mart_Brand_Category]
   - name: Campaign & Coupon Intelligence
-    source_tables: [Mart_Campaign_Household, Mart_Campaign_Summary, Analysis_Campaign_Funnel, Analysis_Campaign_Segment, Mart_Coupon_Summary, Analysis_Coupon_Campaign, Analysis_Coupon_Segment, Analysis_Coupon_Category, Analysis_Coupon_Basket, Analysis_Coupon_Repeat_Category]
+    source_tables: [Mart_Campaign_Household, Mart_Campaign_Summary, Analysis_Campaign_Funnel, Analysis_Campaign_Segment, Analysis_Campaign_Denominators, Mart_Coupon_Summary, Analysis_Coupon_Campaign, Analysis_Coupon_Segment, Analysis_Coupon_Category, Analysis_Coupon_Basket, Analysis_Coupon_Repeat_Category]

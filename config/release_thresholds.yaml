@@ -1,0 +1,16 @@
+# Release thresholds are intentionally separate from metric definitions.
+# They control blocking checks and are consumed by the release/audit tooling.
+source_count: 8
+reconciliation:
+  absolute_tolerance: 0.01
+  relative_tolerance: 0.000001
+campaign:
+  minimum_recipients_for_rate: 1
+promotion:
+  modeled_states:
+    - none
+    - display_only
+    - mailer_only
+    - display_and_mailer
+exports:
+  expected_format: parquet

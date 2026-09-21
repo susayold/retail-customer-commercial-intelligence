@@ -6,6 +6,7 @@ import argparse
 import csv
 import hashlib
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
@@ -45,6 +46,7 @@ def inspect_csv(path: Path, expected_row_count: int | None = None) -> dict[str, 
     return {
         "file_name": path.name,
         "file_size_bytes": path.stat().st_size,
+        "modified_time": datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).isoformat(),
         "row_count": rows,
         "expected_row_count": expected_row_count,
         "row_count_delta": row_count_delta,
@@ -52,7 +54,9 @@ def inspect_csv(path: Path, expected_row_count: int | None = None) -> dict[str, 
         "column_count": len(header),
         "column_names_hash": column_hash(header),
         "content_sha256": content_hash(path),
+        "expected_schema_version": "v1",
         "load_status": "ok",
+        "ingestion_status": "ok",
     }
 
 
@@ -66,6 +70,7 @@ def inventory(input_dir: Path) -> list[dict[str, object]]:
             rows.append({
                 "file_name": name,
                 "file_size_bytes": None,
+                "modified_time": None,
                 "row_count": None,
                 "expected_row_count": EXPECTED_ROW_COUNTS.get(name),
                 "row_count_delta": None,
@@ -73,7 +78,9 @@ def inventory(input_dir: Path) -> list[dict[str, object]]:
                 "column_count": None,
                 "column_names_hash": None,
                 "content_sha256": None,
+                "expected_schema_version": "v1",
                 "load_status": "missing",
+                "ingestion_status": "missing",
             })
     return rows
 

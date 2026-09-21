@@ -23,6 +23,8 @@ REQUIRED_ARTIFACT_FILES = (
     "04_qa_reports/source_cardinality.csv",
     "04_qa_reports/qa_run_log.csv",
     "04_qa_reports/qa_quality_gate.json",
+    "04_qa_reports/governed_asset_audit.csv",
+    "04_qa_reports/governed_asset_audit.json",
     "04_qa_reports/qa_layer_reconciliation.csv",
     "04_qa_reports/powerbi_reconciliation.csv",
     "04_qa_reports/uat_results.csv",
@@ -41,6 +43,7 @@ REQUIRED_DATA_READY_FIELDS = (
     "curated_gate",
     "warehouse_gate",
     "marts_gate",
+    "governed_asset_gate",
     "blocking_issues",
 )
 
@@ -53,6 +56,8 @@ REQUIRED_DATA_RUN_MANIFEST_FIELDS = (
     "parquet_files",
     "database_path",
     "qa_outputs",
+    "output_files",
+    "output_hashes",
     "started_at",
     "completed_at",
     "status",

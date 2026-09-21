@@ -70,7 +70,7 @@ SQL/statistics + Power BI
 Executive decisions
 ~~~
 
-Heavy transformation belongs in DuckDB. Power BI consumes curated marts and aggregates, never the raw 36M-row promotion file by default.
+Heavy transformation belongs in DuckDB. Power BI consumes curated marts and aggregates, never the raw 36M-row promotion file by default. The governed P0 layer now includes `Dim_Category`, `Dim_Segment`, `Mart_Store_Weekly`, `Mart_Category_Household_Weekly`, campaign denominator/CI outputs, promotion-universe audit, LMDI root-cause output and a five-row decision register.
 
 ## 6. Storage policy: Drive + GitHub only
 
@@ -87,7 +87,7 @@ Drive subfolders:
 - 05_powerbi_exports: PBIX/PDF/Excel exports.
 - 06_source_docs: source notes and evidence.
 
-GitHub stores code, configuration, SQL, documentation, tests and small synthetic fixtures only. Raw source data is never committed to this public repository. The pipeline requires explicit Drive-backed input/output paths; it does not default to the repository or Codex workspace for data artifacts. Every data-writing CLI and Make target, including standalone inventory, Parquet, warehouse, QA, statistics, Power BI and release-audit commands, requires an explicit `--drive-root` and rejects an unavailable or repository-backed root. The [Drive-native Excel companion](https://docs.google.com/spreadsheets/d/16Iz47jiHM2nl5gGuhP5Py_xbNjLVLO5FaFpiL-_dR4k/edit) includes Metric Dictionary, Decision Tracker, UAT Checklist, Plan Status for all 44 plan steps, Source Register for the eight expected files, and the six planned output tabs. Power BI semantic structure (29 curated tables exported as 31 Drive artifacts, including reconciliation outputs) and governed measures are versioned in `powerbi/semantic_model.yaml` and `powerbi/measures.dax`.
+GitHub stores code, configuration, SQL, documentation, tests and small synthetic fixtures only. Raw source data is never committed to this public repository. The pipeline requires explicit Drive-backed input/output paths; it does not default to the repository or Codex workspace for data artifacts. Every data-writing CLI and Make target, including standalone inventory, Parquet, warehouse, QA, statistics, Power BI and release-audit commands, requires an explicit `--drive-root` and rejects an unavailable or repository-backed root. The [Drive-native Excel companion](https://docs.google.com/spreadsheets/d/16Iz47jiHM2nl5gGuhP5Py_xbNjLVLO5FaFpiL-_dR4k/edit) includes Metric Dictionary, Decision Tracker, UAT Checklist, Plan Status for all 44 plan steps, Source Register for the eight expected files, and the six planned output tabs. The expanded contract now covers 38 curated semantic tables exported as 40 Drive artifacts, including reconciliation outputs; definitions are versioned in `powerbi/semantic_model.yaml` and `powerbi/measures.dax`.
 
 For Drive-only source acquisition, use the [Colab ingestion notebook](https://colab.research.google.com/github/susayold/retail-customer-commercial-intelligence/blob/main/notebooks/drive_ingest_source.ipynb). It streams the official package into the Drive project, extracts the eight CSVs into `01_raw_source`, and writes provenance metadata to Drive; it does not save raw data in the Colab runtime or repository.
 
@@ -125,7 +125,7 @@ powerbi/                semantic model, DAX measures, UAT and export instruction
 | M1 | inventory, source contracts, profiling, warehouse, QA | scaffolded; run against Drive data |
 | M2 | engagement, segmentation, basket/category analytics | real-data marts, statistics and evidence verified in Drive |
 | M3 | promotion, campaign, coupon analytics | real-data promotion/campaign/coupon outputs verified in Drive |
-| M4 | Power BI, UAT, decisions, interview story | 31 curated exports and export-level parity verified; native PBIX/UAT pending |
+| M4 | Power BI, UAT, decisions, interview story | 40 governed exports in the upgraded contract; native PBIX/UAT pending |
 
 Numeric CV bullets are available in `docs/19_verified_cv_bullets.md`; they are explicitly scoped to the observed panel and must not be presented as retailer-wide or causal results.
 
@@ -148,7 +148,7 @@ A decision-facing number must trace:
 source → raw → staging → fact/dimension/bridge → metric definition → mart → SQL → Power BI → finding → recommendation
 ~~~
 
-The final quality gate requires eight sources inventoried, schemas and grains validated, fan-out tests passing, SQL/DAX reconciled, campaign observability handled, demographic coverage disclosed, zero-sale promotion weeks preserved and three root-cause cases supported by at least five evidence-backed decisions.
+The final quality gate requires eight sources inventoried, schemas and grains validated, fan-out tests passing, governed assets audited, SQL/DAX reconciled, campaign observability handled, demographic coverage disclosed, zero-sale promotion weeks preserved and three root-cause cases supported by at least five evidence-backed decisions.
 
 ## 12. License and source rights
 

@@ -8,6 +8,7 @@ WITH active_panel AS (
 )
 SELECT
     t.week_number,
+    c.category_key,
     p.department,
     p.commodity,
     SUM(t.sales_value) AS panel_net_spend,
@@ -22,5 +23,8 @@ SELECT
         / NULLIF(SUM(t.sales_value), 0) AS private_label_share
 FROM fct_transaction_line t
 LEFT JOIN dim_product p USING (product_id)
+LEFT JOIN dim_category c
+    ON c.department = COALESCE(NULLIF(TRIM(p.department), ''), 'Unknown')
+   AND c.commodity = COALESCE(NULLIF(TRIM(p.commodity), ''), 'Unknown')
 LEFT JOIN active_panel a USING (week_number)
-GROUP BY t.week_number, p.department, p.commodity, a.active_panel_households;
+GROUP BY t.week_number, c.category_key, p.department, p.commodity, a.active_panel_households;

@@ -18,12 +18,12 @@ The audit requires:
 - `06_source_docs/data_run_manifest.json` with the source, run, raw, curated, warehouse and QA lineage fields;
 - `06_source_docs/data_ready.json` with `DATA_READY`, source/curated/warehouse/marts gates set to `PASS` and zero blocking issues;
 - inventory with exactly the eight expected filenames and `load_status=ok`, schema validation with exactly those filenames and `status=ok`, source profile/cardinality rows, a non-empty error-free QA run log, layer reconciliation and statistics outputs;
-- all 31 declared Power BI exports;
+- all 40 declared Power BI exports;
 - 04_qa_reports/powerbi_reconciliation.csv with exactly the eight required metrics and pass status;
 - 04_qa_reports/uat_results.csv with exactly one pass row for each stable ID UAT-01 through UAT-12 (missing, unexpected or duplicate IDs fail the audit);
 - 04_qa_reports/root_cause_cases.csv with three completed cases, Drive evidence URI, run ID and limitation;
 - 04_qa_reports/executive_decisions.csv with five completed decisions, Drive evidence URI, run ID and limitation;
-- repository contracts for the three root-cause cases, five executive decisions, limitations and UAT; the semantic model must validate as Drive-only with 29 curated tables, six pages, single-direction relationships, and all required governed measures present.
+- repository contracts for the three root-cause cases, five executive decisions, limitations and UAT; the semantic model must validate as Drive-only with 38 curated tables, six pages, single-direction relationships, and all required governed measures present.
 
 ## SQL–Power BI reconciliation sequence
 

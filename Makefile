@@ -39,6 +39,9 @@ segment:
 validate:
 	$(PYTHON) -m src.validate --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
 
+governed-audit:
+	$(PYTHON) -m src.audit_governed_assets --database "$$RETAIL_ARTIFACT_ROOT/03_duckdb_and_marts/retail_intelligence.duckdb" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT" --run-id "$${RETAIL_PIPELINE_RUN_ID:-manual_audit}"
+
 quality-gate:
 	$(PYTHON) -m src.enforce_quality_gate --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
 
