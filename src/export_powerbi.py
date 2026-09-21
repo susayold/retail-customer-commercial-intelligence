@@ -34,6 +34,12 @@ POWERBI_TABLES = (
     "analysis_promotion_dependency",
     "analysis_promotion_universe_audit",
     "analysis_root_cause_lmdi",
+    "analysis_category_materiality",
+    "analysis_category_lmdi",
+    "analysis_segment_stability",
+    "analysis_private_label_anomalies",
+    "analysis_first_observed_cohort",
+    "analysis_demographic_summary",
     "analysis_executive_decisions",
     "mart_campaign_household",
     "mart_campaign_summary",
@@ -78,6 +84,12 @@ POWERBI_OUTPUT_NAMES = {
     "analysis_promotion_dependency": "Analysis_Promotion_Dependency",
     "analysis_promotion_universe_audit": "Analysis_Promotion_Universe_Audit",
     "analysis_root_cause_lmdi": "Analysis_Root_Cause_LMDI",
+    "analysis_category_materiality": "Analysis_Category_Materiality",
+    "analysis_category_lmdi": "Analysis_Category_LMDI",
+    "analysis_segment_stability": "Analysis_Segment_Stability",
+    "analysis_private_label_anomalies": "Analysis_Private_Label_Anomalies",
+    "analysis_first_observed_cohort": "Analysis_First_Observed_Cohort",
+    "analysis_demographic_summary": "Analysis_Demographic_Summary",
     "analysis_executive_decisions": "Analysis_Executive_Decisions",
     "mart_campaign_household": "Mart_Campaign_Household",
     "mart_campaign_summary": "Mart_Campaign_Summary",
@@ -97,6 +109,11 @@ POWERBI_OUTPUT_NAMES = {
 }
 
 
+def sql_string_literal(value: str) -> str:
+    """Quote a controlled export metadata value for DuckDB SQL."""
+    return "'" + value.replace("'", "''") + "'"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact-root", type=Path, required=True)
@@ -104,6 +121,7 @@ def main() -> None:
     parser.add_argument("--sql-dir", type=Path, default=Path("sql"))
     parser.add_argument("--drive-root", type=Path, required=True)
     parser.add_argument("--format", choices=("parquet", "csv"), default="parquet")
+    parser.add_argument("--run-id", default="manual_export")
     args = parser.parse_args()
 
     artifact_root = require_drive_path(args.artifact_root, args.drive_root, "--artifact-root")
@@ -123,14 +141,18 @@ def main() -> None:
         for table_name in POWERBI_TABLES:
             extension = "parquet" if args.format == "parquet" else "csv"
             output_path = output_dir / f"{POWERBI_OUTPUT_NAMES[table_name]}.{extension}"
+            export_query = (
+                f"SELECT *, {sql_string_literal(args.run_id)} AS pipeline_run_id "
+                f"FROM {table_name}"
+            )
             if args.format == "parquet":
                 connection.execute(
-                    f"COPY (SELECT * FROM {table_name}) TO ? (FORMAT PARQUET, COMPRESSION ZSTD)",
+                    f"COPY ({export_query}) TO ? (FORMAT PARQUET, COMPRESSION ZSTD)",
                     [output_path.as_posix()],
                 )
             else:
                 connection.execute(
-                    f"COPY (SELECT * FROM {table_name}) TO ? (HEADER, DELIMITER ',')",
+                    f"COPY ({export_query}) TO ? (HEADER, DELIMITER ',')",
                     [output_path.as_posix()],
                 )
             print(f"wrote {output_path}")

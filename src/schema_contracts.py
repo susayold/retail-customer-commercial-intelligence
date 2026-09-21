@@ -17,8 +17,34 @@ def read_header(path: Path) -> list[str]:
         return next(csv.reader(handle), [])
 
 
+def validate_contract_definitions(contracts: dict[str, object]) -> None:
+    """Fail closed when a source contract omits governance metadata."""
+    sources = contracts.get("sources")
+    if not isinstance(sources, dict) or not sources:
+        raise ValueError("source contract must contain a non-empty sources mapping")
+    for source_name, contract in sources.items():
+        if not isinstance(contract, dict):
+            raise ValueError(f"source contract {source_name} must be a mapping")
+        for field in ("file", "grain", "required_columns", "primary_key", "business_key", "columns"):
+            if field not in contract:
+                raise ValueError(f"source contract {source_name} is missing {field}")
+        required = set(contract["required_columns"])
+        columns = contract["columns"]
+        if not isinstance(columns, dict) or not required.issubset(columns):
+            missing = sorted(required - set(columns if isinstance(columns, dict) else {}))
+            raise ValueError(f"source contract {source_name} is missing column metadata: {missing}")
+        for column_name in required:
+            metadata = columns[column_name]
+            if not isinstance(metadata, dict) or not metadata.get("type") or "nullable" not in metadata:
+                raise ValueError(f"source contract {source_name}.{column_name} needs type and nullable metadata")
+        for key_name in ("primary_key", "business_key"):
+            if not all(isinstance(column, str) and column in columns for column in contract[key_name]):
+                raise ValueError(f"source contract {source_name}.{key_name} references an unknown column")
+
+
 def validate_headers(input_dir: Path, contract_path: Path) -> list[dict[str, object]]:
     contracts = yaml.safe_load(contract_path.read_text(encoding="utf-8"))["sources"]
+    validate_contract_definitions({"sources": contracts})
     rows: list[dict[str, object]] = []
     for source_name, contract in contracts.items():
         file_name = contract["file"]

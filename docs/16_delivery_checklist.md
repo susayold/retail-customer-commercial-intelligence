@@ -11,28 +11,28 @@ This checklist separates implemented repository work from outputs that require t
 | 05 | Profile sources | Done — verified | src.profile_sources.py; row/type/null/distinct/range/cardinality outputs on Drive |
 | 06 | Document grain | Done | docs/04_grain_and_join_contracts.md, docs/05_data_model.md |
 | 07 | Document join risks | Done | docs/04_grain_and_join_contracts.md |
-| 08 | Convert CSV to Parquet | Done — verified | 8 Parquet source outputs created in Drive-backed staging and uploaded to Drive |
+| 08 | Convert CSV to Parquet | Done — verified | 8 Parquet source outputs created in Drive-backed staging and uploaded to Drive; lineage metadata is attached per row |
 | 09 | Initialize DuckDB | Done — verified | DuckDB warehouse and marts created; pipeline log records model row counts |
 | 10–16 | Build staging, dimensions, facts, bridge | Implemented and smoke-tested | sql/02_staging through sql/05_bridges |
-| 17 | Run QA | Done — verified | QA gate `READY`; all key/grain/reference/layer checks pass; three non-blocking anomaly groups retained |
+| 17 | Run QA | Done — verified | QA gate `READY`; source-contract, key/grain/reference/layer checks pass; non-blocking anomaly groups retained |
 | 18 | Reconcile totals | Curated-export pass | qa_layer_reconciliation.csv and eight-metric powerbi_reconciliation.csv pass at 0.01; native PBIX refresh still required |
 | 19 | Metric dictionary | Done | config/metric_definitions.yaml + Drive companion |
-| 20–29 | Build marts and analysis | Done — verified | Real-data marts/analysis completed from Drive-backed source; outputs uploaded to Drive |
+| 20–29 | Build marts and analysis | Done — verified | Real-data marts/analysis completed from Drive-backed source; outputs uploaded to Drive, including governed category materiality/LMDI, segment stability, cohort, demographic and private-label anomaly assets |
 | 30 | Run statistics | Done — verified | Statistics outputs and success run log created from real Drive-backed DuckDB |
 | 31 | Root-cause cases | Done — verified | 3 evidence-backed cases with run ID, grain, action, KPI and limitation |
 | 32 | Executive decisions | Done — verified | 5 evidence-backed decisions with run ID, action, KPI and limitation |
-| 33 | Export BI marts | Code upgraded | 40 governed marts/analysis exports are declared; rerun the Drive pipeline to materialize the new assets |
-| 34 | Build Power BI | Semantic contract ready; binary pending | powerbi/README.md + powerbi/semantic_model.yaml (29 curated tables, six pages, Drive-only source) + powerbi/measures.dax; release audit validates contract content; create PBIX after data refresh |
+| 33 | Export BI marts | Code upgraded | 46 governed marts/analysis exports are declared; rerun the Drive pipeline to materialize the new assets |
+| 34 | Build Power BI | Semantic contract ready; binary pending | powerbi/README.md + powerbi/semantic_model.yaml (44 curated tables, six pages, Drive-only source) + powerbi/measures.dax; release audit validates contract content; create PBIX after data refresh |
 | 35 | Reconcile SQL/DAX | Curated-export pass; native pending | 8 required metrics pass at tolerance 0.01 in Drive `powerbi_reconciliation.csv`; native Power BI refresh must replace snapshot evidence |
 | 36 | Complete UAT | Contract evidence recorded; native pending | `uat_results.csv` has stable UAT-01..UAT-12 IDs; 4 automated/contract checks pass and 8 native visual/interaction checks remain `review` |
 | 37 | Excel companion | Done as Drive-native workbook | Google Sheet with Metric Dictionary, Decision Tracker, UAT Checklist, Readme, six output tabs, Plan Status and Source Register with provenance columns |
-| 38 | Create diagrams | Done | assets/architecture.svg, assets/star_schema.svg |
+| 38 | Create diagrams | Done | assets/architecture.svg, assets/star_schema.svg, assets/segmentation_flow.svg, assets/decision_flow.svg |
 | 39 | Finalize README | Done | README.md |
 | 40 | Finalize limitations | Done | docs/13_limitations.md |
 | 41 | Prepare interview guide | Done | docs/15_interview_guide.md |
 | 42 | Verified CV bullets | Done — verified with limits | docs/19_verified_cv_bullets.md uses only Drive-backed outputs and labels panel/observational scope |
 | 43 | Clean rebuild from raw | Done — verified | src/run_pipeline.py + Makefile `run`; full runner completed with storage gate, source gate, QA gate, statistics, exports and tests; Drive `data_run_manifest.json` and `data_ready.json` recorded |
-| 44 | Tag v1.0.0 | Pending by design | Run src/release_readiness.py / Makefile `release-audit`; it fail-closes on missing Drive QA, governed asset audit, SQL/DAX reconciliation, 12 UAT checks, 3 root-cause cases, 5 decisions or 40 Power BI exports; tag only after the Drive audit is ready |
+| 44 | Tag v1.0.0 | Pending by design | Run src/release_readiness.py / Makefile `release-audit`; it fail-closes on missing Drive QA, governed asset audit, SQL/DAX reconciliation, 12 UAT checks, 3 root-cause cases, 5 decisions or 46 Power BI exports; tag only after the Drive audit is ready |
 
 ## Live Drive tracker
 

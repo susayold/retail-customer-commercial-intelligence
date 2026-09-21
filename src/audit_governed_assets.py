@@ -25,6 +25,11 @@ REQUIRED_RELATIONS = (
     "analysis_campaign_denominators",
     "analysis_promotion_universe_audit",
     "analysis_root_cause_lmdi",
+    "analysis_category_materiality",
+    "analysis_category_lmdi",
+    "analysis_segment_stability",
+    "analysis_first_observed_cohort",
+    "analysis_demographic_summary",
     "analysis_executive_decisions",
 )
 

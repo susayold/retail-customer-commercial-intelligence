@@ -1,6 +1,6 @@
 # Governed release upgrade — 2026-09-21
 
-This upgrade turns the previous supplemental-output pattern into first-class pipeline assets.
+This upgrade turns the previous supplemental-output pattern into first-class pipeline assets and adds the remaining stability, materiality, cohort and demographic analyses.
 
 ## Added P0 assets
 
@@ -13,6 +13,7 @@ This upgrade turns the previous supplemental-output pattern into first-class pip
 - `analysis_executive_decisions` is a governed five-row decision register.
 - `audit_governed_assets` blocks a run when any required P0 relation is missing or empty.
 - Power BI export inventory is now generated from the expanded governed table contract.
+- Private-label anomaly QA is materialized as `qa_private_label_category_anomalies.csv`; an empty file with a valid header means no anomaly was detected and is not silently capped.
 
 ## Run order
 

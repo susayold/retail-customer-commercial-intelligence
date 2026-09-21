@@ -6,9 +6,11 @@ campaign_observability:
   post_28d_min_days: 28
 promotion:
   required_states:
-    - none
     - display_only
     - mailer_only
     - display_and_mailer
+  reference_state: none
+  reference_state_required: false
+  missing_reference_interpretation: "Observed promotion states only; no uplift or dependency-vs-no-promo claim is allowed."
 demographics:
   coverage_is_descriptive_only: true

@@ -8,9 +8,10 @@ campaign:
   minimum_recipients_for_rate: 1
 promotion:
   modeled_states:
-    - none
     - display_only
     - mailer_only
     - display_and_mailer
+  optional_reference_state: none
+  reference_state_required_for_uplift: false
 exports:
   expected_format: parquet

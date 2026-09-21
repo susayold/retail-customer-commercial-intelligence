@@ -197,11 +197,12 @@ def main() -> None:
                 "ci_low": lower,
                 "ci_high": upper,
                 "effect_size_cohens_d": cohens_d(values, others),
+                "limitation": "Observed basket-value distribution by panel segment; descriptive comparison, not causal effect.",
             })
         write_rows(
             output_dir / "stats_basket_by_segment.csv",
             ["segment", "n", "mean_basket_value", "median_basket_value",
-             "mean_vs_other_segments", "ci_low", "ci_high", "effect_size_cohens_d"],
+             "mean_vs_other_segments", "ci_low", "ci_high", "effect_size_cohens_d", "limitation"],
             basket_stats,
         )
 
@@ -260,6 +261,7 @@ def main() -> None:
                 "mann_whitney_u_vs_none": mann_whitney_by_state[state][0],
                 "mann_whitney_p_value_vs_none": mann_whitney_by_state[state][1],
                 "effect_size_rank_biserial_vs_none": mann_whitney_by_state[state][2],
+                "limitation": "Promotion assignment is observational; a missing none state withholds no-promo uplift comparison.",
             }
             for state, values in promotion_groups.items()
         ]
@@ -269,7 +271,7 @@ def main() -> None:
              "median_panel_sales_per_product_store_week", "kruskal_wallis_stat",
              "kruskal_wallis_p_value", "effect_size_eta_squared",
              "mann_whitney_u_vs_none", "mann_whitney_p_value_vs_none",
-             "effect_size_rank_biserial_vs_none"],
+             "effect_size_rank_biserial_vs_none", "limitation"],
             promotion_stats,
         )
 
@@ -299,6 +301,7 @@ def main() -> None:
                 "redemption_rate": successes / len(values) if values else float("nan"),
                 "ci_low": lower,
                 "ci_high": upper,
+                "limitation": "Campaign recipients may be targeted; CI describes observed response and not causal lift or ROI.",
             })
         campaign_table = np.array(
             [
@@ -317,7 +320,7 @@ def main() -> None:
         write_rows(
             output_dir / "stats_campaign_redemption.csv",
             ["campaign_type", "n_recipients", "redeemers", "redemption_rate", "ci_low", "ci_high",
-             "chi_square_statistic", "chi_square_p_value", "effect_size_cramers_v"],
+             "chi_square_statistic", "chi_square_p_value", "effect_size_cramers_v", "limitation"],
             campaign_stats,
         )
     except Exception as caught:

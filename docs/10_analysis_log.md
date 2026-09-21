@@ -17,7 +17,7 @@
 | 2026-09-12 | End-to-end Drive runner | src/run_pipeline.py + Makefile | implemented | one-command storage gate through BI exports; real source run pending |
 | 2026-09-12 | Layer reconciliation hardening | sql/07_quality/10_q10_layer_reconciliation.sql + src/validate.py | implemented | raw/staging/fact populations and sales totals will be exported to Drive; real-source result pending |
 | 2026-09-12 | Category household mart | sql/06_marts/14_mart_category_household.sql + category_analysis.sql | implemented | distinct buyers, household penetration, baskets, frequency, spend/basket, private label and decomposition; real-source run pending |
-| 2026-09-21 | Analysis mart Power BI coverage | src/export_powerbi.py + powerbi/semantic_model.yaml | implemented in code | governed category, promotion, campaign, root-cause and decision assets wired into 40 Drive exports and 38 semantic tables; refresh pending source |
+| 2026-09-21 | Analysis mart Power BI coverage | src/export_powerbi.py + powerbi/semantic_model.yaml | implemented in code | governed category, promotion, campaign, root-cause, stability, cohort, demographic and decision assets wired into 46 Drive exports and 44 semantic tables; refresh pending source |
 | 2026-09-12 | Root-cause templates | docs/11_root_cause_cases.md | implemented; findings pending | three case contracts define evidence, decision rules, actions and limitations |
 | 2026-09-12 | Executive decision slots | docs/12_executive_decisions.md + Drive Decision_Tracker | implemented; findings pending | five decision slots require verified Drive outputs and run IDs |
 | pending | Inventory/profile | Drive 04_qa_reports | pending | no eight-source CSVs present yet |

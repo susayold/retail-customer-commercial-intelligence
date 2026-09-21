@@ -100,6 +100,30 @@ tables:
     role: analysis
     source_file: Analysis_Root_Cause_LMDI.parquet
     grain: decision_id, driver
+  - name: Analysis_Category_Materiality
+    role: analysis
+    source_file: Analysis_Category_Materiality.parquet
+    grain: category_key
+  - name: Analysis_Category_LMDI
+    role: analysis
+    source_file: Analysis_Category_LMDI.parquet
+    grain: category_key
+  - name: Analysis_Segment_Stability
+    role: analysis
+    source_file: Analysis_Segment_Stability.parquet
+    grain: comparison_name, row_type, full_segment, trimmed_segment
+  - name: Analysis_Private_Label_Anomalies
+    role: audit
+    source_file: Analysis_Private_Label_Anomalies.parquet
+    grain: department, commodity, anomaly_type
+  - name: Analysis_First_Observed_Cohort
+    role: analysis
+    source_file: Analysis_First_Observed_Cohort.parquet
+    grain: first_observed_week
+  - name: Analysis_Demographic_Summary
+    role: analysis
+    source_file: Analysis_Demographic_Summary.parquet
+    grain: attribute_name, attribute_value
   - name: Analysis_Executive_Decisions
     role: decision
     source_file: Analysis_Executive_Decisions.parquet
@@ -273,13 +297,13 @@ relationships:
 
 pages:
   - name: Executive Customer & Commercial Health
-    source_tables: [Mart_Panel_Weekly, Mart_Basket, Mart_Decision_Alerts, Analysis_Root_Cause_LMDI, Analysis_Executive_Decisions]
+    source_tables: [Mart_Panel_Weekly, Mart_Basket, Mart_Decision_Alerts, Analysis_Root_Cause_LMDI, Analysis_Executive_Decisions, Analysis_Category_LMDI]
   - name: Customer Engagement & Segmentation
-    source_tables: [Mart_Household_Summary, Mart_Customer_Segment, Dim_Segment]
+    source_tables: [Mart_Household_Summary, Mart_Customer_Segment, Dim_Segment, Analysis_Segment_Stability, Analysis_Demographic_Summary]
   - name: Basket & Category Intelligence
-    source_tables: [Mart_Basket, Mart_Category_Weekly, Mart_Category_Household, Mart_Category_Household_Weekly, Dim_Category, Analysis_Category_Penetration, Analysis_Category_Decomposition, Mart_Cross_Category_Pair]
+    source_tables: [Mart_Basket, Mart_Category_Weekly, Mart_Category_Household, Mart_Category_Household_Weekly, Dim_Category, Analysis_Category_Penetration, Analysis_Category_Decomposition, Analysis_Category_Materiality, Analysis_Category_LMDI, Analysis_First_Observed_Cohort, Mart_Cross_Category_Pair]
   - name: Category, Brand & Private Label
-    source_tables: [Mart_Category_Weekly, Mart_Category_Household, Mart_Category_Household_Weekly, Dim_Category, Analysis_Category_Penetration, Analysis_Category_Decomposition, Mart_Brand_Category, Mart_Panel_Weekly]
+    source_tables: [Mart_Category_Weekly, Mart_Category_Household, Mart_Category_Household_Weekly, Dim_Category, Analysis_Category_Penetration, Analysis_Category_Decomposition, Analysis_Category_Materiality, Analysis_Category_LMDI, Analysis_Private_Label_Anomalies, Mart_Brand_Category, Mart_Panel_Weekly]
   - name: Promotion & Merchandising
     source_tables: [Mart_Promotion_Category_Week, Analysis_Promotion_Association, Analysis_Promotion_Dependency, Analysis_Promotion_Universe_Audit, Mart_Brand_Category]
   - name: Campaign & Coupon Intelligence

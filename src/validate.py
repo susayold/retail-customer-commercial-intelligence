@@ -24,8 +24,13 @@ QA_TABLES = (
     "qa_demographic_coverage",
     "qa_reference_coverage",
     "qa_transaction_anomalies",
+    "qa_source_contract_audit",
     "qa_layer_reconciliation",
 )
+
+ANALYSIS_QA_EXPORTS = {
+    "analysis_private_label_anomalies": "qa_private_label_category_anomalies.csv",
+}
 
 RUN_LOG_FIELDS = [
     "run_id",
@@ -136,6 +141,37 @@ def main() -> None:
                         rows_read,
                         rows_read,
                         started_at,
+                    )
+                )
+            except Exception as exc:
+                run_log.append(
+                    log_record(
+                        run_id,
+                        output_path.name,
+                        None,
+                        None,
+                        started_at,
+                        errors=f"{type(exc).__name__}: {exc}",
+                    )
+                )
+                raise
+        for relation_name, file_name in ANALYSIS_QA_EXPORTS.items():
+            started_at = time.perf_counter()
+            output_path = qa_dir / file_name
+            try:
+                rows_read = relation_row_count(connection, relation_name)
+                connection.execute(
+                    f"COPY (SELECT * FROM {relation_name}) TO ? (HEADER, DELIMITER ',')",
+                    [output_path.as_posix()],
+                )
+                run_log.append(
+                    log_record(
+                        run_id,
+                        output_path.name,
+                        rows_read,
+                        rows_read,
+                        started_at,
+                        warnings="empty anomaly table is valid when no anomalies are detected" if rows_read == 0 else "",
                     )
                 )
             except Exception as exc:

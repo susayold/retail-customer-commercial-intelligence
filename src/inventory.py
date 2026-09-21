@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
-from src.source_manifest import EXPECTED_ROW_COUNTS, EXPECTED_SOURCE_FILES
+from src.source_manifest import EXPECTED_ROW_COUNTS, EXPECTED_SOURCE_FILES, SOURCE_NAME_BY_FILE
 from src.storage_paths import require_drive_path
 
 # Backward-compatible aliases for downstream imports. The manifest is canonical.
@@ -43,9 +43,12 @@ def inspect_csv(path: Path, expected_row_count: int | None = None) -> dict[str, 
         if expected_row_count is not None
         else "not_configured"
     )
+    checksum = content_hash(path)
     return {
+        "source_name": SOURCE_NAME_BY_FILE.get(path.name, path.stem),
         "file_name": path.name,
         "file_size_bytes": path.stat().st_size,
+        "file_size": path.stat().st_size,
         "modified_time": datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).isoformat(),
         "row_count": rows,
         "expected_row_count": expected_row_count,
@@ -53,7 +56,8 @@ def inspect_csv(path: Path, expected_row_count: int | None = None) -> dict[str, 
         "planning_expectation_status": planning_expectation_status,
         "column_count": len(header),
         "column_names_hash": column_hash(header),
-        "content_sha256": content_hash(path),
+        "content_sha256": checksum,
+        "checksum": checksum,
         "expected_schema_version": "v1",
         "load_status": "ok",
         "ingestion_status": "ok",
@@ -68,8 +72,10 @@ def inventory(input_dir: Path) -> list[dict[str, object]]:
             rows.append(inspect_csv(path, EXPECTED_ROW_COUNTS.get(name)))
         else:
             rows.append({
+                "source_name": SOURCE_NAME_BY_FILE.get(name, Path(name).stem),
                 "file_name": name,
                 "file_size_bytes": None,
+                "file_size": None,
                 "modified_time": None,
                 "row_count": None,
                 "expected_row_count": EXPECTED_ROW_COUNTS.get(name),
@@ -78,6 +84,7 @@ def inventory(input_dir: Path) -> list[dict[str, object]]:
                 "column_count": None,
                 "column_names_hash": None,
                 "content_sha256": None,
+                "checksum": None,
                 "expected_schema_version": "v1",
                 "load_status": "missing",
                 "ingestion_status": "missing",

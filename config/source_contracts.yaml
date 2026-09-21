@@ -1,9 +1,14 @@
 # Raw source contracts. These are schema expectations, not redistributed source data.
-# Contract failures should stop the pipeline before warehouse builds.
+# Contract failures should stop the pipeline before warehouse builds. The metadata
+# below is intentionally explicit so the same contract can drive schema, null,
+# domain, range and key audits without putting business KPIs in the curated layer.
+contract_version: v1
 sources:
   transaction_data:
     file: transaction_data.csv
     grain: transaction line
+    primary_key: []
+    business_key: [household_key, BASKET_ID, DAY, PRODUCT_ID, STORE_ID, TRANS_TIME]
     required_columns:
       - household_key
       - BASKET_ID
@@ -17,48 +22,97 @@ sources:
       - COUPON_MATCH_DISC
       - TRANS_TIME
       - WEEK_NO
+    columns:
+      household_key: {type: integer, nullable: false}
+      BASKET_ID: {type: string, nullable: false}
+      DAY: {type: integer, nullable: false, min: 1}
+      PRODUCT_ID: {type: integer, nullable: false}
+      QUANTITY: {type: numeric, nullable: false}
+      SALES_VALUE: {type: numeric, nullable: false}
+      STORE_ID: {type: integer, nullable: false}
+      RETAIL_DISC: {type: numeric, nullable: false}
+      COUPON_DISC: {type: numeric, nullable: false}
+      COUPON_MATCH_DISC: {type: numeric, nullable: false}
+      TRANS_TIME: {type: integer, nullable: false, min: 0, max: 2359}
+      WEEK_NO: {type: integer, nullable: false, min: 1, max: 102}
   causal_data:
     file: causal_data.csv
     grain: product x store x week promotion state
+    primary_key: []
+    business_key: [PRODUCT_ID, STORE_ID, WEEK_NO]
     required_columns:
       - PRODUCT_ID
       - STORE_ID
       - WEEK_NO
       - display
       - mailer
+    columns:
+      PRODUCT_ID: {type: integer, nullable: false}
+      STORE_ID: {type: integer, nullable: false}
+      WEEK_NO: {type: integer, nullable: false, min: 1, max: 102}
+      display: {type: categorical, nullable: false, allowed: [0, 1]}
+      mailer: {type: categorical, nullable: false, allowed: [0, 1]}
   coupon:
     file: coupon.csv
     grain: coupon x product x campaign
+    primary_key: []
+    business_key: [COUPON_UPC, PRODUCT_ID, CAMPAIGN]
     required_columns:
       - COUPON_UPC
       - PRODUCT_ID
       - CAMPAIGN
+    columns:
+      COUPON_UPC: {type: integer, nullable: false}
+      PRODUCT_ID: {type: integer, nullable: false}
+      CAMPAIGN: {type: integer, nullable: false}
   coupon_redempt:
     file: coupon_redempt.csv
     grain: coupon redemption event
+    primary_key: []
+    business_key: [household_key, DAY, COUPON_UPC, CAMPAIGN]
     required_columns:
       - household_key
       - DAY
       - COUPON_UPC
       - CAMPAIGN
+    columns:
+      household_key: {type: integer, nullable: false}
+      DAY: {type: integer, nullable: false, min: 1}
+      COUPON_UPC: {type: integer, nullable: false}
+      CAMPAIGN: {type: integer, nullable: false}
   campaign_table:
     file: campaign_table.csv
     grain: household x campaign exposure
+    primary_key: []
+    business_key: [household_key, CAMPAIGN]
     required_columns:
       - household_key
       - CAMPAIGN
       - DESCRIPTION
+    columns:
+      household_key: {type: integer, nullable: false}
+      CAMPAIGN: {type: integer, nullable: false}
+      DESCRIPTION: {type: string, nullable: false}
   campaign_desc:
     file: campaign_desc.csv
     grain: campaign
+    primary_key: [CAMPAIGN]
+    business_key: [CAMPAIGN]
     required_columns:
       - DESCRIPTION
       - CAMPAIGN
       - START_DAY
       - END_DAY
+    columns:
+      DESCRIPTION: {type: string, nullable: false}
+      CAMPAIGN: {type: integer, nullable: false}
+      START_DAY: {type: integer, nullable: false, min: 1}
+      END_DAY: {type: integer, nullable: false, min: 1}
   product:
     file: product.csv
     grain: product
+    primary_key: [PRODUCT_ID]
+    business_key: [PRODUCT_ID]
     required_columns:
       - PRODUCT_ID
       - MANUFACTURER
@@ -67,9 +121,19 @@ sources:
       - COMMODITY_DESC
       - SUB_COMMODITY_DESC
       - CURR_SIZE_OF_PRODUCT
+    columns:
+      PRODUCT_ID: {type: integer, nullable: false}
+      MANUFACTURER: {type: integer, nullable: false}
+      DEPARTMENT: {type: string, nullable: false}
+      BRAND: {type: categorical, nullable: false, allowed: [0, 1, PRIVATE, NATIONAL]}
+      COMMODITY_DESC: {type: string, nullable: false}
+      SUB_COMMODITY_DESC: {type: string, nullable: true}
+      CURR_SIZE_OF_PRODUCT: {type: string, nullable: true}
   hh_demographic:
     file: hh_demographic.csv
     grain: household demographic snapshot
+    primary_key: [household_key]
+    business_key: [household_key]
     required_columns:
       - classification_1
       - classification_2
@@ -79,3 +143,12 @@ sources:
       - classification_4
       - KID_CATEGORY_DESC
       - household_key
+    columns:
+      classification_1: {type: string, nullable: true}
+      classification_2: {type: string, nullable: true}
+      classification_3: {type: string, nullable: true}
+      HOMEOWNER_DESC: {type: string, nullable: true}
+      classification_5: {type: string, nullable: true}
+      classification_4: {type: string, nullable: true}
+      KID_CATEGORY_DESC: {type: string, nullable: true}
+      household_key: {type: integer, nullable: false}

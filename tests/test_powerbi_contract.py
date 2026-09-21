@@ -15,7 +15,7 @@ def test_powerbi_model_contract_is_curated_and_six_pages():
     )
     assert contract["storage_policy"] == "Drive-only"
     assert contract["raw_source_allowed"] is False
-    assert len(contract["tables"]) == 38
+    assert len(contract["tables"]) == 44
     assert len(contract["pages"]) == 6
     assert all(item["source_file"].endswith(".parquet") for item in contract["tables"])
     assert all(item["cross_filter"] == "single" for item in contract["relationships"])
@@ -80,7 +80,7 @@ def test_powerbi_export_names_match_semantic_contract():
     assert POWERBI_OUTPUT_NAMES["analysis_campaign_denominators"] == "Analysis_Campaign_Denominators"
     assert POWERBI_OUTPUT_NAMES["analysis_campaign_segment"] == "Analysis_Campaign_Segment"
     assert POWERBI_OUTPUT_NAMES["analysis_coupon_repeat_category"] == "Analysis_Coupon_Repeat_Category"
-    assert len(POWERBI_OUTPUT_NAMES) == 40
+    assert len(POWERBI_OUTPUT_NAMES) == 46
 
 
 def test_powerbi_tables_match_exporter_contract():
@@ -96,6 +96,15 @@ def test_powerbi_tables_match_exporter_contract():
         if not table_name.startswith("export_")
     }
     assert semantic_tables == exported_curated_tables
+
+
+def test_powerbi_exports_are_run_traceable():
+    exporter = (ROOT / "src/export_powerbi.py").read_text(encoding="utf-8")
+    assert "pipeline_run_id" in exporter
+    assert "--run-id" in exporter
+    parquet_builder = (ROOT / "src/build_parquet.py").read_text(encoding="utf-8")
+    for field in ("source_file", "ingestion_timestamp", "pipeline_run_id", "schema_version"):
+        assert field in parquet_builder
 
 
 

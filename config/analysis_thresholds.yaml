@@ -20,3 +20,13 @@ campaign:
   pre_days: 28
   post_short_days: 14
   post_days: 28
+
+segment_stability:
+  exclusion_weeks: 13
+
+materiality:
+  spend_loss_weight: 0.50
+  buying_household_loss_weight: 0.20
+  penetration_loss_weight: 0.15
+  frequency_loss_weight: 0.10
+  basket_value_loss_weight: 0.05

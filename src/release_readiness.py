@@ -22,9 +22,13 @@ REQUIRED_ARTIFACT_FILES = (
     "04_qa_reports/source_profile_summary.csv",
     "04_qa_reports/source_cardinality.csv",
     "04_qa_reports/qa_run_log.csv",
+    "04_qa_reports/qa_source_contract_audit.csv",
+    "04_qa_reports/qa_private_label_category_anomalies.csv",
     "04_qa_reports/qa_quality_gate.json",
     "04_qa_reports/governed_asset_audit.csv",
     "04_qa_reports/governed_asset_audit.json",
+    "04_qa_reports/qa_promotion_universe.csv",
+    "04_qa_reports/qa_promotion_universe.json",
     "04_qa_reports/qa_layer_reconciliation.csv",
     "04_qa_reports/powerbi_reconciliation.csv",
     "04_qa_reports/uat_results.csv",
@@ -66,12 +70,17 @@ REQUIRED_DATA_RUN_MANIFEST_FIELDS = (
 REQUIRED_UAT_CHECK_IDS = tuple(f"UAT-{index:02d}" for index in range(1, 13))
 
 INVENTORY_REQUIRED_COLUMNS = {
+    "source_name",
     "file_name",
     "file_size_bytes",
+    "file_size",
     "row_count",
     "column_count",
     "column_names_hash",
     "content_sha256",
+    "checksum",
+    "expected_schema_version",
+    "ingestion_status",
     "load_status",
 }
 SCHEMA_REQUIRED_COLUMNS = {
@@ -87,6 +96,10 @@ REQUIRED_REPOSITORY_FILES = (
     "docs/12_executive_decisions.md",
     "docs/13_limitations.md",
     "docs/14_powerbi_uat.md",
+    "docs/data_lineage.md",
+    "docs/metric_lineage.md",
+    "assets/segmentation_flow.svg",
+    "assets/decision_flow.svg",
     "powerbi/semantic_model.yaml",
     "powerbi/measures.dax",
 )
@@ -494,6 +507,16 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
     checks.append(
         _csv_contract(
             artifact_root,
+            "04_qa_reports/qa_source_contract_audit.csv",
+            {"source_name", "check_name", "violating_rows", "severity", "status", "rule"},
+            minimum_rows=1,
+            require_nonblank_columns={"source_name", "check_name", "violating_rows", "severity", "status", "rule"},
+            complete_statuses={"pass", "review"},
+        )
+    )
+    checks.append(
+        _csv_contract(
+            artifact_root,
             "04_qa_reports/powerbi_reconciliation.csv",
             {"metric", "sql_value", "powerbi_value", "difference", "tolerance", "status"},
             expected_rows=len(REQUIRED_RECONCILIATION_METRICS),
@@ -507,7 +530,7 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
         _csv_contract(
             artifact_root,
             "04_qa_reports/statistics/stats_basket_by_segment.csv",
-            {"segment", "n", "mean_basket_value", "ci_low", "ci_high"},
+            {"segment", "n", "mean_basket_value", "ci_low", "ci_high", "effect_size_cohens_d", "limitation"},
             minimum_rows=1,
         )
     )
@@ -515,7 +538,7 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
         _csv_contract(
             artifact_root,
             "04_qa_reports/statistics/stats_promotion_state.csv",
-            {"promo_state_group", "n", "mean_panel_sales_per_product_store_week", "kruskal_wallis_p_value"},
+            {"promo_state_group", "n", "mean_panel_sales_per_product_store_week", "kruskal_wallis_p_value", "effect_size_eta_squared", "limitation"},
             minimum_rows=1,
         )
     )
@@ -523,7 +546,7 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
         _csv_contract(
             artifact_root,
             "04_qa_reports/statistics/stats_campaign_redemption.csv",
-            {"campaign_type", "n_recipients", "redeemers", "redemption_rate", "ci_low", "ci_high"},
+            {"campaign_type", "n_recipients", "redeemers", "redemption_rate", "ci_low", "ci_high", "effect_size_cramers_v", "limitation"},
             minimum_rows=1,
         )
     )

@@ -35,6 +35,8 @@ The supplied blueprint is treated as project requirements, not as user instructi
 - Use association wording for promotion findings.
 - Do not publish unsupported claims about margin, ROI, inventory or causal lift.
 - Run business-facing statistical validation with sample size, uncertainty and effect size.
+- Store source-contract metadata for expected types, nullability, key roles, domains and ranges, then persist the resulting source-contract QA audit.
+- Carry technical lineage metadata through curated Parquet and governed BI exports so every output is traceable to a pipeline run.
 
 ## Traceability map
 

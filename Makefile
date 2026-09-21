@@ -28,7 +28,7 @@ profile:
 	$(PYTHON) -m src.profile_sources --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
 
 parquet:
-	$(PYTHON) -m src.build_parquet --input "$$RETAIL_DATA_ROOT" --output "$$RETAIL_ARTIFACT_ROOT/02_curated_parquet" --drive-root "$$RETAIL_DRIVE_ROOT"
+	$(PYTHON) -m src.build_parquet --input "$$RETAIL_DATA_ROOT" --output "$$RETAIL_ARTIFACT_ROOT/02_curated_parquet" --pipeline-run-id "$${RETAIL_PIPELINE_RUN_ID:-manual_curated}" --drive-root "$$RETAIL_DRIVE_ROOT"
 
 warehouse:
 	$(PYTHON) -m src.build_warehouse --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
@@ -41,6 +41,9 @@ validate:
 
 governed-audit:
 	$(PYTHON) -m src.audit_governed_assets --database "$$RETAIL_ARTIFACT_ROOT/03_duckdb_and_marts/retail_intelligence.duckdb" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT" --run-id "$${RETAIL_PIPELINE_RUN_ID:-manual_audit}"
+
+promotion-audit:
+	$(PYTHON) -m src.audit_promotion_universe --database "$$RETAIL_ARTIFACT_ROOT/03_duckdb_and_marts/retail_intelligence.duckdb" --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT" --run-id "$${RETAIL_PIPELINE_RUN_ID:-manual_audit}"
 
 quality-gate:
 	$(PYTHON) -m src.enforce_quality_gate --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT"
@@ -64,7 +67,7 @@ da-no-native-powerbi:
 	$(PYTHON) -m src.run_da_no_native_powerbi --data-root "$$RETAIL_DATA_ROOT" --artifact-root "$$RETAIL_ARTIFACT_ROOT" --drive-root "$$RETAIL_DRIVE_ROOT" --repo-root "."
 
 powerbi:
-	$(PYTHON) -m src.export_powerbi --artifact-root "$$RETAIL_ARTIFACT_ROOT" --format parquet --drive-root "$$RETAIL_DRIVE_ROOT"
+	$(PYTHON) -m src.export_powerbi --artifact-root "$$RETAIL_ARTIFACT_ROOT" --format parquet --run-id "$${RETAIL_PIPELINE_RUN_ID:-manual_export}" --drive-root "$$RETAIL_DRIVE_ROOT"
 
 reconcile:
 	$(PYTHON) -m src.reconcile --sql "$$RETAIL_SQL_RECONCILIATION" --bi "$$RETAIL_BI_RECONCILIATION" --output "$$RETAIL_ARTIFACT_ROOT/04_qa_reports/powerbi_reconciliation.csv" --drive-root "$$RETAIL_DRIVE_ROOT"

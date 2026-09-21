@@ -43,6 +43,29 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
         ["run_id", "asset", "relation", "row_count", "status", "error"],
         [{"run_id": "run-001", "asset": "dim_category", "relation": "dim_category", "row_count": 1, "status": "PASS", "error": ""}],
     )
+    write_csv(
+        qa_root / "qa_promotion_universe.csv",
+        ["run_id", "metric", "value", "status", "interpretation"],
+        [{
+            "run_id": "run-001",
+            "metric": "none_state_status",
+            "value": "VALID_CONTROL",
+            "status": "PASS",
+            "interpretation": "A valid none-state control is present for observational comparison.",
+        }],
+    )
+    (qa_root / "qa_promotion_universe.json").write_text(
+        json.dumps(
+            {
+                "run_id": "run-001",
+                "status": "PASS",
+                "none_state_status": "VALID_CONTROL",
+                "raw_zero_zero_rows": 1,
+                "modeled_rows": 1,
+            }
+        ),
+        encoding="utf-8",
+    )
     (source_docs_root / "data_ready.json").write_text(
         json.dumps(
             {
@@ -80,8 +103,10 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
     write_csv(
         qa_root / "raw_file_inventory.csv",
         [
+            "source_name",
             "file_name",
             "file_size_bytes",
+            "file_size",
             "row_count",
             "expected_row_count",
             "row_count_delta",
@@ -89,12 +114,17 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
             "column_count",
             "column_names_hash",
             "content_sha256",
+            "checksum",
+            "expected_schema_version",
+            "ingestion_status",
             "load_status",
         ],
         [
             {
+                "source_name": Path(name).stem,
                 "file_name": name,
                 "file_size_bytes": 10,
+                "file_size": 10,
                 "row_count": 1,
                 "expected_row_count": 1,
                 "row_count_delta": 0,
@@ -102,6 +132,9 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
                 "column_count": 1,
                 "column_names_hash": "column-hash",
                 "content_sha256": f"sha-{index}",
+                "checksum": f"sha-{index}",
+                "expected_schema_version": "v1",
+                "ingestion_status": "ok",
                 "load_status": "ok",
             }
             for index, name in enumerate(EXPECTED_FILES)
@@ -187,24 +220,41 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
             "errors": "",
         }],
     )
+    write_csv(
+        qa_root / "qa_source_contract_audit.csv",
+        ["source_name", "check_name", "violating_rows", "severity", "status", "rule"],
+        [{
+            "source_name": "transaction_data",
+            "check_name": "required_household_key",
+            "violating_rows": 0,
+            "severity": "block",
+            "status": "PASS",
+            "rule": "household_key must be non-null",
+        }],
+    )
+    write_csv(
+        qa_root / "qa_private_label_category_anomalies.csv",
+        ["category_key", "department", "commodity", "anomaly_type", "private_label_share", "denominator", "interpretation_boundary"],
+        [],
+    )
     (qa_root / "pipeline_orchestration.log").write_text(
         "pipeline complete\n", encoding="utf-8"
     )
 
     write_csv(
         qa_root / "statistics" / "stats_basket_by_segment.csv",
-        ["segment", "n", "mean_basket_value", "ci_low", "ci_high"],
-        [{"segment": "High", "n": 2, "mean_basket_value": 10.0, "ci_low": 8.0, "ci_high": 12.0}],
+        ["segment", "n", "mean_basket_value", "ci_low", "ci_high", "effect_size_cohens_d", "limitation"],
+        [{"segment": "High", "n": 2, "mean_basket_value": 10.0, "ci_low": 8.0, "ci_high": 12.0, "effect_size_cohens_d": 0.1, "limitation": "Observed panel comparison."}],
     )
     write_csv(
         qa_root / "statistics" / "stats_promotion_state.csv",
-        ["promo_state_group", "n", "mean_panel_sales_per_product_store_week", "kruskal_wallis_p_value"],
-        [{"promo_state_group": "display_only", "n": 2, "mean_panel_sales_per_product_store_week": 5.0, "kruskal_wallis_p_value": 0.5}],
+        ["promo_state_group", "n", "mean_panel_sales_per_product_store_week", "kruskal_wallis_p_value", "effect_size_eta_squared", "limitation"],
+        [{"promo_state_group": "display_only", "n": 2, "mean_panel_sales_per_product_store_week": 5.0, "kruskal_wallis_p_value": 0.5, "effect_size_eta_squared": 0.1, "limitation": "Observed association."}],
     )
     write_csv(
         qa_root / "statistics" / "stats_campaign_redemption.csv",
-        ["campaign_type", "n_recipients", "redeemers", "redemption_rate", "ci_low", "ci_high"],
-        [{"campaign_type": "TypeA", "n_recipients": 2, "redeemers": 1, "redemption_rate": 0.5, "ci_low": 0.1, "ci_high": 0.9}],
+        ["campaign_type", "n_recipients", "redeemers", "redemption_rate", "ci_low", "ci_high", "effect_size_cramers_v", "limitation"],
+        [{"campaign_type": "TypeA", "n_recipients": 2, "redeemers": 1, "redemption_rate": 0.5, "ci_low": 0.1, "ci_high": 0.9, "effect_size_cramers_v": 0.1, "limitation": "Observed response."}],
     )
     write_csv(
         qa_root / "statistics" / "statistics_run_log.csv",
@@ -283,6 +333,10 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
         "docs/12_executive_decisions.md",
         "docs/13_limitations.md",
         "docs/14_powerbi_uat.md",
+        "docs/data_lineage.md",
+        "docs/metric_lineage.md",
+        "assets/segmentation_flow.svg",
+        "assets/decision_flow.svg",
     ):
         path = repo_root / relative_path
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -399,13 +453,11 @@ def test_release_readiness_rejects_incomplete_inventory(tmp_path):
     repo_root = tmp_path / "repo"
     seed_complete_delivery(artifact_root, repo_root)
     inventory = artifact_root / "04_qa_reports" / "raw_file_inventory.csv"
-    inventory.write_text(
-        inventory.read_text(encoding="utf-8").replace(
-            "transaction_data.csv,10,1,1,0,match,1,column-hash,sha-0,ok",
-            "transaction_data.csv,10,1,1,0,match,1,column-hash,sha-0,missing",
-        ),
-        encoding="utf-8",
-    )
+    rows = []
+    with inventory.open("r", encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    rows[0]["load_status"] = "missing"
+    write_csv(inventory, list(rows[0]), rows)
 
     result = evaluate_release_readiness(artifact_root, repo_root)
 

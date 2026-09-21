@@ -82,13 +82,17 @@ def main() -> None:
             ("schema", [sys.executable, "-m", "src.schema_contracts", "--input", str(data_root), "--contracts", str(contracts), "--output", str(qa_root / "schema_validation.csv"), "--drive-root", str(drive_root)]),
             ("inventory", [sys.executable, "-m", "src.inventory", "--input", str(data_root), "--output", str(qa_root / "raw_file_inventory.csv"), "--drive-root", str(drive_root)]),
             ("profile", [sys.executable, "-m", "src.profile_sources", "--data-root", str(data_root), "--artifact-root", str(artifact_root), "--drive-root", str(drive_root)]),
-            ("parquet", [sys.executable, "-m", "src.build_parquet", "--input", str(data_root), "--output", str(parquet_root), "--inventory", str(qa_root / "raw_file_inventory.csv"), "--drive-root", str(drive_root)]),
+            ("parquet", [sys.executable, "-m", "src.build_parquet", "--input", str(data_root), "--output", str(parquet_root), "--inventory", str(qa_root / "raw_file_inventory.csv"), "--pipeline-run-id", pipeline_run_id, "--drive-root", str(drive_root)]),
             ("warehouse", [sys.executable, "-m", "src.build_warehouse", "--data-root", str(data_root), "--artifact-root", str(artifact_root), "--sql-dir", str(sql_dir), "--thresholds", str(thresholds), "--drive-root", str(drive_root)]),
             ("validate", [sys.executable, "-m", "src.validate", "--data-root", str(data_root), "--artifact-root", str(artifact_root), "--sql-dir", str(sql_dir), "--thresholds", str(thresholds), "--drive-root", str(drive_root)]),
+            ("promotion_universe_audit", [sys.executable, "-m", "src.audit_promotion_universe", "--database", str(database), "--data-root", str(data_root), "--artifact-root", str(artifact_root), "--drive-root", str(drive_root), "--run-id", pipeline_run_id]),
             ("governed_asset_audit", [sys.executable, "-m", "src.audit_governed_assets", "--database", str(database), "--artifact-root", str(artifact_root), "--drive-root", str(drive_root), "--run-id", pipeline_run_id]),
             ("quality_gate", [sys.executable, "-m", "src.enforce_quality_gate", "--artifact-root", str(artifact_root), "--drive-root", str(drive_root)]),
             ("statistics", [sys.executable, "-m", "src.statistical_validation", "--database", str(database), "--artifact-root", str(artifact_root), "--drive-root", str(drive_root)]),
-            ("powerbi_exports", [sys.executable, "-m", "src.export_powerbi", "--artifact-root", str(artifact_root), "--sql-dir", str(sql_dir), "--format", "parquet", "--drive-root", str(drive_root)]),
+            ("powerbi_exports", [sys.executable, "-m", "src.export_powerbi", "--artifact-root", str(artifact_root), "--sql-dir", str(sql_dir), "--format", "parquet", "--run-id", pipeline_run_id, "--drive-root", str(drive_root)]),
+            ("real_evidence", [sys.executable, "-m", "src.build_real_evidence", "--artifact-root", str(artifact_root), "--drive-root", str(drive_root)]),
+            ("metric_totals", [sys.executable, "-m", "src.build_metric_totals", "--artifact-root", str(artifact_root), "--drive-root", str(drive_root)]),
+            ("uat_contract", [sys.executable, "-m", "src.build_uat_evidence", "--artifact-root", str(artifact_root), "--drive-root", str(drive_root)]),
         ]
         for stage, command in stages:
             started = time.perf_counter()

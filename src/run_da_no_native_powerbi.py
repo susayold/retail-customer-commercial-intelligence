@@ -65,7 +65,7 @@ def main() -> None:
         ("profile", [sys.executable, "-m", "src.profile_sources", "--data-root", str(data_root), "--artifact-root", str(artifact_root), *common]),
         (
             "parquet",
-            [sys.executable, "-m", "src.build_parquet", "--input", str(data_root), "--output", str(artifact_root / "02_curated_parquet"), "--inventory", str(qa_root / "raw_file_inventory.csv"), *common],
+            [sys.executable, "-m", "src.build_parquet", "--input", str(data_root), "--output", str(artifact_root / "02_curated_parquet"), "--inventory", str(qa_root / "raw_file_inventory.csv"), "--pipeline-run-id", pipeline_run_id, *common],
         ),
         (
             "warehouse",
@@ -75,11 +75,14 @@ def main() -> None:
             "validate",
             [sys.executable, "-m", "src.validate", "--data-root", str(data_root), "--artifact-root", str(artifact_root), "--sql-dir", str(repo_root / "sql"), "--thresholds", str(repo_root / "config" / "analysis_thresholds.yaml"), *common],
         ),
+        ("promotion_universe_audit", [sys.executable, "-m", "src.audit_promotion_universe", "--database", str(database), "--data-root", str(data_root), "--artifact-root", str(artifact_root), *common, "--run-id", pipeline_run_id]),
+        ("governed_asset_audit", [sys.executable, "-m", "src.audit_governed_assets", "--database", str(database), "--artifact-root", str(artifact_root), *common, "--run-id", pipeline_run_id]),
         ("quality_gate", [sys.executable, "-m", "src.enforce_quality_gate", "--artifact-root", str(artifact_root), *common]),
         ("statistics", [sys.executable, "-m", "src.statistical_validation", "--database", str(database), "--artifact-root", str(artifact_root), *common]),
         ("real_evidence", [sys.executable, "-m", "src.build_real_evidence", "--artifact-root", str(artifact_root), *common]),
-        ("powerbi_analytical_exports", [sys.executable, "-m", "src.export_powerbi", "--artifact-root", str(artifact_root), "--sql-dir", str(repo_root / "sql"), "--format", "parquet", *common]),
+        ("powerbi_analytical_exports", [sys.executable, "-m", "src.export_powerbi", "--artifact-root", str(artifact_root), "--sql-dir", str(repo_root / "sql"), "--format", "parquet", "--run-id", pipeline_run_id, *common]),
         ("metric_totals", [sys.executable, "-m", "src.build_metric_totals", "--artifact-root", str(artifact_root), *common]),
+        ("uat_contract", [sys.executable, "-m", "src.build_uat_evidence", "--artifact-root", str(artifact_root), *common]),
         (
             "data_readiness",
             [sys.executable, "-m", "src.write_data_readiness", "--artifact-root", str(artifact_root), *common, "--repo-root", str(repo_root), "--pipeline-run-id", pipeline_run_id, "--started-at", started_at],

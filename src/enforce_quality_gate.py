@@ -16,6 +16,7 @@ REQUIRED_QA_FILES = (
     "qa_reference_coverage.csv",
     "qa_layer_reconciliation.csv",
     "qa_transaction_anomalies.csv",
+    "qa_source_contract_audit.csv",
 )
 REQUIRED_QA_COLUMNS = {
     "qa_key_audit.csv": {"model", "duplicate_rows"},
@@ -23,6 +24,7 @@ REQUIRED_QA_COLUMNS = {
     "qa_reference_coverage.csv": {"audit_name", "violating_rows"},
     "qa_layer_reconciliation.csv": {"audit_name", "status"},
     "qa_transaction_anomalies.csv": {"audit_name", "violating_rows"},
+    "qa_source_contract_audit.csv": {"source_name", "check_name", "violating_rows", "severity", "status", "rule"},
 }
 BLOCKING_TRANSACTION_ANOMALIES = {
     "missing_product",
@@ -179,6 +181,31 @@ def evaluate_quality_gate(qa_root: Path) -> dict[str, object]:
                     "reason": "transaction_anomaly_retained_for_review",
                 }
                 if audit_name in BLOCKING_TRANSACTION_ANOMALIES:
+                    failures.append(item)
+                else:
+                    warnings.append(item)
+        elif file_name == "qa_source_contract_audit.csv":
+            for row in rows:
+                value = as_number(row.get("violating_rows"))
+                if value is None:
+                    failures.append(
+                        {
+                            "file": file_name,
+                            "audit_name": row.get("check_name", ""),
+                            "reason": "invalid_quality_number",
+                            "value": row.get("violating_rows", ""),
+                        }
+                    )
+                    continue
+                if value <= 0:
+                    continue
+                item = {
+                    "file": file_name,
+                    "audit_name": row.get("check_name", ""),
+                    "value": row.get("violating_rows", ""),
+                    "reason": "source_contract_review",
+                }
+                if row.get("severity", "block").strip().lower() == "block":
                     failures.append(item)
                 else:
                     warnings.append(item)

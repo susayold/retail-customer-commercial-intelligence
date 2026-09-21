@@ -59,6 +59,9 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--inventory", type=Path, default=None)
     parser.add_argument("--drive-root", type=Path, required=True)
+    parser.add_argument("--pipeline-run-id", default=None)
+    parser.add_argument("--schema-version", default="v1")
+    parser.add_argument("--ingestion-timestamp", default=None)
     args = parser.parse_args()
 
     input_root = require_drive_path(args.input, args.drive_root, "--input")
@@ -69,7 +72,8 @@ def main() -> None:
     qa_dir = output_root.parent.parent / "04_qa_reports"
     qa_dir.mkdir(parents=True, exist_ok=True)
     log_path = qa_dir / "pipeline_run.log"
-    run_id = uuid.uuid4().hex
+    run_id = args.pipeline_run_id or f"curated_{uuid.uuid4().hex}"
+    ingestion_timestamp = args.ingestion_timestamp or datetime.now(timezone.utc).isoformat()
     logger = logging.getLogger("retail_parquet")
     logger.setLevel(logging.INFO)
     logger.handlers.clear()
@@ -96,7 +100,12 @@ def main() -> None:
                 source = source_path.as_posix()
                 target = target_path.as_posix()
                 connection.execute(
-                    f"COPY (SELECT * FROM read_csv_auto({duckdb_string_literal(source)}, header=true, union_by_name=true)) "
+                    f"COPY (SELECT *, "
+                    f"{duckdb_string_literal(source_path.name)} AS source_file, "
+                    f"{duckdb_string_literal(ingestion_timestamp)}::TIMESTAMPTZ AS ingestion_timestamp, "
+                    f"{duckdb_string_literal(run_id)} AS pipeline_run_id, "
+                    f"{duckdb_string_literal(args.schema_version)} AS schema_version "
+                    f"FROM read_csv_auto({duckdb_string_literal(source)}, header=true, union_by_name=true)) "
                     f"TO {duckdb_string_literal(target)} (FORMAT PARQUET, COMPRESSION ZSTD)",
                 )
                 rows_written = count_parquet_rows(connection, target_path)

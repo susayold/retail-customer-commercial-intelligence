@@ -16,4 +16,5 @@ def test_key_and_grain_audits_exist():
         "08_q08_reference_coverage.sql",
         "09_q09_transaction_anomalies.sql",
         "10_q10_layer_reconciliation.sql",
+        "11_q11_source_contract_audit.sql",
     ]

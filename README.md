@@ -49,7 +49,7 @@ The source has no true calendar dates. DAY and WEEK_NO are observation indexes. 
 ~~~text
 Drive raw source files
         ↓
-Python inventory + schema validation
+Python inventory + schema/value contract validation
         ↓
 DuckDB raw views
         ↓
@@ -87,7 +87,7 @@ Drive subfolders:
 - 05_powerbi_exports: PBIX/PDF/Excel exports.
 - 06_source_docs: source notes and evidence.
 
-GitHub stores code, configuration, SQL, documentation, tests and small synthetic fixtures only. Raw source data is never committed to this public repository. The pipeline requires explicit Drive-backed input/output paths; it does not default to the repository or Codex workspace for data artifacts. Every data-writing CLI and Make target, including standalone inventory, Parquet, warehouse, QA, statistics, Power BI and release-audit commands, requires an explicit `--drive-root` and rejects an unavailable or repository-backed root. The [Drive-native Excel companion](https://docs.google.com/spreadsheets/d/16Iz47jiHM2nl5gGuhP5Py_xbNjLVLO5FaFpiL-_dR4k/edit) includes Metric Dictionary, Decision Tracker, UAT Checklist, Plan Status for all 44 plan steps, Source Register for the eight expected files, and the six planned output tabs. The expanded contract now covers 38 curated semantic tables exported as 40 Drive artifacts, including reconciliation outputs; definitions are versioned in `powerbi/semantic_model.yaml` and `powerbi/measures.dax`.
+GitHub stores code, configuration, SQL, documentation, tests and small synthetic fixtures only. Raw source data is never committed to this public repository. The pipeline requires explicit Drive-backed input/output paths; it does not default to the repository or Codex workspace for data artifacts. Every data-writing CLI and Make target, including standalone inventory, Parquet, warehouse, QA, statistics, Power BI and release-audit commands, requires an explicit `--drive-root` and rejects an unavailable or repository-backed root. The [Drive-native Excel companion](https://docs.google.com/spreadsheets/d/16Iz47jiHM2nl5gGuhP5Py_xbNjLVLO5FaFpiL-_dR4k/edit) includes Metric Dictionary, Decision Tracker, UAT Checklist, Plan Status for all 44 plan steps, Source Register for the eight expected files, and the six planned output tabs. The expanded contract now covers 44 curated semantic tables exported as 46 Drive artifacts, including reconciliation outputs; definitions are versioned in `powerbi/semantic_model.yaml` and `powerbi/measures.dax`.
 
 For Drive-only source acquisition, use the [Colab ingestion notebook](https://colab.research.google.com/github/susayold/retail-customer-commercial-intelligence/blob/main/notebooks/drive_ingest_source.ipynb). It streams the official package into the Drive project, extracts the eight CSVs into `01_raw_source`, and writes provenance metadata to Drive; it does not save raw data in the Colab runtime or repository.
 
@@ -96,6 +96,8 @@ For Drive-only source acquisition, use the [Colab ingestion notebook](https://co
 Run the pipeline from an environment that can read/write the Drive folders, such as Drive for Desktop, a mounted Google Drive runtime or a controlled notebook runtime. Set RETAIL_DRIVE_ROOT to the mounted project folder, then keep RETAIL_DATA_ROOT and RETAIL_ARTIFACT_ROOT underneath it. Do not use the repository as a data lake. Run `make storage` first; the storage gate requires the explicit Drive root, verifies both data paths are underneath it, checks all eight source names, required Drive artifact folders and repository artifact exclusions, and fails before creating artifacts when the Drive root is missing or outside the declared boundary.
 
 ~~~powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 $env:RETAIL_DRIVE_ROOT = "D:\path\to\Drive\Retail DA - Customer & Commercial Intelligence"
 $env:RETAIL_DATA_ROOT = "$env:RETAIL_DRIVE_ROOT\01_raw_source"
@@ -103,7 +105,7 @@ $env:RETAIL_ARTIFACT_ROOT = "$env:RETAIL_DRIVE_ROOT"
 python -m src.run_pipeline --data-root $env:RETAIL_DATA_ROOT --artifact-root $env:RETAIL_ARTIFACT_ROOT --drive-root $env:RETAIL_DRIVE_ROOT --repo-root "." --with-tests
 ~~~
 
-The D path above is a runtime mount example; the persistent source of truth remains Drive. The runner writes storage_status.json and qa_quality_gate.json to Drive and stops before statistics/BI when blocking checks fail. No raw or curated data is written into the GitHub checkout. After the human-reviewed UAT, SQL/DAX reconciliation, root-cause and decision evidence are placed in Drive, run `make release-audit`; it writes release_readiness.json and fails closed until the final release contract is complete.
+The D path above is a runtime mount example; the persistent source of truth remains Drive. The runner writes storage_status.json, source-contract QA, qa_quality_gate.json, governed evidence, metric totals and the UAT contract to Drive and stops before statistics/BI when blocking checks fail. Curated Parquet rows carry `source_file`, `ingestion_timestamp`, `pipeline_run_id` and `schema_version`; BI exports carry the same run identifier as metadata. No raw or curated data is written into the GitHub checkout. After the human-reviewed UAT, SQL/DAX reconciliation, root-cause and decision evidence are placed in Drive, run `make release-audit`; it writes release_readiness.json and fails closed until the final release contract is complete.
 
 ## 8. Repository map
 
@@ -125,7 +127,7 @@ powerbi/                semantic model, DAX measures, UAT and export instruction
 | M1 | inventory, source contracts, profiling, warehouse, QA | scaffolded; run against Drive data |
 | M2 | engagement, segmentation, basket/category analytics | real-data marts, statistics and evidence verified in Drive |
 | M3 | promotion, campaign, coupon analytics | real-data promotion/campaign/coupon outputs verified in Drive |
-| M4 | Power BI, UAT, decisions, interview story | 40 governed exports in the upgraded contract; native PBIX/UAT pending |
+| M4 | Power BI, UAT, decisions, interview story | 46 governed exports in the upgraded contract; native PBIX/UAT pending |
 
 Numeric CV bullets are available in `docs/19_verified_cv_bullets.md`; they are explicitly scoped to the observed panel and must not be presented as retailer-wide or causal results.
 

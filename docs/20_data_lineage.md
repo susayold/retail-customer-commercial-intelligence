@@ -34,3 +34,5 @@ coupon.csv + coupon_redempt.csv → bridge_coupon_product_campaign + fct_coupon_
 ```
 
 Every full run records source checksums, curated-file hashes, Power BI export hashes, the DuckDB path, QA outputs, repository commit and `pipeline_run_id` in `06_source_docs/data_run_manifest.json`.
+
+Curated source Parquet also carries `source_file`, `ingestion_timestamp`, `pipeline_run_id` and `schema_version` as technical lineage columns. Power BI Parquet exports carry `pipeline_run_id` so a visual can be traced to the exact Drive run without adding business logic to the presentation layer.

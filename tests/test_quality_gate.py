@@ -38,6 +38,11 @@ def seed_quality_outputs(qa_root: Path, grain_violation: int = 0) -> None:
         ["audit_name", "violating_rows"],
         [{"audit_name": "quantity_outlier", "violating_rows": 3}],
     )
+    write_csv(
+        qa_root / "qa_source_contract_audit.csv",
+        ["source_name", "check_name", "violating_rows", "severity", "status", "rule"],
+        [{"source_name": "transaction_data", "check_name": "required_household_key", "violating_rows": 0, "severity": "block", "status": "PASS", "rule": "household_key must be non-null"}],
+    )
 
 
 def test_quality_gate_blocks_grain_failures_but_keeps_review_warnings(tmp_path):
@@ -70,6 +75,7 @@ def test_quality_gate_rejects_empty_quality_outputs(tmp_path):
     write_csv(qa_root / "qa_reference_coverage.csv", ["audit_name", "violating_rows"], [])
     write_csv(qa_root / "qa_layer_reconciliation.csv", ["audit_name", "status"], [])
     write_csv(qa_root / "qa_transaction_anomalies.csv", ["audit_name", "violating_rows"], [])
+    write_csv(qa_root / "qa_source_contract_audit.csv", ["source_name", "check_name", "violating_rows", "severity", "status", "rule"], [])
 
     result = evaluate_quality_gate(qa_root)
 
