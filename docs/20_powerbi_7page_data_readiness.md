@@ -2,7 +2,7 @@
 
 ## Status
 
-The seven-page dashboard supplement was rebuilt from the verified retail source on 2026-09-21 and written to the Drive `05_powerbi_exports` folder. The original governed 31-export contract remains intact. These supplemental files close the data/model gaps identified during the seven-page dashboard review.
+The seven-page dashboard supplement was rebuilt from the verified retail source on 2026-09-21 and written to the Drive `05_powerbi_exports` folder. The repository now folds those supplements into the governed 46-export contract; the Drive snapshot still needs a fresh rerun to materialize the expanded set. These assets close the data/model gaps identified during the seven-page dashboard review.
 
 The native PBIX interaction UAT remains a separate final gate after the report is built.
 

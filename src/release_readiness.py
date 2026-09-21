@@ -96,6 +96,7 @@ REQUIRED_REPOSITORY_FILES = (
     "docs/12_executive_decisions.md",
     "docs/13_limitations.md",
     "docs/14_powerbi_uat.md",
+    "docs/23_plan_completion_audit.md",
     "docs/data_lineage.md",
     "docs/metric_lineage.md",
     "assets/segmentation_flow.svg",
@@ -623,7 +624,9 @@ def evaluate_release_readiness(artifact_root: Path, repo_root: Path) -> dict[str
         _check(
             "powerbi_exports",
             not missing_exports,
-            "31 exports present" if not missing_exports else f"missing {len(missing_exports)} export(s)",
+            f"{len(REQUIRED_POWERBI_EXPORTS)} exports present"
+            if not missing_exports
+            else f"missing {len(missing_exports)} export(s)",
             str(exports_dir),
         )
     )

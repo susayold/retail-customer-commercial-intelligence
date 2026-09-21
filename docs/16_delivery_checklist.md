@@ -31,7 +31,7 @@ This checklist separates implemented repository work from outputs that require t
 | 40 | Finalize limitations | Done | docs/13_limitations.md |
 | 41 | Prepare interview guide | Done | docs/15_interview_guide.md |
 | 42 | Verified CV bullets | Done — verified with limits | docs/19_verified_cv_bullets.md uses only Drive-backed outputs and labels panel/observational scope |
-| 43 | Clean rebuild from raw | Done — verified | src/run_pipeline.py + Makefile `run`; full runner completed with storage gate, source gate, QA gate, statistics, exports and tests; Drive `data_run_manifest.json` and `data_ready.json` recorded |
+| 43 | Clean rebuild from raw | Code complete; current rerun pending | src/run_pipeline.py + Makefile `run`; the runner includes storage/source/QA/statistics/export/evidence gates. The Drive manifest currently records the older 31-export snapshot; rerun is required for the current 46-export contract |
 | 44 | Tag v1.0.0 | Pending by design | Run src/release_readiness.py / Makefile `release-audit`; it fail-closes on missing Drive QA, governed asset audit, SQL/DAX reconciliation, 12 UAT checks, 3 root-cause cases, 5 decisions or 46 Power BI exports; tag only after the Drive audit is ready |
 
 ## Live Drive tracker
@@ -40,4 +40,4 @@ The Drive-native workbook contains a `Plan Status` tab covering all 44 steps in 
 
 ## Definition of 100% completion
 
-The project is operationally complete through real-data rebuild, QA, statistics, evidence, curated exports and code delivery. Final release completion still requires native Power BI refresh/UAT and a successful release audit before tagging `v1.0.0`.
+The repository implementation is complete through real-data rebuild, QA, statistics, evidence, curated exports and code delivery. The current code has not yet been re-executed against the eight Drive sources on this machine because no Drive mount is available. Final release completion requires that rerun, a successful release audit, and native Power BI refresh/UAT before tagging `v1.0.0`.

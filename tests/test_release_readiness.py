@@ -333,6 +333,7 @@ def seed_complete_delivery(artifact_root: Path, repo_root: Path) -> None:
         "docs/12_executive_decisions.md",
         "docs/13_limitations.md",
         "docs/14_powerbi_uat.md",
+        "docs/23_plan_completion_audit.md",
         "docs/data_lineage.md",
         "docs/metric_lineage.md",
         "assets/segmentation_flow.svg",
