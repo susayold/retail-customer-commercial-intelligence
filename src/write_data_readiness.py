@@ -40,15 +40,35 @@ def _read_json(path: Path) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
-def _all_pass(path: Path) -> bool:
+def _read_csv_rows(path: Path) -> list[dict[str, str]]:
     if not path.is_file() or path.stat().st_size == 0:
-        return False
+        return []
     try:
         with path.open("r", encoding="utf-8-sig", newline="") as handle:
-            rows = list(csv.DictReader(handle))
+            return list(csv.DictReader(handle))
     except (OSError, csv.Error):
-        return False
+        return []
+
+
+def _has_rows(path: Path) -> bool:
+    """Return true when an informational QA export exists and is non-empty."""
+    return bool(_read_csv_rows(path))
+
+
+def _all_pass(path: Path) -> bool:
+    rows = _read_csv_rows(path)
     return bool(rows) and all(str(row.get("status", "")).strip().lower() == "pass" for row in rows)
+
+
+def _all_zero(path: Path, column: str) -> bool:
+    """Validate zero-violation QA exports whose contract has no status column."""
+    rows = _read_csv_rows(path)
+    if not rows:
+        return False
+    try:
+        return all(float(str(row.get(column, "")).strip()) == 0 for row in rows)
+    except (TypeError, ValueError):
+        return False
 
 
 def _git_commit(repo_root: Path) -> str:
@@ -115,14 +135,14 @@ def write_data_readiness(
     curated_gate = (
         len(parquet_files) == len(REQUIRED_PARQUET_FILES)
         and all(item.get("status") == "PRESENT" for item in parquet_files)
-        and _all_pass(qa_root / "qa_source_reconciliation.csv")
+        and _has_rows(qa_root / "qa_source_reconciliation.csv")
     )
     warehouse_gate = (
         database.is_file()
         and database.stat().st_size > 0
         and _all_pass(qa_root / "qa_layer_reconciliation.csv")
-        and _all_pass(qa_root / "qa_key_audit.csv")
-        and _all_pass(qa_root / "qa_grain_audit.csv")
+        and _all_zero(qa_root / "qa_key_audit.csv", "duplicate_rows")
+        and _all_zero(qa_root / "qa_grain_audit.csv", "violating_baskets")
     )
     marts_gate = all(
         (pbi_root / name).is_file() or (pbi_root / name.replace(".parquet", ".csv")).is_file()

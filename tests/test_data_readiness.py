@@ -10,9 +10,18 @@ from src.write_data_readiness import write_data_readiness
 def write_status_csv(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["status"])
+        if path.name == "qa_key_audit.csv":
+            fieldnames = ["model", "duplicate_rows"]
+            row = {"model": "synthetic", "duplicate_rows": "0"}
+        elif path.name == "qa_grain_audit.csv":
+            fieldnames = ["audit_name", "violating_baskets"]
+            row = {"audit_name": "synthetic", "violating_baskets": "0"}
+        else:
+            fieldnames = ["status"]
+            row = {"status": "pass"}
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({"status": "pass"})
+        writer.writerow(row)
 
 
 def test_write_data_readiness_emits_manifest_and_marker(tmp_path):

@@ -1,0 +1,84 @@
+-- Governed core measures for the curated Power BI model.
+-- Import only curated exports from Drive 05_powerbi_exports.
+-- Panel terminology and observational guardrails are intentional.
+
+Panel Net Spend = SUM('Mart_Basket'[basket_net_spend])
+Panel Gross Spend = SUM('Mart_Basket'[basket_gross_spend])
+Total Recorded Discount = SUM('Mart_Basket'[basket_discount_value])
+Discount Rate = DIVIDE([Total Recorded Discount], [Panel Gross Spend])
+
+Baskets = DISTINCTCOUNT('Mart_Basket'[basket_id])
+Active Panel Households = DISTINCTCOUNT('Mart_Basket'[household_key])
+Spend per Basket = DIVIDE([Panel Net Spend], [Baskets])
+Trips per Active Household = DIVIDE([Baskets], [Active Panel Households])
+Spend per Active Household = DIVIDE([Panel Net Spend], [Active Panel Households])
+Spend Driver Check = [Active Panel Households] * [Trips per Active Household] * [Spend per Basket]
+
+Private Label Spend = SUM('Mart_Panel_Weekly'[private_label_spend])
+Private Label Share = DIVIDE(
+    [Private Label Spend],
+    SUM('Mart_Panel_Weekly'[panel_net_spend])
+)
+
+Coupon Baskets =
+CALCULATE(
+    [Baskets],
+    'Mart_Basket'[has_coupon_discount] = TRUE()
+)
+Coupon Basket Rate = DIVIDE([Coupon Baskets], [Baskets])
+
+Category Household Penetration =
+DIVIDE(
+    SUM('Analysis_Category_Penetration'[buying_households]),
+    SUM('Analysis_Category_Penetration'[panel_households])
+)
+
+Campaign Recipients =
+DISTINCTCOUNT('Mart_Campaign_Household'[household_key])
+Campaign Redeemers =
+CALCULATE(
+    [Campaign Recipients],
+    'Mart_Campaign_Household'[redeemed_coupon_flag] = TRUE()
+)
+Campaign Redemption Rate =
+DIVIDE([Campaign Redeemers], [Campaign Recipients])
+
+Decision Alert Count = COUNTROWS('Mart_Decision_Alerts')
+
+
+-- Seven-page Power BI supplement measures.
+-- Customer segment labels are fixed from the full 102-week observation window.
+-- Week filters change observed behavior, not segment assignment.
+
+Dynamic Category Buying Households =
+DISTINCTCOUNT('PBIX_Mart_Category_Household_Weekly'[household_key])
+
+Dynamic Category Household Penetration =
+DIVIDE(
+    [Dynamic Category Buying Households],
+    [Active Panel Households]
+)
+
+Store Panel Net Spend =
+SUM('PBIX_Mart_Store_Weekly'[panel_net_spend])
+
+Store Baskets =
+SUM('PBIX_Mart_Store_Weekly'[baskets])
+
+Campaign-Household Exposures =
+COUNTROWS('Mart_Campaign_Household')
+
+Redeeming Exposures =
+CALCULATE(
+    COUNTROWS('Mart_Campaign_Household'),
+    'Mart_Campaign_Household'[redeemed_coupon_flag] = TRUE()
+)
+
+Exposure Redemption Rate =
+DIVIDE([Redeeming Exposures], [Campaign-Household Exposures])
+
+Root Cause Spend Contribution =
+SUM('PBIX_Root_Cause_Panel_Spend_Drivers'[spend_change_contribution])
+
+Root Cause Contribution Share =
+SUM('PBIX_Root_Cause_Panel_Spend_Drivers'[contribution_share])

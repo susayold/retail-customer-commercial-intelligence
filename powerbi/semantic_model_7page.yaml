@@ -1,0 +1,318 @@
+model_name: Retail Customer & Commercial Intelligence
+storage_policy: Drive-only
+source_folder: 05_powerbi_exports
+raw_source_allowed: false
+
+tables:
+  - name: Dim_Day
+    role: dimension
+    source_file: Dim_Day.parquet
+    key: day_key
+  - name: Dim_Week
+    role: dimension
+    source_file: Dim_Week.parquet
+    key: week_number
+  - name: Dim_Household
+    role: dimension
+    source_file: Dim_Household.parquet
+    key: household_key
+  - name: Dim_Product
+    role: dimension
+    source_file: Dim_Product.parquet
+    key: product_id
+  - name: Dim_Campaign
+    role: dimension
+    source_file: Dim_Campaign.parquet
+    key: campaign_id
+  - name: Mart_Panel_Weekly
+    role: aggregate
+    source_file: Mart_Panel_Weekly.parquet
+    grain: week_number
+  - name: Mart_Household_Summary
+    role: aggregate
+    source_file: Mart_Household_Summary.parquet
+    grain: household_key
+  - name: Mart_Customer_Segment
+    role: aggregate
+    source_file: Mart_Customer_Segment.parquet
+    grain: household_key
+  - name: Mart_Basket
+    role: fact
+    source_file: Mart_Basket.parquet
+    grain: basket_id
+  - name: Mart_Category_Weekly
+    role: aggregate
+    source_file: Mart_Category_Weekly.parquet
+    grain: week_number, department, commodity
+  - name: Mart_Category_Household
+    role: aggregate
+    source_file: Mart_Category_Household.parquet
+    grain: household_key, department, commodity
+  - name: Analysis_Category_Penetration
+    role: aggregate
+    source_file: Analysis_Category_Penetration.parquet
+    grain: department, commodity
+  - name: Analysis_Category_Decomposition
+    role: aggregate
+    source_file: Analysis_Category_Decomposition.parquet
+    grain: department, commodity
+  - name: Mart_Brand_Category
+    role: aggregate
+    source_file: Mart_Brand_Category.parquet
+    grain: department, commodity, brand_type
+  - name: Mart_Promotion_Category_Week
+    role: aggregate
+    source_file: Mart_Promotion_Category_Week.parquet
+    grain: week_number, department, commodity, promo_state_group
+  - name: Analysis_Promotion_Association
+    role: aggregate
+    source_file: Analysis_Promotion_Association.parquet
+    grain: department, commodity, promo_state_group
+  - name: Analysis_Promotion_Dependency
+    role: aggregate
+    source_file: Analysis_Promotion_Dependency.parquet
+    grain: department, commodity
+  - name: Mart_Campaign_Household
+    role: factless_event
+    source_file: Mart_Campaign_Household.parquet
+    grain: household_key, campaign_id
+  - name: Mart_Campaign_Summary
+    role: aggregate
+    source_file: Mart_Campaign_Summary.parquet
+    grain: campaign_id
+  - name: Analysis_Campaign_Funnel
+    role: aggregate
+    source_file: Analysis_Campaign_Funnel.parquet
+    grain: campaign_id
+  - name: Analysis_Campaign_Segment
+    role: aggregate
+    source_file: Analysis_Campaign_Segment.parquet
+    grain: campaign_id, customer_segment
+  - name: Mart_Coupon_Summary
+    role: aggregate
+    source_file: Mart_Coupon_Summary.parquet
+    grain: campaign_id
+  - name: Analysis_Coupon_Campaign
+    role: aggregate
+    source_file: Analysis_Coupon_Campaign.parquet
+    grain: campaign_id
+  - name: Analysis_Coupon_Segment
+    role: aggregate
+    source_file: Analysis_Coupon_Segment.parquet
+    grain: campaign_id, customer_segment
+  - name: Analysis_Coupon_Category
+    role: aggregate
+    source_file: Analysis_Coupon_Category.parquet
+    grain: campaign_id, department, commodity
+  - name: Analysis_Coupon_Basket
+    role: aggregate
+    source_file: Analysis_Coupon_Basket.parquet
+    grain: customer_segment, basket_type
+  - name: Analysis_Coupon_Repeat_Category
+    role: aggregate
+    source_file: Analysis_Coupon_Repeat_Category.parquet
+    grain: commodity
+  - name: Mart_Cross_Category_Pair
+    role: aggregate
+    source_file: Mart_Cross_Category_Pair.parquet
+    grain: commodity_a, commodity_b
+  - name: Mart_Decision_Alerts
+    role: aggregate
+    source_file: Mart_Decision_Alerts.parquet
+    grain: metric, scope
+
+  - name: PBIX_Dim_Category
+    role: dimension
+    source_file: PBIX_Dim_Category.csv
+    key: category_key
+  - name: PBIX_Dim_Segment
+    role: dimension
+    source_file: PBIX_Dim_Segment.csv
+    key: segment
+  - name: PBIX_Mart_Category_Household_Weekly
+    role: fact
+    source_pattern: PBIX_Mart_Category_Household_Weekly_W*.csv
+    grain: household_key, week_number, category_key
+  - name: PBIX_Mart_Category_Weekly
+    role: aggregate
+    source_file: PBIX_Mart_Category_Weekly.csv
+    grain: week_number, category_key
+  - name: PBIX_Mart_Store_Weekly
+    role: aggregate
+    source_file: PBIX_Mart_Store_Weekly.csv
+    grain: week_number, store_id
+  - name: PBIX_Mart_Brand_Category
+    role: aggregate
+    source_file: PBIX_Mart_Brand_Category.csv
+    grain: category_key, brand_type
+  - name: PBIX_Analysis_Category_Penetration
+    role: aggregate
+    source_file: PBIX_Analysis_Category_Penetration.csv
+    grain: category_key
+  - name: PBIX_Analysis_Category_Decomposition_13W
+    role: aggregate
+    source_file: PBIX_Analysis_Category_Decomposition_13W.csv
+    grain: category_key
+  - name: PBIX_Private_Label_Category_Audit
+    role: audit
+    source_file: PBIX_Private_Label_Category_Audit.csv
+    grain: category_key
+  - name: PBIX_Campaign_KPI_Scope
+    role: audit
+    source_file: PBIX_Campaign_KPI_Scope.csv
+    grain: metric
+  - name: PBIX_Promotion_Model_Audit
+    role: audit
+    source_file: PBIX_Promotion_Model_Audit.csv
+    grain: model
+  - name: PBIX_Root_Cause_Panel_Spend_Drivers
+    role: analysis
+    source_file: PBIX_Root_Cause_Panel_Spend_Drivers.csv
+    grain: driver
+  - name: PBIX_Root_Cause_Panel_Spend_Periods
+    role: analysis
+    source_file: PBIX_Root_Cause_Panel_Spend_Periods.csv
+    grain: period
+  - name: PBIX_Analysis_Root_Cause_Cases
+    role: analysis
+    source_file: PBIX_Analysis_Root_Cause_Cases.csv
+    grain: case_id
+  - name: PBIX_Analysis_Executive_Decisions
+    role: analysis
+    source_file: PBIX_Analysis_Executive_Decisions.csv
+    grain: decision_id
+
+relationships:
+  - from: Dim_Week[week_number]
+    to: Mart_Panel_Weekly[week_number]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Week[week_number]
+    to: Mart_Category_Weekly[week_number]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Week[week_number]
+    to: Mart_Promotion_Category_Week[week_number]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Day[day_key]
+    to: Mart_Basket[day_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Household[household_key]
+    to: Mart_Basket[household_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Household[household_key]
+    to: Mart_Household_Summary[household_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Household[household_key]
+    to: Mart_Customer_Segment[household_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Household[household_key]
+    to: Mart_Campaign_Household[household_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Household[household_key]
+    to: Mart_Category_Household[household_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Mart_Campaign_Household[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Mart_Campaign_Summary[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Analysis_Campaign_Funnel[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Analysis_Campaign_Segment[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Mart_Coupon_Summary[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Analysis_Coupon_Campaign[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Analysis_Coupon_Segment[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Campaign[campaign_id]
+    to: Analysis_Coupon_Category[campaign_id]
+    cardinality: one_to_many
+    cross_filter: single
+
+  - from: Dim_Week[week_number]
+    to: Mart_Basket[week_number]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Week[week_number]
+    to: PBIX_Mart_Category_Household_Weekly[week_number]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Week[week_number]
+    to: PBIX_Mart_Category_Weekly[week_number]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: Dim_Week[week_number]
+    to: PBIX_Mart_Store_Weekly[week_number]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: PBIX_Dim_Category[category_key]
+    to: PBIX_Mart_Category_Household_Weekly[category_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: PBIX_Dim_Category[category_key]
+    to: PBIX_Mart_Category_Weekly[category_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: PBIX_Dim_Category[category_key]
+    to: PBIX_Mart_Brand_Category[category_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: PBIX_Dim_Category[category_key]
+    to: PBIX_Analysis_Category_Penetration[category_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: PBIX_Dim_Category[category_key]
+    to: PBIX_Analysis_Category_Decomposition_13W[category_key]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: PBIX_Dim_Segment[segment]
+    to: Mart_Basket[segment]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: PBIX_Dim_Segment[segment]
+    to: Mart_Customer_Segment[segment]
+    cardinality: one_to_many
+    cross_filter: single
+  - from: PBIX_Dim_Segment[segment]
+    to: Analysis_Campaign_Segment[customer_segment]
+    cardinality: one_to_many
+    cross_filter: single
+
+pages:
+  - name: Executive Customer & Commercial Health
+    source_tables: [Mart_Panel_Weekly, Mart_Basket, Mart_Decision_Alerts, PBIX_Mart_Store_Weekly, PBIX_Mart_Brand_Category]
+  - name: Customer Engagement & Segmentation
+    source_tables: [Mart_Household_Summary, Mart_Customer_Segment, Mart_Basket, PBIX_Dim_Segment]
+  - name: Basket & Category Intelligence
+    source_tables: [Mart_Basket, PBIX_Mart_Category_Household_Weekly, PBIX_Mart_Category_Weekly, PBIX_Analysis_Category_Penetration, Mart_Cross_Category_Pair, PBIX_Dim_Category]
+  - name: Category, Brand & Private Label
+    source_tables: [PBIX_Mart_Category_Weekly, PBIX_Mart_Brand_Category, PBIX_Analysis_Category_Penetration, PBIX_Analysis_Category_Decomposition_13W, PBIX_Private_Label_Category_Audit, PBIX_Dim_Category]
+  - name: Promotion & Merchandising
+    source_tables: [Mart_Promotion_Category_Week, Analysis_Promotion_Association, Analysis_Promotion_Dependency, PBIX_Promotion_Model_Audit]
+  - name: Campaign & Coupon Intelligence
+    source_tables: [Mart_Campaign_Household, Mart_Campaign_Summary, Analysis_Campaign_Funnel, Analysis_Campaign_Segment, Mart_Coupon_Summary, Analysis_Coupon_Campaign, Analysis_Coupon_Segment, Analysis_Coupon_Category, Analysis_Coupon_Basket, Analysis_Coupon_Repeat_Category, PBIX_Campaign_KPI_Scope]
+  - name: Root Cause & Decision Center
+    source_tables: [PBIX_Root_Cause_Panel_Spend_Drivers, PBIX_Root_Cause_Panel_Spend_Periods, PBIX_Analysis_Root_Cause_Cases, PBIX_Analysis_Executive_Decisions, Mart_Decision_Alerts, PowerBI_Metric_Reconciliation]
