@@ -92,6 +92,7 @@ def main() -> None:
             ("powerbi_exports", [sys.executable, "-m", "src.export_powerbi", "--artifact-root", str(artifact_root), "--sql-dir", str(sql_dir), "--format", "parquet", "--run-id", pipeline_run_id, "--drive-root", str(drive_root)]),
             ("real_evidence", [sys.executable, "-m", "src.build_real_evidence", "--artifact-root", str(artifact_root), "--pipeline-run-id", pipeline_run_id, "--drive-root", str(drive_root)]),
             ("metric_totals", [sys.executable, "-m", "src.build_metric_totals", "--artifact-root", str(artifact_root), "--pipeline-run-id", pipeline_run_id, "--drive-root", str(drive_root)]),
+            ("reconcile", [sys.executable, "-m", "src.reconcile", "--sql", str(qa_root / "sql_metric_totals.csv"), "--bi", str(qa_root / "powerbi_metric_totals.csv"), "--output", str(qa_root / "powerbi_reconciliation.csv"), "--drive-root", str(drive_root)]),
             ("uat_contract", [sys.executable, "-m", "src.build_uat_evidence", "--artifact-root", str(artifact_root), "--pipeline-run-id", pipeline_run_id, "--drive-root", str(drive_root)]),
         ]
         for stage, command in stages:
@@ -106,7 +107,11 @@ def main() -> None:
 
         if args.with_tests:
             started = time.perf_counter()
-            test_command = [sys.executable, "-m", "pytest", "-q"]
+            # Keep pytest's fixture workspace under the declared artifact boundary.
+            # This avoids machine-specific permissions in the user Temp directory
+            # while ensuring test scratch data is not left in the repository.
+            test_temp_root = artifact_root / "_pytest_tmp"
+            test_command = [sys.executable, "-m", "pytest", "-q", "--basetemp", str(test_temp_root)]
             log_event(log_handle, "tests", "start", command=test_command)
             run_command("tests", test_command, cwd=repo_root)
             log_event(log_handle, "tests", "complete", duration_seconds=round(time.perf_counter() - started, 3))

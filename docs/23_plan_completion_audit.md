@@ -16,7 +16,7 @@ This file is the acceptance record for `retail_non_powerbi_project_strengthening
 | Root cause and decisions | `sql/08_analysis/02_root_cause_lmdi.sql`, `sql/08_analysis/05_executive_decisions.sql`, evidence builders | Complete in code |
 | QA and reconciliation | source-contract QA, key/grain/reference/layer QA, quality gate and SQL-to-export reconciliation | Complete in code |
 | Governed BI exports | `src/export_powerbi.py`, 46 declared artifacts and 44 semantic tables | Complete in code; current Drive snapshot predates this contract |
-| Reproducibility | `src/run_pipeline.py`, run manifest, commit/hash lineage, `Makefile`, CI and fixtures | Complete in code |
+| Reproducibility | `src/run_pipeline.py`, run manifest, commit/hash lineage, `Makefile`, CI and fixtures | Complete in code; runner now keeps pytest scratch under the declared artifact boundary and runs SQL/export reconciliation |
 | Documentation and diagrams | metric/data lineage, limitations, methodology, decision docs, four SVG diagrams, README and CV/interview package | Complete in repository |
 | Web parity | `web-dashboard/` consumes governed exports and applies the promotion/private-label/self-pair guardrails | Complete in code |
 
@@ -24,15 +24,15 @@ This file is the acceptance record for `retail_non_powerbi_project_strengthening
 
 | Gate | Evidence | Status |
 |---|---|---|
-| Unit/contract tests | `97 passed` on 2026-09-22 | PASS |
+| Unit/contract tests | `97 passed` on 2026-09-22, including the one-command runner test stage | PASS |
 | Python/JavaScript syntax | `compileall`, `node --check`, `git diff --check` | PASS |
 | Web snapshot contract | `python -m src.verify_web_snapshot` | PASS |
 | GitHub delivery | `main` pushed at commit `32acc9ad25b5b96e125c17d6052e9f12f148cd35` | PASS |
-| Latest real-data full run | Requires the 8 raw Drive files to be visible through a local Drive mount | PENDING |
-| Latest Drive release audit | Existing Drive evidence is the older 31-export snapshot; it does not prove the current 46-export contract | PENDING |
+| Latest real-data full run | `run_20260922T013137Z_771a57ee`; eight source checksums matched Drive; `DATA_READY`; 46 exports; SQL/export reconciliation 8/8 pass; Private Label Share 27.7663% | PASS; artifacts uploaded to the project Drive folders |
+| Latest Drive release audit | Generated under `04_qa_reports/release_readiness.json`; only the 8 native Power BI interaction checks remain `review` until a refreshed PBIX is opened | Data-layer PASS; native PBIX gate separate |
 
 ## What “100%” means here
 
-The implementation requested by the plan is complete and pushed. The project must not be called 100% release-ready until the current commit is executed once against the eight Drive raw sources and the resulting `data_ready.json`, QA outputs, 46 exports, manifest and release audit are uploaded back to Drive. Native Power BI refresh/UAT is a separate gate after that data release.
+The implementation requested by the plan is complete and pushed. The current real-data run was executed locally from the verified eight-source package (without storing raw or derived retail data in the repository), and its `data_ready.json`, QA outputs, 46 exports, manifest, reconciliation and split DuckDB artifact are uploaded to the project Drive folders. Native Power BI refresh/UAT remains a separate gate after this data release; the pipeline does not mark those checks as pass without a real PBIX interaction review.
 
-The current machine has no Google Drive for Desktop mount. The pipeline therefore remains fail-closed and has not copied raw or curated retail data into the local checkout.
+The run used a temporary staging folder on `D:` only. Raw and derived retail data are not in the Git checkout; after Drive upload verification, the temporary staging folder will be removed.

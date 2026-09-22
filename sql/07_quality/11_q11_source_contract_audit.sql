@@ -31,10 +31,13 @@ WITH checks AS (
     SELECT 'product', 'duplicate_product_id', COUNT(*) - COUNT(DISTINCT TRY_CAST(PRODUCT_ID AS BIGINT)), 'block', 'PRODUCT_ID must be unique in the product dimension source'
     FROM raw_product
     UNION ALL
-    SELECT 'product', 'required_category_attributes', COUNT(*) FILTER (WHERE DEPARTMENT IS NULL OR TRIM(CAST(DEPARTMENT AS VARCHAR)) = '' OR COMMODITY_DESC IS NULL OR TRIM(CAST(COMMODITY_DESC AS VARCHAR)) = ''), 'block', 'DEPARTMENT and COMMODITY_DESC are required for category analytics'
+    SELECT 'product', 'required_category_attributes', COUNT(*) FILTER (WHERE DEPARTMENT IS NULL OR TRIM(CAST(DEPARTMENT AS VARCHAR)) = '' OR COMMODITY_DESC IS NULL OR TRIM(CAST(COMMODITY_DESC AS VARCHAR)) = ''), 'warning', 'Missing DEPARTMENT/COMMODITY_DESC is retained as Unknown in the governed category dimension'
     FROM raw_product
     UNION ALL
     SELECT 'product', 'required_brand_flag', COUNT(*) FILTER (WHERE BRAND IS NULL OR TRIM(CAST(BRAND AS VARCHAR)) = ''), 'warning', 'BRAND is preserved as Unknown when source coverage is missing'
+    FROM raw_product
+    UNION ALL
+    SELECT 'product', 'invalid_brand_domain', COUNT(*) FILTER (WHERE BRAND IS NOT NULL AND LOWER(TRIM(CAST(BRAND AS VARCHAR))) NOT IN ('private', 'national')), 'block', 'BRAND must use the source domains Private or National; staging normalizes them to PRIVATE/NATIONAL'
     FROM raw_product
     UNION ALL
     SELECT 'campaign_desc', 'duplicate_campaign_id', COUNT(*) - COUNT(DISTINCT TRY_CAST(CAMPAIGN AS BIGINT)), 'block', 'CAMPAIGN must be unique in campaign description source'
@@ -55,7 +58,7 @@ WITH checks AS (
     SELECT 'coupon', 'coupon_without_campaign', COUNT(*) FILTER (WHERE NOT EXISTS (SELECT 1 FROM raw_campaign_desc d WHERE d.CAMPAIGN = raw_coupon.CAMPAIGN)), 'block', 'Every coupon mapping must map to a campaign'
     FROM raw_coupon
     UNION ALL
-    SELECT 'coupon', 'duplicate_coupon_product_campaign', COUNT(*) - COUNT(DISTINCT CONCAT(CAST(COUPON_UPC AS VARCHAR), '|', CAST(PRODUCT_ID AS VARCHAR), '|', CAST(CAMPAIGN AS VARCHAR))), 'block', 'Coupon x product x campaign bridge grain must be unique'
+    SELECT 'coupon', 'duplicate_coupon_product_campaign', COUNT(*) - COUNT(DISTINCT CONCAT(CAST(COUPON_UPC AS VARCHAR), '|', CAST(PRODUCT_ID AS VARCHAR), '|', CAST(CAMPAIGN AS VARCHAR))), 'warning', 'Raw coupon relationship repeats are collapsed to a distinct coupon x product x campaign bridge'
     FROM raw_coupon
     UNION ALL
     SELECT 'coupon_redempt', 'duplicate_redemption_event', COUNT(*) - COUNT(DISTINCT CONCAT(CAST(household_key AS VARCHAR), '|', CAST(DAY AS VARCHAR), '|', CAST(COUPON_UPC AS VARCHAR), '|', CAST(CAMPAIGN AS VARCHAR))), 'warning', 'Exact redemption-event duplicates are retained and reported for review'
@@ -64,10 +67,10 @@ WITH checks AS (
     SELECT 'coupon_redempt', 'redemption_without_coupon_mapping', COUNT(*) FILTER (WHERE NOT EXISTS (SELECT 1 FROM raw_coupon c WHERE c.COUPON_UPC = raw_coupon_redempt.COUPON_UPC AND c.CAMPAIGN = raw_coupon_redempt.CAMPAIGN)), 'block', 'Every redemption must map to a coupon x campaign record'
     FROM raw_coupon_redempt
     UNION ALL
-    SELECT 'causal_data', 'duplicate_product_store_week', COUNT(*) - COUNT(DISTINCT CONCAT(CAST(PRODUCT_ID AS VARCHAR), '|', CAST(STORE_ID AS VARCHAR), '|', CAST(WEEK_NO AS VARCHAR))), 'block', 'Promotion source must be unique at product x store x week'
+    SELECT 'causal_data', 'duplicate_product_store_week', COUNT(*) - COUNT(DISTINCT CONCAT(CAST(PRODUCT_ID AS VARCHAR), '|', CAST(STORE_ID AS VARCHAR), '|', CAST(WEEK_NO AS VARCHAR))), 'warning', 'Raw promotion rows may contain multiple codes at product x store x week; the modeled fact aggregates them at that grain'
     FROM raw_causal_data
     UNION ALL
-    SELECT 'causal_data', 'invalid_promotion_flags', COUNT(*) FILTER (WHERE CAST(display AS VARCHAR) NOT IN ('0', '1') OR CAST(mailer AS VARCHAR) NOT IN ('0', '1')), 'block', 'display and mailer must be binary 0/1 flags'
+    SELECT 'causal_data', 'unsupported_promotion_codes', COUNT(*) FILTER (WHERE CAST(display AS VARCHAR) NOT IN ('0', '1', '2', '3', '4', '5', '6', '7', '9', 'A') OR CAST(mailer AS VARCHAR) NOT IN ('0', 'A', 'C', 'D', 'F', 'H', 'J', 'L', 'P', 'X', 'Z')), 'block', 'display and mailer must use the official source code domains; any non-zero code means the activity is on'
     FROM raw_causal_data
 )
 SELECT

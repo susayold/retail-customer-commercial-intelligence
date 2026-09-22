@@ -39,7 +39,7 @@ sources:
     file: causal_data.csv
     grain: product x store x week promotion state
     primary_key: []
-    business_key: [PRODUCT_ID, STORE_ID, WEEK_NO]
+    business_key: [PRODUCT_ID, STORE_ID, WEEK_NO, display, mailer]
     required_columns:
       - PRODUCT_ID
       - STORE_ID
@@ -50,8 +50,10 @@ sources:
       PRODUCT_ID: {type: integer, nullable: false}
       STORE_ID: {type: integer, nullable: false}
       WEEK_NO: {type: integer, nullable: false, min: 1, max: 102}
-      display: {type: categorical, nullable: false, allowed: [0, 1]}
-      mailer: {type: categorical, nullable: false, allowed: [0, 1]}
+      # dunnhumby promotion codes are categorical, not binary. The modeled
+      # state uses code != 0 as the on/off interpretation and preserves codes.
+      display: {type: categorical, nullable: false, allowed: ['0', '1', '2', '3', '4', '5', '6', '7', '9', 'A']}
+      mailer: {type: categorical, nullable: false, allowed: ['0', 'A', 'C', 'D', 'F', 'H', 'J', 'L', 'P', 'X', 'Z']}
   coupon:
     file: coupon.csv
     grain: coupon x product x campaign
@@ -124,9 +126,9 @@ sources:
     columns:
       PRODUCT_ID: {type: integer, nullable: false}
       MANUFACTURER: {type: integer, nullable: false}
-      DEPARTMENT: {type: string, nullable: false}
-      BRAND: {type: categorical, nullable: false, allowed: [0, 1, PRIVATE, NATIONAL]}
-      COMMODITY_DESC: {type: string, nullable: false}
+      DEPARTMENT: {type: string, nullable: true}
+      BRAND: {type: categorical, nullable: false, allowed: [Private, National]}
+      COMMODITY_DESC: {type: string, nullable: true}
       SUB_COMMODITY_DESC: {type: string, nullable: true}
       CURR_SIZE_OF_PRODUCT: {type: string, nullable: true}
   hh_demographic:

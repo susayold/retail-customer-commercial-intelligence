@@ -18,8 +18,12 @@ RAW_SOURCES = {
 }
 
 
-def connect(database: str | Path = ":memory:", threads: int = 4) -> duckdb.DuckDBPyConnection:
-    connection = duckdb.connect(str(database))
+def connect(
+    database: str | Path = ":memory:",
+    threads: int = 4,
+    read_only: bool = False,
+) -> duckdb.DuckDBPyConnection:
+    connection = duckdb.connect(str(database), read_only=read_only)
     connection.execute(f"PRAGMA threads={threads}")
     return connection
 
