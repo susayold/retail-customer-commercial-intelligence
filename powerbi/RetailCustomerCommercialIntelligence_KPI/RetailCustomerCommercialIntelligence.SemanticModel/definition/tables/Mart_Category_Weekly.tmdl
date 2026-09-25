@@ -1,0 +1,79 @@
+table Mart_Category_Weekly
+	lineageTag: deffa73b-6ad4-47d3-9da4-cc336de3e6ce
+
+	column week_number
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: week_number
+
+	column department
+		dataType: string
+		summarizeBy: none
+		sourceColumn: department
+
+	column commodity
+		dataType: string
+		summarizeBy: none
+		sourceColumn: commodity
+
+	column panel_net_spend
+		dataType: double
+		summarizeBy: none
+		sourceColumn: panel_net_spend
+
+	column buying_households
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: buying_households
+
+	column active_panel_households
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: active_panel_households
+
+	column category_penetration
+		dataType: double
+		summarizeBy: none
+		sourceColumn: category_penetration
+
+	column category_baskets
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: category_baskets
+
+	column spend_per_buying_household
+		dataType: double
+		summarizeBy: none
+		sourceColumn: spend_per_buying_household
+
+	column discount_rate
+		dataType: double
+		summarizeBy: none
+		sourceColumn: discount_rate
+
+	column private_label_share
+		dataType: double
+		summarizeBy: none
+		sourceColumn: private_label_share
+
+	partition Mart_Category_Weekly = m
+		mode: import
+		source =
+			let
+				Source = Parquet.Document(Binary.Buffer(Web.Contents("https://sdmntprsoutheastus3.oaiusercontent.com/files/00000000-2f24-820c-8ca0-2f99ebe4346a/raw?se=2026-09-14T01%3A40%3A41Z&sp=r&sv=2026-02-06&sr=b&scid=0250bdaa-bb00-45da-b570-421d151b64c4&skoid=9063adf3-a524-4acf-b70a-8731b33f2f50&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-13T23%3A11%3A47Z&ske=2026-09-14T23%3A11%3A47Z&sks=b&skv=2026-02-06&sig=AYyG4Hqp4028TAi0XA%2BBjeCEysK16YkNpP4/2NBU/Dg%3D")))
+			in
+				Source
+
+	annotation PBI_ResultType = Table
+
+	measure 'Category Spend' = SUM ( Mart_Category_Weekly[panel_net_spend] )
+		formatString: $#,##0.00
+		lineageTag: 9381c514-5079-41c0-a03e-a62c3a7a4f7e
+
+	measure 'Category Baskets' = SUM ( Mart_Category_Weekly[category_baskets] )
+		formatString: #,##0
+		lineageTag: 128c570d-281d-4c05-baec-7f47a27291b8
+
+	measure 'Category Buyers' = SUM ( Mart_Category_Weekly[buying_households] )
+		formatString: #,##0
+		lineageTag: b4031cb2-7f6d-4540-a9af-51255a628f7c

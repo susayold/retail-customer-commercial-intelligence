@@ -1,0 +1,64 @@
+table Mart_Brand_Category
+	lineageTag: 4487b9b7-564b-4cd6-ac08-547d9621e204
+
+	column department
+		dataType: string
+		summarizeBy: none
+		sourceColumn: department
+
+	column commodity
+		dataType: string
+		summarizeBy: none
+		sourceColumn: commodity
+
+	column brand_type
+		dataType: string
+		summarizeBy: none
+		sourceColumn: brand_type
+
+	column panel_net_spend
+		dataType: double
+		summarizeBy: none
+		sourceColumn: panel_net_spend
+
+	column buying_households
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: buying_households
+
+	column baskets
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: baskets
+
+	column spend_per_buying_household
+		dataType: double
+		summarizeBy: none
+		sourceColumn: spend_per_buying_household
+
+	column discount_rate
+		dataType: double
+		summarizeBy: none
+		sourceColumn: discount_rate
+
+	partition Mart_Brand_Category = m
+		mode: import
+		source =
+			let
+				Source = Parquet.Document(Binary.Buffer(Web.Contents("https://sdmntprkoreacentral.oaiusercontent.com/files/00000000-b8fc-8206-b3bc-5aa231e54cb4/raw?se=2026-09-14T01%3A40%3A38Z&sp=r&sv=2026-02-06&sr=b&scid=01a2f34c-92cc-4c3f-b4e0-069bae72cc04&skoid=9063adf3-a524-4acf-b70a-8731b33f2f50&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-14T00%3A48%3A19Z&ske=2026-09-15T00%3A48%3A19Z&sks=b&skv=2026-02-06&sig=yhrBZJ3mpWmA9irnjTyBBXBerrr2Ddz%2Bm8o1B/bgTlo%3D")))
+			in
+				Source
+
+	annotation PBI_ResultType = Table
+
+	measure 'Private Label Spend' = CALCULATE ( SUM ( Mart_Brand_Category[panel_net_spend] ), Mart_Brand_Category[brand_type] = "PRIVATE" )
+		formatString: $#,##0.00
+		lineageTag: 4716f6fd-a369-4321-9643-dec5109b676b
+
+	measure 'Private Label Share' = DIVIDE ( [Private Label Spend], SUM ( Mart_Brand_Category[panel_net_spend] ) )
+		formatString: 0.0%
+		lineageTag: ae0eacee-7185-450c-907b-2768fa79635f
+
+	measure 'Private Label Category Spend' = [Private Label Spend]
+		formatString: $#,##0.00
+		lineageTag: 80c5c676-595a-4629-97c9-fffc92298918

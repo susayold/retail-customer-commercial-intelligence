@@ -1,0 +1,72 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "campaign",
+  "position": {
+    "x": 870,
+    "y": 270,
+    "z": 10,
+    "width": 790,
+    "height": 480,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Campaign_Summary"
+                    }
+                  },
+                  "Property": "campaign_id"
+                }
+              },
+              "queryRef": "Mart_Campaign_Summary.campaign_id",
+              "nativeQueryRef": "campaign_id",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Campaign_Summary"
+                    }
+                  },
+                  "Property": "Campaign Redemption Rate"
+                }
+              },
+              "queryRef": "Mart_Campaign_Summary.Campaign Redemption Rate",
+              "nativeQueryRef": "Campaign Redemption Rate",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

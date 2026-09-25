@@ -1,0 +1,53 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "action",
+  "position": {
+    "x": 32,
+    "y": 800,
+    "z": 10,
+    "width": 1628,
+    "height": 95,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "OBSERVED ASSOCIATION: display + mailer = 0.0831 vs mailer-only = 0.0703 vs display-only = 0.0352; Kruskal-Wallis p < 0.001, η² ≈ 0.074. Association only: assignment is non-random, so the next step is a pre-specified holdout/control test — no causal lift, ROI or margin claim.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "15px",
+                      "color": "#17324D"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "s1",
+  "position": {
+    "x": 1430,
+    "y": 35,
+    "z": 10,
+    "width": 230,
+    "height": 78,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "slicer",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Week"
+                    }
+                  },
+                  "Property": "observation_week"
+                }
+              },
+              "queryRef": "Dim_Week.observation_week",
+              "nativeQueryRef": "observation_week",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "\"OBSERVATION WEEK\""
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

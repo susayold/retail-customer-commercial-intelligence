@@ -1,0 +1,92 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "pl",
+  "position": {
+    "x": 1050,
+    "y": 270,
+    "z": 10,
+    "width": 610,
+    "height": 480,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Brand_Category"
+                    }
+                  },
+                  "Property": "commodity"
+                }
+              },
+              "queryRef": "Mart_Brand_Category.commodity",
+              "nativeQueryRef": "commodity",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Brand_Category"
+                    }
+                  },
+                  "Property": "Private Label Category Spend"
+                }
+              },
+              "queryRef": "Mart_Brand_Category.Private Label Category Spend",
+              "nativeQueryRef": "Private Label Category Spend",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Brand_Category"
+                    }
+                  },
+                  "Property": "brand_type"
+                }
+              },
+              "queryRef": "Mart_Brand_Category.brand_type",
+              "nativeQueryRef": "brand_type",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+

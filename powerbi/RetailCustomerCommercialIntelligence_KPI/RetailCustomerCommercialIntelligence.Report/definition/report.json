@@ -1,0 +1,85 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/1.2.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY24SU10",
+      "reportVersionAtImport": "5.61",
+      "type": "SharedResources"
+    }
+  },
+  "layoutOptimization": "None",
+  "settings": {
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true,
+    "allowChangeFilterTypes": true,
+    "defaultDrillFilterOtherVisuals": true
+  },
+  "resourcePackages": [
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "kpi_gmv_2026091410.png",
+          "path": "kpi_gmv_2026091410.png",
+          "type": "Image"
+        },
+        {
+          "name": "kpi_orders_2026091411.png",
+          "path": "kpi_orders_2026091411.png",
+          "type": "Image"
+        },
+        {
+          "name": "kpi_sellers_2026091412.png",
+          "path": "kpi_sellers_2026091412.png",
+          "type": "Image"
+        },
+        {
+          "name": "kpi_aov_2026091413.png",
+          "path": "kpi_aov_2026091413.png",
+          "type": "Image"
+        },
+        {
+          "name": "kpi_late_delivery_2026091414.png",
+          "path": "kpi_late_delivery_2026091414.png",
+          "type": "Image"
+        },
+        {
+          "name": "kpi_customer_avg_review_20260916.png",
+          "path": "kpi_customer_avg_review_20260916.png",
+          "type": "Image"
+        },
+        {
+          "name": "kpi_customer_low_review_rate_20260916.png",
+          "path": "kpi_customer_low_review_rate_20260916.png",
+          "type": "Image"
+        },
+        {
+          "name": "kpi_customer_delivery_days_20260916.png",
+          "path": "kpi_customer_delivery_days_20260916.png",
+          "type": "Image"
+        },
+        {
+          "name": "kpi_commercial_top_segment_share_20260916.png",
+          "path": "kpi_commercial_top_segment_share_20260916.png",
+          "type": "Image"
+        },
+        {
+          "name": "kpi_commercial_aov_20260916.png",
+          "path": "kpi_commercial_aov_20260916.png",
+          "type": "Image"
+        },
+        {
+          "name": "kpi_activation_30d_20260916.png",
+          "path": "kpi_activation_30d_20260916.png",
+          "type": "Image"
+        },
+        {
+          "name": "kpi_decision_ready_actions_20260916.png",
+          "path": "kpi_decision_ready_actions_20260916.png",
+          "type": "Image"
+        }
+      ]
+    }
+  ]
+}

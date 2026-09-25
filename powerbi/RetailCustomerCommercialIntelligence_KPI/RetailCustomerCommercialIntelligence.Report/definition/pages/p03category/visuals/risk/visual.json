@@ -1,0 +1,53 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "risk",
+  "position": {
+    "x": 32,
+    "y": 800,
+    "z": 10,
+    "width": 1628,
+    "height": 95,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "POCKET OF RISK: DRUG GM / LAWN AND GARDEN SHOP — observed spend -99.58%, buyers -27, baskets -29 in the selected early-vs-late windows. PRIVATE LABEL: 2,496 / 2,500 households bought some private label; only 28 met the ≥60% concentration rule and 15 remained after segment precedence.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "15px",
+                      "color": "#17324D"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

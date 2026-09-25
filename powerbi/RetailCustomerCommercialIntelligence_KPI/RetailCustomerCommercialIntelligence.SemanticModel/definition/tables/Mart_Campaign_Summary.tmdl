@@ -1,0 +1,112 @@
+table Mart_Campaign_Summary
+	lineageTag: f0f2a082-d2fa-47b5-bff2-5bc38c138270
+
+	column campaign_id
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: campaign_id
+
+	column campaign_type
+		dataType: string
+		summarizeBy: none
+		sourceColumn: campaign_type
+
+	column campaign_recipients
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: campaign_recipients
+
+	column campaign_redeemers
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: campaign_redeemers
+
+	column campaign_redemption_rate
+		dataType: double
+		summarizeBy: none
+		sourceColumn: campaign_redemption_rate
+
+	column avg_pre_28d_spend
+		dataType: double
+		summarizeBy: none
+		sourceColumn: avg_pre_28d_spend
+
+	column avg_during_spend
+		dataType: double
+		summarizeBy: none
+		sourceColumn: avg_during_spend
+
+	column avg_post_28d_spend
+		dataType: double
+		summarizeBy: none
+		sourceColumn: avg_post_28d_spend
+
+	column pre_28d_observable_rows
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: pre_28d_observable_rows
+
+	column during_28d_observable_rows
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: during_28d_observable_rows
+
+	column post_28d_observable_rows
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: post_28d_observable_rows
+
+	partition Mart_Campaign_Summary = m
+		mode: import
+		source =
+			let
+				Raw = Parquet.Document(Binary.Buffer(Web.Contents("https://sdmntprwestus.oaiusercontent.com/files/00000000-9660-8230-b062-ccb827e35427/raw?se=2026-09-14T01%3A40%3A39Z&sp=r&sv=2026-02-06&sr=b&scid=27c4b45a-d443-46e1-837d-7f5887840413&skoid=9063adf3-a524-4acf-b70a-8731b33f2f50&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-14T01%3A33%3A17Z&ske=2026-09-15T01%3A33%3A17Z&sks=b&skv=2026-02-06&sig=qCQSEKbKuR%2BM5sTwzRxpcbEF1pAcJEEt7lAmBtxvpck%3D"))),
+				Renamed = Table.RenameColumns(Raw, {{"during_observable_rows", "during_28d_observable_rows"}})
+			in
+				Renamed
+
+	annotation PBI_ResultType = Table
+
+	measure 'Campaign Recipients' = SUM ( Mart_Campaign_Summary[campaign_recipients] )
+		formatString: #,##0
+		lineageTag: 59e43e37-5d98-4a2f-af01-bc2abfcdcf7b
+
+	measure 'Campaign Redeemers' = SUM ( Mart_Campaign_Summary[campaign_redeemers] )
+		formatString: #,##0
+		lineageTag: 798d19c5-00ce-4941-910a-f090177267c7
+
+	measure 'Campaign Redemption Rate' = DIVIDE ( [Campaign Redeemers], [Campaign Recipients] )
+		formatString: 0.0%
+		lineageTag: 93cb7c55-2de0-46b7-ab47-b6d14f1a8b91
+
+	measure 'Avg Pre 28d Spend' = AVERAGE ( Mart_Campaign_Summary[avg_pre_28d_spend] )
+		formatString: $#,##0.00
+		lineageTag: 1bb10f63-8fc2-47ec-98df-c7971b242166
+
+	measure 'Avg During Spend' = AVERAGE ( Mart_Campaign_Summary[avg_during_spend] )
+		formatString: $#,##0.00
+		lineageTag: f1f0713f-244d-4fc5-b7e0-c2a4de821d8f
+
+	measure 'Avg Post 28d Spend' = AVERAGE ( Mart_Campaign_Summary[avg_post_28d_spend] )
+		formatString: $#,##0.00
+		lineageTag: f78f9c6c-b148-4b65-98a6-7a7066f57bc6
+
+	measure 'Campaign 18 Pre Spend' = CALCULATE ( [Avg Pre 28d Spend], Mart_Campaign_Summary[campaign_id] = 18 )
+		formatString: $#,##0.00
+		lineageTag: 0953ead2-19db-47c2-b9ad-82ae2a668de3
+
+	measure 'Campaign 18 During Spend' = CALCULATE ( [Avg During Spend], Mart_Campaign_Summary[campaign_id] = 18 )
+		formatString: $#,##0.00
+		lineageTag: 0f840350-811c-49e1-92bc-628c4bb58029
+
+	measure 'Campaign 18 Post Spend' = CALCULATE ( [Avg Post 28d Spend], Mart_Campaign_Summary[campaign_id] = 18 )
+		formatString: $#,##0.00
+		lineageTag: c89c16d4-d3ae-4c20-9a1f-b69df08ff865
+
+	measure 'Campaign 6 Redemption Rate' = CALCULATE ( [Campaign Redemption Rate], Mart_Campaign_Summary[campaign_id] = 6 )
+		formatString: 0.0%
+		lineageTag: 486a6cab-8562-40f4-b2c4-720de635f882
+
+	measure 'Campaign 18 During vs Pre Delta Label' = VAR d = DIVIDE ( [Campaign 18 During Spend] - [Campaign 18 Pre Spend], [Campaign 18 Pre Spend] ) RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs Campaign 18 pre", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs Campaign 18 pre" ) )
+		formatString: General
+		lineageTag: 4c564427-b339-4d6c-bab1-2322e29e28f0

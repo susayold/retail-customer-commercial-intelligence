@@ -1,0 +1,15 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+ref table Dim_Week
+ref table Mart_Panel_Weekly
+ref table Mart_Basket
+ref table Mart_Category_Weekly
+ref table Mart_Brand_Category
+ref table Mart_Promotion_Category_Week
+ref table Mart_Campaign_Summary

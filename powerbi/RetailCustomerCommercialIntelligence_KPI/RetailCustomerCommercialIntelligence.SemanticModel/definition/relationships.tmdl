@@ -1,0 +1,15 @@
+relationship rel-week-panel
+	fromColumn: Mart_Panel_Weekly.week_number
+	toColumn: Dim_Week.week_number
+
+relationship rel-week-basket
+	fromColumn: Mart_Basket.week_number
+	toColumn: Dim_Week.week_number
+
+relationship rel-week-category
+	fromColumn: Mart_Category_Weekly.week_number
+	toColumn: Dim_Week.week_number
+
+relationship rel-week-promo
+	fromColumn: Mart_Promotion_Category_Week.week_number
+	toColumn: Dim_Week.week_number

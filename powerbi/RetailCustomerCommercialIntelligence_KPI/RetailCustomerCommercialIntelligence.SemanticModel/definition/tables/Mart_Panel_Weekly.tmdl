@@ -1,0 +1,77 @@
+table Mart_Panel_Weekly
+	lineageTag: 29bc4a5f-b4c7-4f40-8adb-3bd9ecad192e
+
+	column week_number
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: week_number
+
+	column panel_net_spend
+		dataType: double
+		summarizeBy: none
+		sourceColumn: panel_net_spend
+
+	column panel_gross_spend
+		dataType: double
+		summarizeBy: none
+		sourceColumn: panel_gross_spend
+
+	column baskets
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: baskets
+
+	column active_households
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: active_households
+
+	column spend_per_basket
+		dataType: double
+		summarizeBy: none
+		sourceColumn: spend_per_basket
+
+	column trips_per_household
+		dataType: double
+		summarizeBy: none
+		sourceColumn: trips_per_household
+
+	column spend_per_household
+		dataType: double
+		summarizeBy: none
+		sourceColumn: spend_per_household
+
+	column discount_value
+		dataType: double
+		summarizeBy: none
+		sourceColumn: discount_value
+
+	column discount_rate
+		dataType: double
+		summarizeBy: none
+		sourceColumn: discount_rate
+
+	column coupon_basket_rate
+		dataType: double
+		summarizeBy: none
+		sourceColumn: coupon_basket_rate
+
+	column private_label_spend
+		dataType: double
+		summarizeBy: none
+		sourceColumn: private_label_spend
+
+	column private_label_share
+		dataType: double
+		summarizeBy: none
+		sourceColumn: private_label_share
+
+	partition Mart_Panel_Weekly = m
+		mode: import
+		source =
+			let
+				Source = Parquet.Document(Binary.Buffer(Web.Contents("https://sdmntpraustraliaeast.oaiusercontent.com/files/00000000-2cd8-81fa-9d62-7c9950753b6e/raw?se=2026-09-14T01%3A40%3A40Z&sp=r&sv=2026-02-06&sr=b&scid=6111d6e5-c77b-4615-b431-7d4f539049ce&skoid=9063adf3-a524-4acf-b70a-8731b33f2f50&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-14T01%3A13%3A29Z&ske=2026-09-15T01%3A13%3A29Z&sks=b&skv=2026-02-06&sig=vj6VIvZXSA5XN/p/Zcpo5az%2BTp4Y5PrHdKb6m/rBGxI%3D")))
+			in
+				Source
+
+	annotation PBI_ResultType = Table

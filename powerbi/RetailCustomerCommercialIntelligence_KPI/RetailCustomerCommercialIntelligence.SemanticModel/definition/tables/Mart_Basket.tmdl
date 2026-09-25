@@ -1,0 +1,213 @@
+table Mart_Basket
+	lineageTag: 06bd7256-5b74-47cb-9bb1-8949741660fc
+
+	column basket_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: basket_id
+
+	column household_key
+		dataType: string
+		summarizeBy: none
+		sourceColumn: household_key
+
+	column day_key
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: day_key
+
+	column week_number
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: week_number
+
+	column store_id
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: store_id
+
+	column basket_net_spend
+		dataType: double
+		summarizeBy: none
+		sourceColumn: basket_net_spend
+
+	column basket_gross_spend
+		dataType: double
+		summarizeBy: none
+		sourceColumn: basket_gross_spend
+
+	column basket_discount_value
+		dataType: double
+		summarizeBy: none
+		sourceColumn: basket_discount_value
+
+	column basket_coupon_discount
+		dataType: double
+		summarizeBy: none
+		sourceColumn: basket_coupon_discount
+
+	column basket_line_count
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: basket_line_count
+
+	column basket_distinct_products
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: basket_distinct_products
+
+	column basket_quantity_raw
+		dataType: double
+		summarizeBy: none
+		sourceColumn: basket_quantity_raw
+
+	column basket_distinct_departments
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: basket_distinct_departments
+
+	column basket_distinct_commodities
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: basket_distinct_commodities
+
+	column has_coupon_discount
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: has_coupon_discount
+
+	column transaction_hour
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: transaction_hour
+
+	column segment
+		dataType: string
+		summarizeBy: none
+		sourceColumn: segment
+
+	partition Mart_Basket = m
+		mode: import
+		source =
+			let
+				Source = Parquet.Document(Binary.Buffer(Web.Contents("https://sdmntprwestus.oaiusercontent.com/files/00000000-c0d8-8230-9b91-cdaf755add93/raw?se=2026-09-14T01%3A40%3A41Z&sp=r&sv=2026-02-06&sr=b&scid=c54d3b44-5a86-4f5d-a722-99e489f62acd&skoid=9063adf3-a524-4acf-b70a-8731b33f2f50&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-14T01%3A33%3A56Z&ske=2026-09-15T01%3A33%3A56Z&sks=b&skv=2026-02-06&sig=Be1uq2wJivvmkTMVpzLre7Pb7T9eXkrTw3GSW7N2EVU%3D")))
+			in
+				Source
+
+	annotation PBI_ResultType = Table
+
+	measure 'Panel Net Spend' = SUM ( Mart_Basket[basket_net_spend] )
+		formatString: $#,##0.00
+		lineageTag: 3e6154a3-aaf6-4eeb-92d9-acdcce3b4860
+
+	measure 'Baskets' = DISTINCTCOUNT ( Mart_Basket[basket_id] )
+		formatString: #,##0
+		lineageTag: 7e59f47a-1896-4aa4-aff7-2e08514c9021
+
+	measure 'Active Panel Households' = DISTINCTCOUNT ( Mart_Basket[household_key] )
+		formatString: #,##0
+		lineageTag: fdc57bd6-c40d-4b80-92ee-404de37b2cb2
+
+	measure 'Spend per Basket' = DIVIDE ( [Panel Net Spend], [Baskets] )
+		formatString: $#,##0.00
+		lineageTag: 26cc342c-b811-401c-949b-1e1b21858e71
+
+	measure 'Trips per Active Household' = DIVIDE ( [Baskets], [Active Panel Households] )
+		formatString: 0.00
+		lineageTag: 9ed7ec83-b785-41bf-92df-503c7278a36c
+
+	measure 'First 13W Panel Spend' = VAR w = MINX ( ALL ( Dim_Week ), Dim_Week[week_number] ) RETURN CALCULATE ( [Panel Net Spend], FILTER ( ALL ( Dim_Week ), Dim_Week[week_number] >= w && Dim_Week[week_number] <= w + 12 ) )
+		formatString: $#,##0.00
+		lineageTag: 957200b4-3264-4ba7-881f-c4394f3e9a4d
+
+	measure 'Last 13W Panel Spend' = VAR w = MAXX ( ALL ( Dim_Week ), Dim_Week[week_number] ) RETURN CALCULATE ( [Panel Net Spend], FILTER ( ALL ( Dim_Week ), Dim_Week[week_number] >= w - 12 && Dim_Week[week_number] <= w ) )
+		formatString: $#,##0.00
+		lineageTag: c1d4c847-62c5-43e2-84ff-9eac1f487ba1
+
+	measure 'Panel Spend Change %' = DIVIDE ( [Last 13W Panel Spend] - [First 13W Panel Spend], [First 13W Panel Spend] )
+		formatString: 0.0%
+		lineageTag: 1862f866-fde6-47d8-8183-f2a8f9b8fc6f
+
+	measure 'First 13W Active Households' = VAR w = MINX ( ALL ( Dim_Week ), Dim_Week[week_number] ) RETURN CALCULATE ( [Active Panel Households], FILTER ( ALL ( Dim_Week ), Dim_Week[week_number] >= w && Dim_Week[week_number] <= w + 12 ) )
+		formatString: #,##0
+		lineageTag: 9cbccd3e-69b5-4541-8464-e90283e97767
+
+	measure 'Last 13W Active Households' = VAR w = MAXX ( ALL ( Dim_Week ), Dim_Week[week_number] ) RETURN CALCULATE ( [Active Panel Households], FILTER ( ALL ( Dim_Week ), Dim_Week[week_number] >= w - 12 && Dim_Week[week_number] <= w ) )
+		formatString: #,##0
+		lineageTag: b291b1dd-6722-4f57-a4a7-e23607ce64a2
+
+	measure 'Active Households Change %' = DIVIDE ( [Last 13W Active Households] - [First 13W Active Households], [First 13W Active Households] )
+		formatString: 0.0%
+		lineageTag: 24679d2d-ddee-431e-bd37-ed4b40fe0211
+
+	measure 'First 13W Baskets' = VAR w = MINX ( ALL ( Dim_Week ), Dim_Week[week_number] ) RETURN CALCULATE ( [Baskets], FILTER ( ALL ( Dim_Week ), Dim_Week[week_number] >= w && Dim_Week[week_number] <= w + 12 ) )
+		formatString: #,##0
+		lineageTag: b47df48f-23ec-456d-a54e-ac3cfbf65256
+
+	measure 'Last 13W Baskets' = VAR w = MAXX ( ALL ( Dim_Week ), Dim_Week[week_number] ) RETURN CALCULATE ( [Baskets], FILTER ( ALL ( Dim_Week ), Dim_Week[week_number] >= w - 12 && Dim_Week[week_number] <= w ) )
+		formatString: #,##0
+		lineageTag: f9af333a-c680-410f-a4f9-6fca4a2cd862
+
+	measure 'Baskets Change %' = DIVIDE ( [Last 13W Baskets] - [First 13W Baskets], [First 13W Baskets] )
+		formatString: 0.0%
+		lineageTag: d8c88347-35e9-4de0-81a3-fb01f079f930
+
+	measure 'First 13W Spend per Basket' = VAR w = MINX ( ALL ( Dim_Week ), Dim_Week[week_number] ) RETURN CALCULATE ( [Spend per Basket], FILTER ( ALL ( Dim_Week ), Dim_Week[week_number] >= w && Dim_Week[week_number] <= w + 12 ) )
+		formatString: $#,##0.00
+		lineageTag: aa7a29c2-446e-48f2-9f7b-3a970ed15daf
+
+	measure 'Last 13W Spend per Basket' = VAR w = MAXX ( ALL ( Dim_Week ), Dim_Week[week_number] ) RETURN CALCULATE ( [Spend per Basket], FILTER ( ALL ( Dim_Week ), Dim_Week[week_number] >= w - 12 && Dim_Week[week_number] <= w ) )
+		formatString: $#,##0.00
+		lineageTag: e2734a02-7998-4bce-a845-1be3756ae3e3
+
+	measure 'Spend per Basket Change %' = DIVIDE ( [Last 13W Spend per Basket] - [First 13W Spend per Basket], [First 13W Spend per Basket] )
+		formatString: 0.0%
+		lineageTag: a794e5da-6671-430e-8662-cdc2c55b1925
+
+	measure 'First 13W Trips per HH' = VAR w = MINX ( ALL ( Dim_Week ), Dim_Week[week_number] ) RETURN CALCULATE ( [Trips per Active Household], FILTER ( ALL ( Dim_Week ), Dim_Week[week_number] >= w && Dim_Week[week_number] <= w + 12 ) )
+		formatString: 0.00
+		lineageTag: 99cfba07-a273-4689-aff1-ab7db1312ba9
+
+	measure 'Last 13W Trips per HH' = VAR w = MAXX ( ALL ( Dim_Week ), Dim_Week[week_number] ) RETURN CALCULATE ( [Trips per Active Household], FILTER ( ALL ( Dim_Week ), Dim_Week[week_number] >= w - 12 && Dim_Week[week_number] <= w ) )
+		formatString: 0.00
+		lineageTag: 9f87cadf-dfba-46f2-be73-d711b6de592c
+
+	measure 'Trips per HH Change %' = DIVIDE ( [Last 13W Trips per HH] - [First 13W Trips per HH], [First 13W Trips per HH] )
+		formatString: 0.0%
+		lineageTag: bed2ed89-246a-4148-b0b7-357432878bee
+
+	measure 'Segment Households' = DISTINCTCOUNT ( Mart_Basket[household_key] )
+		formatString: #,##0
+		lineageTag: 5ec7bdee-b615-4215-a660-9f41d3aed835
+
+	measure 'Segment Spend' = [Panel Net Spend]
+		formatString: $#,##0.00
+		lineageTag: e2297dc2-3e45-4ae0-83f2-4643933596d4
+
+	measure 'Segment Spend Share' = DIVIDE ( [Segment Spend], CALCULATE ( [Panel Net Spend], ALL ( Mart_Basket[segment] ) ) )
+		formatString: 0.0%
+		lineageTag: c0db3d6f-9526-499b-8a4d-14d6bfa08241
+
+	measure 'Segment Avg Basket' = [Spend per Basket]
+		formatString: $#,##0.00
+		lineageTag: a1259e36-32a8-42b4-93c3-1eb57eac2dc0
+
+	measure 'Panel Spend Delta Label' = VAR d = [Panel Spend Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs early 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs early 13W" ) )
+		formatString: General
+		lineageTag: 4a891788-f451-4280-86e7-f1f5c77522e3
+
+	measure 'Trips per HH Delta Label' = VAR d = [Trips per HH Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs early 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs early 13W" ) )
+		formatString: General
+		lineageTag: 4af29ffa-766a-41bf-8aa3-9ff8e3210e60
+
+	measure 'Spend per Basket Delta Label' = VAR d = [Spend per Basket Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs early 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs early 13W" ) )
+		formatString: General
+		lineageTag: 79043dcb-7fae-47fa-8251-fa2b77c8cb75
+
+	measure 'Active Households Delta Label' = VAR d = [Active Households Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs early 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs early 13W" ) )
+		formatString: General
+		lineageTag: 243a03c6-bc29-4115-8ccb-b40ecac66905
+
+	measure 'KPI No Prior Period Delta' = UNICHAR ( 8226 ) & " No prior-period comparison"
+		formatString: General
+		lineageTag: e78f5fea-a58d-4dd1-aee1-7aba79bc289a

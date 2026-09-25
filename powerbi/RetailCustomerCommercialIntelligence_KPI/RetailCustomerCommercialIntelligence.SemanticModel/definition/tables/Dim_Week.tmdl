@@ -1,0 +1,27 @@
+table Dim_Week
+	lineageTag: 8628463d-3e2c-47d6-a4f3-8f4cf6e2d32e
+
+	column week_number
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: week_number
+
+	column observation_week
+		dataType: string
+		summarizeBy: none
+		sourceColumn: observation_week
+
+	column synthetic_week_start
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: synthetic_week_start
+
+	partition Dim_Week = m
+		mode: import
+		source =
+			let
+				Source = Parquet.Document(Binary.Buffer(Web.Contents("https://sdmntprcentralus.oaiusercontent.com/files/00000000-6d60-81f5-8e2a-28036541dd4c/raw?se=2026-09-14T01%3A40%3A39Z&sp=r&sv=2026-02-06&sr=b&scid=16950dde-3472-471d-8464-75e806fbf9df&skoid=9063adf3-a524-4acf-b70a-8731b33f2f50&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-14T01%3A13%3A26Z&ske=2026-09-15T01%3A13%3A26Z&sks=b&skv=2026-02-06&sig=AzLUt5ysfR8sLADgd6A3FA0qhYTDIHdSHUGOv02VigI%3D")))
+			in
+				Source
+
+	annotation PBI_ResultType = Table

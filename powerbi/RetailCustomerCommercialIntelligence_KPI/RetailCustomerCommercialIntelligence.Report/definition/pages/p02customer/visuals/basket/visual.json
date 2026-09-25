@@ -1,0 +1,72 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "basket",
+  "position": {
+    "x": 1050,
+    "y": 270,
+    "z": 10,
+    "width": 610,
+    "height": 480,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Basket"
+                    }
+                  },
+                  "Property": "segment"
+                }
+              },
+              "queryRef": "Mart_Basket.segment",
+              "nativeQueryRef": "segment",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Basket"
+                    }
+                  },
+                  "Property": "Segment Avg Basket"
+                }
+              },
+              "queryRef": "Mart_Basket.Segment Avg Basket",
+              "nativeQueryRef": "Segment Avg Basket",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

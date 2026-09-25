@@ -1,0 +1,92 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "trend",
+  "position": {
+    "x": 1050,
+    "y": 270,
+    "z": 10,
+    "width": 610,
+    "height": 480,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Week"
+                    }
+                  },
+                  "Property": "observation_week"
+                }
+              },
+              "queryRef": "Dim_Week.observation_week",
+              "nativeQueryRef": "observation_week",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Promotion_Category_Week"
+                    }
+                  },
+                  "Property": "Promo Sales per PSW"
+                }
+              },
+              "queryRef": "Mart_Promotion_Category_Week.Promo Sales per PSW",
+              "nativeQueryRef": "Promo Sales per PSW",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Promotion_Category_Week"
+                    }
+                  },
+                  "Property": "promo_state_group"
+                }
+              },
+              "queryRef": "Mart_Promotion_Category_Week.promo_state_group",
+              "nativeQueryRef": "promo_state_group",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+

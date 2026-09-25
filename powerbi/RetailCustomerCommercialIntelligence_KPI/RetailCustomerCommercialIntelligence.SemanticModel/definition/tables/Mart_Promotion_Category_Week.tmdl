@@ -1,0 +1,69 @@
+table Mart_Promotion_Category_Week
+	lineageTag: 5b3d55f8-998f-448d-8c5f-1e3559d482fb
+
+	column commodity
+		dataType: string
+		summarizeBy: none
+		sourceColumn: commodity
+
+	column department
+		dataType: string
+		summarizeBy: none
+		sourceColumn: department
+
+	column week_number
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: week_number
+
+	column promo_state_group
+		dataType: string
+		summarizeBy: none
+		sourceColumn: promo_state_group
+
+	column product_store_weeks
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: product_store_weeks
+
+	column panel_sales
+		dataType: double
+		summarizeBy: none
+		sourceColumn: panel_sales
+
+	column panel_units
+		dataType: double
+		summarizeBy: none
+		sourceColumn: panel_units
+
+	column panel_buying_households
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: panel_buying_households
+
+	column panel_baskets
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: panel_baskets
+
+	partition Mart_Promotion_Category_Week = m
+		mode: import
+		source =
+			let
+				Source = Parquet.Document(Binary.Buffer(Web.Contents("https://sdmntprindiasocentral.oaiusercontent.com/files/00000000-3d84-8211-8d5e-42e197d439b5/raw?se=2026-09-14T01%3A40%3A40Z&sp=r&sv=2026-02-06&sr=b&scid=c31eedb8-9900-4685-b17c-24c1c2405703&skoid=9063adf3-a524-4acf-b70a-8731b33f2f50&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-14T01%3A13%3A28Z&ske=2026-09-15T01%3A13%3A28Z&sks=b&skv=2026-02-06&sig=6534hsmJoZr6R1Sfg1iFpMMJbSi%2BZVLPpIoiwiksazU%3D")))
+			in
+				Source
+
+	annotation PBI_ResultType = Table
+
+	measure 'Promo Product-Store-Weeks' = SUM ( Mart_Promotion_Category_Week[product_store_weeks] )
+		formatString: #,##0
+		lineageTag: d3089402-d915-4c4f-84e7-019c9857ba87
+
+	measure 'Promo Panel Sales' = SUM ( Mart_Promotion_Category_Week[panel_sales] )
+		formatString: $#,##0.00
+		lineageTag: fe5d825b-8501-46a3-a893-697f887d8700
+
+	measure 'Promo Sales per PSW' = AVERAGEX ( Mart_Promotion_Category_Week, DIVIDE ( Mart_Promotion_Category_Week[panel_sales], Mart_Promotion_Category_Week[product_store_weeks] ) )
+		formatString: $#,##0.0000
+		lineageTag: ef8cd559-4c33-4bdd-928d-5d36072babb2
