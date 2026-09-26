@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c2_spark",
   "position": {
-    "x": 464,
-    "y": 202,
+    "x": 696,
+    "y": 226,
     "z": 110,
-    "width": 76,
-    "height": 24,
+    "width": 70,
+    "height": 32,
     "tabOrder": 110
   },
   "visual": {
@@ -39,13 +39,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Mart_Panel_Weekly"
+                      "Entity": "Mart_Basket"
                     }
                   },
                   "Property": "Panel Net Spend"
                 }
               },
-              "queryRef": "Mart_Panel_Weekly.Panel Net Spend",
+              "queryRef": "Mart_Basket.Panel Net Spend",
               "nativeQueryRef": "Panel Net Spend",
               "active": true
             }
@@ -224,7 +224,7 @@
             }
           },
           "selector": {
-            "metadata": "Mart_Panel_Weekly.Panel Net Spend"
+            "metadata": "Mart_Basket.Panel Net Spend"
           }
         }
       ],
@@ -255,7 +255,7 @@
             }
           },
           "selector": {
-            "metadata": "Mart_Panel_Weekly.Panel Net Spend"
+            "metadata": "Mart_Basket.Panel Net Spend"
           }
         }
       ]

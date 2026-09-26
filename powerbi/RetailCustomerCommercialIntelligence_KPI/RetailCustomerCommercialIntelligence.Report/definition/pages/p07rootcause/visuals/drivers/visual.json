@@ -1,0 +1,72 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "drivers",
+  "position": {
+    "x": 1204,
+    "y": 310,
+    "z": 10,
+    "width": 570,
+    "height": 420,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Week"
+                    }
+                  },
+                  "Property": "observation_week"
+                }
+              },
+              "queryRef": "Dim_Week.observation_week",
+              "nativeQueryRef": "observation_week",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Basket"
+                    }
+                  },
+                  "Property": "Trips per Active Household"
+                }
+              },
+              "queryRef": "Mart_Basket.Trips per Active Household",
+              "nativeQueryRef": "Trips per Active Household",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

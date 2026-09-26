@@ -5,7 +5,9 @@
     "p02customer",
     "p03category",
     "p04promo",
-    "p05campaign"
+    "p05campaign",
+    "p06campaign",
+    "p07rootcause"
   ],
   "activePageName": "p01growth"
 }

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c2",
   "position": {
-    "x": 300,
+    "x": 526,
     "y": 125,
     "z": 10,
-    "width": 250,
-    "height": 105,
+    "width": 248,
+    "height": 150,
     "tabOrder": 10
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "Mart_Basket"
                     }
                   },
-                  "Property": "Last 13W Panel Spend"
+                  "Property": "Last 13W Panel Spend Display"
                 }
               },
-              "queryRef": "Mart_Basket.Last 13W Panel Spend",
-              "nativeQueryRef": "Last 13W Panel Spend",
+              "queryRef": "Mart_Basket.Last 13W Panel Spend Display",
+              "nativeQueryRef": "Last 13W Panel Spend Display",
               "active": true
             }
           ]
@@ -48,7 +48,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Late 13W Panel Spend'"
+                  "Value": "'Late 13W Spend'"
                 }
               }
             },

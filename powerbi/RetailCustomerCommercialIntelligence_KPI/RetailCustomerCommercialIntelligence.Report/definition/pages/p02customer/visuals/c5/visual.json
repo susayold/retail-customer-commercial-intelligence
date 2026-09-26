@@ -1,0 +1,14 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "c5",
+  "position": { "x": 1354, "y": 125, "z": 10, "width": 248, "height": 150, "tabOrder": 10 },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": { "queryState": { "Data": { "projections": [{ "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "Mart_Basket" } }, "Property": "Spend per Basket" } }, "queryRef": "Mart_Basket.Spend per Basket", "nativeQueryRef": "Spend per Basket", "active": true }] } } },
+    "objects": {
+      "label": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "text": { "expr": { "Literal": { "Value": "'Spend / Basket'" } } }, "fontFamily": { "expr": { "Literal": { "Value": "'Segoe UI Semibold'" } } }, "fontSize": { "expr": { "Literal": { "Value": "13D" } } }, "fontColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#0F3557'" } } } } }, "position": { "expr": { "Literal": { "Value": "'aboveValue'" } } } }, "selector": { "id": "default" } }],
+      "value": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "fontFamily": { "expr": { "Literal": { "Value": "'Segoe UI'" } } }, "fontSize": { "expr": { "Literal": { "Value": "30D" } } }, "bold": { "expr": { "Literal": { "Value": "true" } } }, "fontColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#0D9488'" } } } } }, "horizontalAlignment": { "expr": { "Literal": { "Value": "'left'" } } }, "showBlankAs": { "expr": { "Literal": { "Value": "'No data'" } } } }, "selector": { "id": "default" } }]
+    },
+    "visualContainerObjects": { "background": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#FFFFFF'" } } } } }, "transparency": { "expr": { "Literal": { "Value": "0D" } } } } }], "border": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#E2E8F0'" } } } } }, "radius": { "expr": { "Literal": { "Value": "8D" } } }, "width": { "expr": { "Literal": { "Value": "1D" } } } } }], "padding": [{ "properties": { "top": { "expr": { "Literal": { "Value": "14D" } } }, "right": { "expr": { "Literal": { "Value": "48D" } } }, "bottom": { "expr": { "Literal": { "Value": "14D" } } }, "left": { "expr": { "Literal": { "Value": "16D" } } } } }], "visualHeader": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }] }
+  }
+}

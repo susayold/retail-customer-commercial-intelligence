@@ -1,0 +1,6 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "c6_delta",
+  "position": { "x": 1630, "y": 244, "z": 120, "width": 168, "height": 25, "tabOrder": 120 },
+  "visual": { "visualType": "cardVisual", "query": { "queryState": { "Data": { "projections": [{ "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "Mart_Basket" } }, "Property": "KPI No Prior Period Delta" } }, "queryRef": "Mart_Basket.KPI No Prior Period Delta", "nativeQueryRef": "KPI No Prior Period Delta", "active": true }] } } }, "objects": { "value": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "fontFamily": { "expr": { "Literal": { "Value": "'Segoe UI Semibold'" } } }, "fontSize": { "expr": { "Literal": { "Value": "12D" } } }, "fontColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#64748B'" } } } } }, "horizontalAlignment": { "expr": { "Literal": { "Value": "'left'" } } } }, "selector": { "id": "default" } }] }, "visualContainerObjects": { "visualHeader": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }] } }
+}

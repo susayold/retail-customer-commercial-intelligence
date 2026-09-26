@@ -50,7 +50,7 @@ table Mart_Promotion_Category_Week
 		mode: import
 		source =
 			let
-				Source = Parquet.Document(Binary.Buffer(Web.Contents("https://sdmntprindiasocentral.oaiusercontent.com/files/00000000-3d84-8211-8d5e-42e197d439b5/raw?se=2026-09-14T01%3A40%3A40Z&sp=r&sv=2026-02-06&sr=b&scid=c31eedb8-9900-4685-b17c-24c1c2405703&skoid=9063adf3-a524-4acf-b70a-8731b33f2f50&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-14T01%3A13%3A28Z&ske=2026-09-15T01%3A13%3A28Z&sks=b&skv=2026-02-06&sig=6534hsmJoZr6R1Sfg1iFpMMJbSi%2BZVLPpIoiwiksazU%3D")))
+				Source = Parquet.Document(Binary.Buffer(File.Contents("D:\data\Codex\_retail_da_stage_20260922\run\05_powerbi_exports\Mart_Promotion_Category_Week.parquet")))
 			in
 				Source
 

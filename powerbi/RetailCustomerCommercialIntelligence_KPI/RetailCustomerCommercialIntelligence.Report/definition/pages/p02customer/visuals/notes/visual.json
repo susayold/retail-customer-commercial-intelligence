@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "notes",
+  "position": { "x": 250, "y": 1042, "z": 10, "width": 1628, "height": 38, "tabOrder": 10 },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [{ "properties": { "paragraphs": [{ "textRuns": [{ "value": "Notes: observed panel households only; segment comparisons are descriptive. Baskets and household counts are distinct-count measures at their native grain.", "textStyle": { "fontFamily": "Segoe UI", "fontSize": "12px", "color": "#52637A" } }], "horizontalTextAlignment": "left" }] } }]
+    },
+    "visualContainerObjects": { "visualHeader": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }] }
+  }
+}

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c4",
   "position": {
-    "x": 836,
+    "x": 1078,
     "y": 125,
     "z": 10,
-    "width": 250,
-    "height": 105,
+    "width": 248,
+    "height": 150,
     "tabOrder": 10
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "Mart_Basket"
                     }
                   },
-                  "Property": "Segment Avg Basket"
+                      "Property": "Spend per Active Household"
                 }
               },
-              "queryRef": "Mart_Basket.Segment Avg Basket",
-              "nativeQueryRef": "Segment Avg Basket",
+              "queryRef": "Mart_Basket.Spend per Active Household",
+              "nativeQueryRef": "Spend per Active Household",
               "active": true
             }
           ]
@@ -48,7 +48,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Mean Basket'"
+                  "Value": "'Spend / Active HH'"
                 }
               }
             },

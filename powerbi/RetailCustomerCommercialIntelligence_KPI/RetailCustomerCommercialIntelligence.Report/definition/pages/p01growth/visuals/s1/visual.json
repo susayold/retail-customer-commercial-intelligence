@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "s1",
   "position": {
-    "x": 1430,
+    "x": 1480,
     "y": 35,
     "z": 10,
     "width": 230,
@@ -23,16 +23,28 @@
                       "Entity": "Dim_Week"
                     }
                   },
-                  "Property": "observation_week"
+                  "Property": "synthetic_week_start"
                 }
               },
-              "queryRef": "Dim_Week.observation_week",
-              "nativeQueryRef": "observation_week",
+              "queryRef": "Dim_Week.synthetic_week_start",
+              "nativeQueryRef": "synthetic_week_start",
               "active": true
             }
           ]
         }
       }
+    },
+    "objects": {
+      "data": [{
+        "properties": {
+          "mode": { "expr": { "Literal": { "Value": "'Between'" } } }
+        }
+      }],
+      "header": [{
+        "properties": {
+          "show": { "expr": { "Literal": { "Value": "false" } } }
+        }
+      }]
     },
     "visualContainerObjects": {
       "visualHeader": [
@@ -51,10 +63,17 @@
       "title": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "\"OBSERVATION WEEK\""
+                  "Value": "'Observation Window'"
                 }
               }
             }

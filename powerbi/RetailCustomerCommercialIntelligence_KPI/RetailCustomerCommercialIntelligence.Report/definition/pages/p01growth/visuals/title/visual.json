@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "title",
   "position": {
-    "x": 32,
+    "x": 250,
     "y": 24,
     "z": 10,
-    "width": 1100,
-    "height": 54,
+    "width": 1200,
+    "height": 66,
     "tabOrder": 10
   },
   "visual": {
@@ -19,11 +19,12 @@
               {
                 "textRuns": [
                   {
-                    "value": "EXECUTIVE OVERVIEW",
+                    "value": "Retail Customer & Commercial Intelligence",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
-                      "fontSize": "24px",
-                      "color": "#12396E"
+                      "fontSize": "31px",
+                      "fontWeight": "bold",
+                      "color": "#004D40"
                     }
                   }
                 ],

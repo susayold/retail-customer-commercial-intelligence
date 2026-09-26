@@ -1,0 +1,96 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "promo_trend",
+  "position": {
+    "x": 250,
+    "y": 830,
+    "z": 10,
+    "width": 580,
+    "height": 220,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Week"
+                    }
+                  },
+                  "Property": "month_label"
+                }
+              },
+              "queryRef": "Dim_Week.month_label",
+              "nativeQueryRef": "month_label",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Promotion_Category_Week"
+                    }
+                  },
+                  "Property": "Promo Sales per PSW"
+                }
+              },
+              "queryRef": "Mart_Promotion_Category_Week.Promo Sales per PSW",
+              "nativeQueryRef": "Promo Sales per PSW",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Promotion_Category_Week"
+                    }
+                  },
+                  "Property": "promo_state_group"
+                }
+              },
+              "queryRef": "Mart_Promotion_Category_Week.promo_state_group",
+              "nativeQueryRef": "promo_state_group",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "text": { "expr": { "Literal": { "Value": "'Promotion Performance'" } } }, "fontColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#12396E'" } } } } }, "fontSize": { "expr": { "Literal": { "Value": "'16'" } } } } }],
+      "background": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#FFFFFF'" } } } } }, "transparency": { "expr": { "Literal": { "Value": "0D" } } } } }],
+      "border": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } }, "radius": { "expr": { "Literal": { "Value": "8D" } } } } }],
+      "dropShadow": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "preset": { "expr": { "Literal": { "Value": "'Bottom'" } } }, "position": { "expr": { "Literal": { "Value": "'Outer'" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#718096'" } } } } }, "transparency": { "expr": { "Literal": { "Value": "85D" } } }, "shadowBlur": { "expr": { "Literal": { "Value": "8D" } } }, "shadowDistance": { "expr": { "Literal": { "Value": "2D" } } } } }],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+

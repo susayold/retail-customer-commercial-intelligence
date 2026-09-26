@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c3_delta",
   "position": {
-    "x": 584,
-    "y": 201,
+    "x": 802,
+    "y": 244,
     "z": 120,
-    "width": 138,
-    "height": 22,
+    "width": 168,
+    "height": 25,
     "tabOrder": 120
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "Mart_Basket"
                     }
                   },
-                  "Property": "KPI No Prior Period Delta"
+                  "Property": "Trips per HH Delta Label"
                 }
               },
-              "queryRef": "Mart_Basket.KPI No Prior Period Delta",
-              "nativeQueryRef": "KPI No Prior Period Delta",
+              "queryRef": "Mart_Basket.Trips per HH Delta Label",
+              "nativeQueryRef": "Trips per HH Delta Label",
               "active": true
             }
           ]

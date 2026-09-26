@@ -5,6 +5,11 @@
       "name": "CY24SU10",
       "reportVersionAtImport": "5.61",
       "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "RetailExecutiveTeal.json",
+      "reportVersionAtImport": "5.61",
+      "type": "RegisteredResources"
     }
   },
   "layoutOptimization": "None",
@@ -77,6 +82,16 @@
         {
           "name": "kpi_decision_ready_actions_20260916.png",
           "path": "kpi_decision_ready_actions_20260916.png",
+          "type": "Image"
+        },
+        {
+          "name": "RetailExecutiveTeal.json",
+          "path": "RetailExecutiveTeal.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "retail_cart_logo.svg",
+          "path": "retail_cart_logo.svg",
           "type": "Image"
         }
       ]

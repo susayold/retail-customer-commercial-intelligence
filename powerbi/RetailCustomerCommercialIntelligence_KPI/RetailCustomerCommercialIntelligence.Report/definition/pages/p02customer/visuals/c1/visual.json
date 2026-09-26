@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c1",
   "position": {
-    "x": 32,
+    "x": 250,
     "y": 125,
     "z": 10,
-    "width": 250,
-    "height": 105,
+    "width": 248,
+    "height": 150,
     "tabOrder": 10
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "Mart_Basket"
                     }
                   },
-                  "Property": "Segment Households"
+                      "Property": "Active Panel Households"
                 }
               },
-              "queryRef": "Mart_Basket.Segment Households",
-              "nativeQueryRef": "Segment Households",
+              "queryRef": "Mart_Basket.Active Panel Households",
+              "nativeQueryRef": "Active Panel Households",
               "active": true
             }
           ]
@@ -48,7 +48,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Selected Households'"
+                  "Value": "'Active HH'"
                 }
               }
             },

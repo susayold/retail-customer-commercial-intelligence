@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "subtitle",
   "position": {
-    "x": 32,
-    "y": 70,
+    "x": 250,
+    "y": 86,
     "z": 10,
-    "width": 1600,
+    "width": 1360,
     "height": 40,
     "tabOrder": 10
   },
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "27.6% of households drive 52.5% of observed spend — including 221 high-value decliners",
+                  "value": "Observed panel households, basket frequency and segment contribution",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "15px",

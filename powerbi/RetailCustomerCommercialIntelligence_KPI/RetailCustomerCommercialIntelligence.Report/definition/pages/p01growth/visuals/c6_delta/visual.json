@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c6_delta",
   "position": {
-    "x": 1388,
-    "y": 201,
+    "x": 1630,
+    "y": 244,
     "z": 120,
-    "width": 138,
-    "height": 22,
+    "width": 168,
+    "height": 25,
     "tabOrder": 120
   },
   "visual": {

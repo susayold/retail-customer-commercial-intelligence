@@ -1,0 +1,34 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "segment_contribution",
+  "position": { "x": 850, "y": 590, "z": 10, "width": 500, "height": 220, "tabOrder": 51 },
+  "visual": {
+    "visualType": "donutChart",
+    "query": { "queryState": { "Category": { "projections": [{ "field": { "Column": { "Expression": { "SourceRef": { "Entity": "Mart_Basket" } }, "Property": "segment" } }, "queryRef": "Mart_Basket.segment", "nativeQueryRef": "segment", "active": true }] }, "Y": { "projections": [{ "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "Mart_Basket" } }, "Property": "Panel Net Spend" } }, "queryRef": "Mart_Basket.Panel Net Spend", "nativeQueryRef": "Panel Net Spend", "active": true }] } } },
+    "objects": {
+      "labels": [{
+        "properties": {
+          "labelStyle": { "expr": { "Literal": { "Value": "'Percent of total'" } } },
+          "position": { "expr": { "Literal": { "Value": "'preferOutside'" } } },
+          "percentageLabelPrecision": { "expr": { "Literal": { "Value": "0D" } } }
+        },
+        "selector": { "id": "default" }
+      }],
+      "legend": [{
+        "properties": {
+          "show": { "expr": { "Literal": { "Value": "true" } } },
+          "position": { "expr": { "Literal": { "Value": "'RightCenter'" } } },
+          "fontSize": { "expr": { "Literal": { "Value": "'10'" } } }
+        },
+        "selector": { "id": "default" }
+      }]
+    },
+    "visualContainerObjects": {
+      "title": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "text": { "expr": { "Literal": { "Value": "'Customer Segment Contribution'" } } }, "fontColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#12396E'" } } } } }, "fontSize": { "expr": { "Literal": { "Value": "'16'" } } } } }],
+      "background": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#FFFFFF'" } } } } }, "transparency": { "expr": { "Literal": { "Value": "0D" } } } } }],
+      "border": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } }, "radius": { "expr": { "Literal": { "Value": "8D" } } } } }],
+      "dropShadow": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "preset": { "expr": { "Literal": { "Value": "'Bottom'" } } }, "position": { "expr": { "Literal": { "Value": "'Outer'" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#718096'" } } } } }, "transparency": { "expr": { "Literal": { "Value": "85D" } } }, "shadowBlur": { "expr": { "Literal": { "Value": "8D" } } }, "shadowDistance": { "expr": { "Literal": { "Value": "2D" } } } } }],
+      "visualHeader": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }]
+    }
+  }
+}

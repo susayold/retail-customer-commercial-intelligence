@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "subtitle",
   "position": {
-    "x": 32,
+    "x": 250,
     "y": 70,
     "z": 10,
-    "width": 1500,
+    "width": 1360,
     "height": 40,
     "tabOrder": 10
   },
@@ -19,11 +19,11 @@
               {
                 "textRuns": [
                   {
-                    "value": "Panel spend +208.6%; shopping frequency is the largest growth driver",
+                    "value": "From Data to Decisions  |  Customers · Products · Promotions · Profitability",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "15px",
-                      "color": "#52637A"
+                      "color": "#24509A"
                     }
                   }
                 ],

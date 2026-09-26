@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "segment_trend",
+  "position": { "x": 250, "y": 320, "z": 10, "width": 680, "height": 260, "tabOrder": 10 },
+  "visual": {
+    "visualType": "lineClusteredColumnComboChart",
+    "query": {
+      "queryState": {
+        "Category": { "projections": [{ "field": { "Column": { "Expression": { "SourceRef": { "Entity": "Dim_Week" } }, "Property": "month_label" } }, "queryRef": "Dim_Week.month_label", "nativeQueryRef": "month_label", "active": true }] },
+        "Y": { "projections": [{ "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "Mart_Basket" } }, "Property": "Active Panel Households" } }, "queryRef": "Mart_Basket.Active Panel Households", "nativeQueryRef": "Active Panel Households", "active": true }] },
+        "Y2": { "projections": [{ "field": { "Measure": { "Expression": { "SourceRef": { "Entity": "Mart_Basket" } }, "Property": "Baskets" } }, "queryRef": "Mart_Basket.Baskets", "nativeQueryRef": "Baskets", "active": true }] }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "text": { "expr": { "Literal": { "Value": "'Panel Households & Baskets Trend'" } } }, "fontColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#12396E'" } } } } }, "fontSize": { "expr": { "Literal": { "Value": "'16'" } } } } }],
+      "background": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#FFFFFF'" } } } } }, "transparency": { "expr": { "Literal": { "Value": "0D" } } } } }],
+      "border": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } }, "radius": { "expr": { "Literal": { "Value": "8D" } } } } }],
+      "visualHeader": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }]
+    }
+  }
+}

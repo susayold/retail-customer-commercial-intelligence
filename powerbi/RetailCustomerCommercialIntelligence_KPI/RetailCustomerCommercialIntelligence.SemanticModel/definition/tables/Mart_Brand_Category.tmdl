@@ -45,7 +45,7 @@ table Mart_Brand_Category
 		mode: import
 		source =
 			let
-				Source = Parquet.Document(Binary.Buffer(Web.Contents("https://sdmntprkoreacentral.oaiusercontent.com/files/00000000-b8fc-8206-b3bc-5aa231e54cb4/raw?se=2026-09-14T01%3A40%3A38Z&sp=r&sv=2026-02-06&sr=b&scid=01a2f34c-92cc-4c3f-b4e0-069bae72cc04&skoid=9063adf3-a524-4acf-b70a-8731b33f2f50&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-14T00%3A48%3A19Z&ske=2026-09-15T00%3A48%3A19Z&sks=b&skv=2026-02-06&sig=yhrBZJ3mpWmA9irnjTyBBXBerrr2Ddz%2Bm8o1B/bgTlo%3D")))
+				Source = Parquet.Document(Binary.Buffer(File.Contents("D:\data\Codex\_retail_da_stage_20260922\run\05_powerbi_exports\Mart_Brand_Category.parquet")))
 			in
 				Source
 

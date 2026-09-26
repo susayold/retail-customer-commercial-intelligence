@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "drivers",
   "position": {
-    "x": 1090,
-    "y": 270,
+    "x": 1380,
+    "y": 310,
     "z": 10,
-    "width": 570,
-    "height": 420,
+    "width": 498,
+    "height": 260,
     "tabOrder": 10
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Dim_Week"
+                      "Entity": "Mart_Basket"
                     }
                   },
-                  "Property": "observation_week"
+                  "Property": "segment"
                 }
               },
-              "queryRef": "Dim_Week.observation_week",
-              "nativeQueryRef": "observation_week",
+              "queryRef": "Mart_Basket.segment",
+              "nativeQueryRef": "segment",
               "active": true
             }
           ]
@@ -39,21 +39,43 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Mart_Panel_Weekly"
+                      "Entity": "Mart_Basket"
                     }
                   },
-                  "Property": "Trips per Household"
+                  "Property": "Trips per Active Household"
                 }
               },
-              "queryRef": "Mart_Panel_Weekly.Trips per Household",
-              "nativeQueryRef": "Trips per Household",
+              "queryRef": "Mart_Basket.Trips per Active Household",
+              "nativeQueryRef": "Trips per Active Household",
               "active": true
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [{
+          "field": {
+            "Measure": {
+              "Expression": { "SourceRef": { "Entity": "Mart_Basket" } },
+              "Property": "Trips per Active Household"
+            }
+          },
+          "direction": "Descending"
+        }],
+        "isDefaultSort": true
       }
     },
+    "objects": {
+      "dataPoint": [{
+        "properties": { "fill": { "solid": { "color": { "expr": { "Literal": { "Value": "'#21B67A'" } } } } }, "defaultColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#21B67A'" } } } } } },
+        "selector": { "id": "default" }
+      }]
+    },
     "visualContainerObjects": {
+      "title": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "text": { "expr": { "Literal": { "Value": "'Trips by Customer Segment'" } } }, "fontColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#12396E'" } } } } }, "fontSize": { "expr": { "Literal": { "Value": "'16'" } } } } }],
+      "background": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#FFFFFF'" } } } } }, "transparency": { "expr": { "Literal": { "Value": "0D" } } } } }],
+      "border": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } }, "radius": { "expr": { "Literal": { "Value": "8D" } } } } }],
+      "dropShadow": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "preset": { "expr": { "Literal": { "Value": "'Bottom'" } } }, "position": { "expr": { "Literal": { "Value": "'Outer'" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#718096'" } } } } }, "transparency": { "expr": { "Literal": { "Value": "85D" } } }, "shadowBlur": { "expr": { "Literal": { "Value": "8D" } } }, "shadowDistance": { "expr": { "Literal": { "Value": "2D" } } } } }],
       "visualHeader": [
         {
           "properties": {

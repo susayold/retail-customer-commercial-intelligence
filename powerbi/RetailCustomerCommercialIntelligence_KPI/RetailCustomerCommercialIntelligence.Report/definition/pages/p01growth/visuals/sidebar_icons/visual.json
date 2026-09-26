@@ -1,0 +1,22 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "sidebar_icons",
+  "position": { "x": 20, "y": 142, "z": 6, "width": 26, "height": 520, "tabOrder": 3 },
+  "visual": {
+    "visualType": "textbox",
+    "objects": { "general": [{ "properties": { "paragraphs": [
+      { "textRuns": [{ "value": "\uE80F", "textStyle": { "fontFamily": "Segoe MDL2 Assets", "fontSize": "17px", "color": "#FFFFFF" } }], "horizontalTextAlignment": "center" },
+      { "textRuns": [{ "value": "", "textStyle": { "fontSize": "14px" } }] }, { "textRuns": [{ "value": "", "textStyle": { "fontSize": "14px" } }] },
+      { "textRuns": [{ "value": "\uE716", "textStyle": { "fontFamily": "Segoe MDL2 Assets", "fontSize": "17px", "color": "#FFFFFF" } }], "horizontalTextAlignment": "center" },
+      { "textRuns": [{ "value": "", "textStyle": { "fontSize": "14px" } }] }, { "textRuns": [{ "value": "", "textStyle": { "fontSize": "14px" } }] },
+      { "textRuns": [{ "value": "\uE719", "textStyle": { "fontFamily": "Segoe MDL2 Assets", "fontSize": "17px", "color": "#FFFFFF" } }], "horizontalTextAlignment": "center" },
+      { "textRuns": [{ "value": "", "textStyle": { "fontSize": "14px" } }] }, { "textRuns": [{ "value": "", "textStyle": { "fontSize": "14px" } }] },
+      { "textRuns": [{ "value": "\uE7C3", "textStyle": { "fontFamily": "Segoe MDL2 Assets", "fontSize": "17px", "color": "#FFFFFF" } }], "horizontalTextAlignment": "center" },
+      { "textRuns": [{ "value": "", "textStyle": { "fontSize": "14px" } }] }, { "textRuns": [{ "value": "", "textStyle": { "fontSize": "14px" } }] },
+      { "textRuns": [{ "value": "\uE7BF", "textStyle": { "fontFamily": "Segoe MDL2 Assets", "fontSize": "17px", "color": "#FFFFFF" } }], "horizontalTextAlignment": "center" },
+      { "textRuns": [{ "value": "", "textStyle": { "fontSize": "14px" } }] }, { "textRuns": [{ "value": "", "textStyle": { "fontSize": "14px" } }] },
+      { "textRuns": [{ "value": "\uE9D2", "textStyle": { "fontFamily": "Segoe MDL2 Assets", "fontSize": "17px", "color": "#FFFFFF" } }], "horizontalTextAlignment": "center" }
+    ] } }] },
+    "visualContainerObjects": { "visualHeader": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }], "background": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }] }
+  }
+}

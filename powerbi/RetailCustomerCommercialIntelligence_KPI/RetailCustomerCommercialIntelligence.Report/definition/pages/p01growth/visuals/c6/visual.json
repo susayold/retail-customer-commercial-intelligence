@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c6",
   "position": {
-    "x": 1372,
+    "x": 1630,
     "y": 125,
     "z": 10,
-    "width": 250,
-    "height": 105,
+    "width": 248,
+    "height": 150,
     "tabOrder": 10
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "Mart_Basket"
                     }
                   },
-                  "Property": "Last 13W Active Households"
+                  "Property": "Last 13W Active HH Display"
                 }
               },
-              "queryRef": "Mart_Basket.Last 13W Active Households",
-              "nativeQueryRef": "Last 13W Active Households",
+              "queryRef": "Mart_Basket.Last 13W Active HH Display",
+              "nativeQueryRef": "Last 13W Active HH Display",
               "active": true
             }
           ]

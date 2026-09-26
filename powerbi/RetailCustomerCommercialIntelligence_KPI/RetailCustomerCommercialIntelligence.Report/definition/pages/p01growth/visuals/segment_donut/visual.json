@@ -1,0 +1,98 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "segment_donut",
+  "position": {
+    "x": 970,
+    "y": 310,
+    "z": 10,
+    "width": 380,
+    "height": 260,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "donutChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Basket"
+                    }
+                  },
+                  "Property": "segment"
+                }
+              },
+              "queryRef": "Mart_Basket.segment",
+              "nativeQueryRef": "segment",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mart_Basket"
+                    }
+                  },
+                  "Property": "Segment Spend"
+                }
+              },
+              "queryRef": "Mart_Basket.Segment Spend",
+              "nativeQueryRef": "Segment Spend",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "dataPoint": [{
+        "properties": { "defaultColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#008C72'" } } } } } },
+        "selector": { "id": "default" }
+      }],
+      "labels": [{
+        "properties": {
+          "labelStyle": { "expr": { "Literal": { "Value": "'Percent of total'" } } },
+          "position": { "expr": { "Literal": { "Value": "'preferOutside'" } } },
+          "percentageLabelPrecision": { "expr": { "Literal": { "Value": "0D" } } }
+        },
+        "selector": { "id": "default" }
+      }],
+      "legend": [{
+        "properties": {
+          "show": { "expr": { "Literal": { "Value": "true" } } },
+          "position": { "expr": { "Literal": { "Value": "'RightCenter'" } } },
+          "fontSize": { "expr": { "Literal": { "Value": "'10'" } } }
+        },
+        "selector": { "id": "default" }
+      }]
+    },
+    "visualContainerObjects": {
+      "title": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "text": { "expr": { "Literal": { "Value": "'Sales by Customer Segment'" } } }, "fontColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#12396E'" } } } } }, "fontSize": { "expr": { "Literal": { "Value": "'16'" } } } } }],
+      "background": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#FFFFFF'" } } } } }, "transparency": { "expr": { "Literal": { "Value": "0D" } } } } }],
+      "border": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } }, "radius": { "expr": { "Literal": { "Value": "8D" } } } } }],
+      "dropShadow": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "preset": { "expr": { "Literal": { "Value": "'Bottom'" } } }, "position": { "expr": { "Literal": { "Value": "'Outer'" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#718096'" } } } } }, "transparency": { "expr": { "Literal": { "Value": "85D" } } }, "shadowBlur": { "expr": { "Literal": { "Value": "8D" } } }, "shadowDistance": { "expr": { "Literal": { "Value": "2D" } } } } }],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c6_spark",
   "position": {
-    "x": 1536,
-    "y": 202,
+    "x": 1800,
+    "y": 226,
     "z": 110,
-    "width": 76,
-    "height": 24,
+    "width": 70,
+    "height": 32,
     "tabOrder": 110
   },
   "visual": {
@@ -39,14 +39,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Mart_Panel_Weekly"
+                      "Entity": "Mart_Basket"
                     }
                   },
-                  "Property": "active_households"
+                  "Property": "Active Panel Households"
                 }
               },
-              "queryRef": "Mart_Panel_Weekly.active_households",
-              "nativeQueryRef": "active_households",
+              "queryRef": "Mart_Basket.Active Panel Households",
+              "nativeQueryRef": "Active Panel Households",
               "active": true
             }
           ]
@@ -224,7 +224,7 @@
             }
           },
           "selector": {
-            "metadata": "Mart_Panel_Weekly.active_households"
+            "metadata": "Mart_Basket.Active Panel Households"
           }
         }
       ],
@@ -255,7 +255,7 @@
             }
           },
           "selector": {
-            "metadata": "Mart_Panel_Weekly.active_households"
+            "metadata": "Mart_Basket.Active Panel Households"
           }
         }
       ]

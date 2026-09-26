@@ -1,0 +1,17 @@
+{
+  "name": "RetailExecutiveTeal.json",
+  "dataColors": ["#005A4F", "#27B77B", "#62D6AB", "#1EBCC7", "#FF9D1B", "#A9B8C8", "#12396E", "#7D4BC3"],
+  "background": "#F6FAFC",
+  "foreground": "#12396E",
+  "tableAccent": "#005A4F",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "title": [{"show": true, "fontFamily": "Segoe UI Semibold", "fontSize": 15}],
+        "labels": [{"color": {"solid": {"color": "#24509A"}}, "fontSize": 11}],
+        "categoryAxis": [{"labelColor": {"solid": {"color": "#24509A"}}, "fontSize": 11}],
+        "valueAxis": [{"labelColor": {"solid": {"color": "#24509A"}}, "fontSize": 11}]
+      }
+    }
+  }
+}

@@ -90,7 +90,7 @@ table Mart_Basket
 		mode: import
 		source =
 			let
-				Source = Parquet.Document(Binary.Buffer(Web.Contents("https://sdmntprwestus.oaiusercontent.com/files/00000000-c0d8-8230-9b91-cdaf755add93/raw?se=2026-09-14T01%3A40%3A41Z&sp=r&sv=2026-02-06&sr=b&scid=c54d3b44-5a86-4f5d-a722-99e489f62acd&skoid=9063adf3-a524-4acf-b70a-8731b33f2f50&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-14T01%3A33%3A56Z&ske=2026-09-15T01%3A33%3A56Z&sks=b&skv=2026-02-06&sig=Be1uq2wJivvmkTMVpzLre7Pb7T9eXkrTw3GSW7N2EVU%3D")))
+				Source = Parquet.Document(Binary.Buffer(File.Contents("D:\data\Codex\_retail_da_stage_20260922\run\05_powerbi_exports\Mart_Basket.parquet")))
 			in
 				Source
 
@@ -192,22 +192,54 @@ table Mart_Basket
 		formatString: $#,##0.00
 		lineageTag: a1259e36-32a8-42b4-93c3-1eb57eac2dc0
 
-	measure 'Panel Spend Delta Label' = VAR d = [Panel Spend Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs early 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs early 13W" ) )
+	measure 'Panel Spend Delta Label' = VAR d = [Panel Spend Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs 13W" ) )
 		formatString: General
 		lineageTag: 4a891788-f451-4280-86e7-f1f5c77522e3
 
-	measure 'Trips per HH Delta Label' = VAR d = [Trips per HH Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs early 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs early 13W" ) )
+	measure 'Trips per HH Delta Label' = VAR d = [Trips per HH Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs 13W" ) )
 		formatString: General
 		lineageTag: 4af29ffa-766a-41bf-8aa3-9ff8e3210e60
 
-	measure 'Spend per Basket Delta Label' = VAR d = [Spend per Basket Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs early 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs early 13W" ) )
+	measure 'Spend per Basket Delta Label' = VAR d = [Spend per Basket Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs 13W" ) )
 		formatString: General
 		lineageTag: 79043dcb-7fae-47fa-8251-fa2b77c8cb75
 
-	measure 'Active Households Delta Label' = VAR d = [Active Households Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs early 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs early 13W" ) )
+	measure 'Active Households Delta Label' = VAR d = [Active Households Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs 13W" ) )
 		formatString: General
 		lineageTag: 243a03c6-bc29-4115-8ccb-b40ecac66905
 
 	measure 'KPI No Prior Period Delta' = UNICHAR ( 8226 ) & " No prior-period comparison"
 		formatString: General
 		lineageTag: e78f5fea-a58d-4dd1-aee1-7aba79bc289a
+
+	measure 'Spend per Active Household' = DIVIDE ( [Panel Net Spend], [Active Panel Households] )
+		formatString: $#,##0.00
+		lineageTag: 6e9d77af-5f78-4f3b-a12e-2b3f7d4e91c0
+
+	measure 'Coupon Basket Rate' = DIVIDE ( CALCULATE ( [Baskets], Mart_Basket[has_coupon_discount] = TRUE () ), [Baskets] )
+		formatString: 0.0%
+		lineageTag: 2bf9f3b8-91c4-47cf-8fb2-7e6d3d93a2d1
+
+	measure 'Baskets Delta Label' = VAR d = [Baskets Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs 13W" ) )
+		formatString: General
+		lineageTag: 8b4c2c25-cd4e-4a1d-9e7e-2c8f1a3b6d11
+
+	measure 'Spend per Active HH Change %' = DIVIDE ( [Last 13W Panel Spend] / [Last 13W Active Households] - [First 13W Panel Spend] / [First 13W Active Households], [First 13W Panel Spend] / [First 13W Active Households] )
+		formatString: 0.0%
+		lineageTag: 4a56e71a-9d4c-45d7-bf3b-2d7c8e91aa62
+
+	measure 'Spend per Active HH Delta Label' = VAR d = [Spend per Active HH Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs 13W" ) )
+		formatString: General
+		lineageTag: 6d2a8f4b-0e71-4b3c-9a5e-1c7d8b2f4e60
+
+	measure 'First 13W Panel Spend Display' = VAR v = [First 13W Panel Spend] RETURN IF ( ISBLANK ( v ), "No data", SWITCH ( TRUE (), ABS ( v ) >= 1000000, "$" & FORMAT ( v / 1000000, "0.00" ) & "M", ABS ( v ) >= 1000, "$" & FORMAT ( v / 1000, "0.0" ) & "K", "$" & FORMAT ( v, "0" ) ) )
+		formatString: General
+		lineageTag: 9c2a1b7e-4d5f-4c61-8b90-8f4a8d1f1c10
+
+	measure 'Last 13W Panel Spend Display' = VAR v = [Last 13W Panel Spend] RETURN IF ( ISBLANK ( v ), "No data", SWITCH ( TRUE (), ABS ( v ) >= 1000000, "$" & FORMAT ( v / 1000000, "0.00" ) & "M", ABS ( v ) >= 1000, "$" & FORMAT ( v / 1000, "0.0" ) & "K", "$" & FORMAT ( v, "0" ) ) )
+		formatString: General
+		lineageTag: 7bd2c4a1-45e3-4d12-a3d5-93d2c1d8e2aa
+
+	measure 'Last 13W Active HH Display' = VAR v = [Last 13W Active Households] RETURN IF ( ISBLANK ( v ), "No data", IF ( ABS ( v ) >= 1000, FORMAT ( v / 1000, "0.0" ) & "K", FORMAT ( v, "0" ) ) )
+		formatString: General
+		lineageTag: 2f6b8c9d-1a2e-4f70-b3c4-6d8e9a0b7c55
