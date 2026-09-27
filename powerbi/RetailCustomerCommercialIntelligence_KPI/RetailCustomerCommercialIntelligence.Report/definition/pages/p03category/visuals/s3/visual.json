@@ -1,0 +1,6 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "s3",
+  "position": { "x": 1420, "y": 35, "z": 10, "width": 230, "height": 78, "tabOrder": 10 },
+  "visual": { "visualType": "slicer", "query": { "queryState": { "Values": { "projections": [{ "field": { "Column": { "Expression": { "SourceRef": { "Entity": "Dim_Week" } }, "Property": "synthetic_week_start" } }, "queryRef": "Dim_Week.synthetic_week_start", "nativeQueryRef": "synthetic_week_start", "active": true }] } } }, "objects": { "data": [{ "properties": { "mode": { "expr": { "Literal": { "Value": "'Between'" } } } } }] }, "visualContainerObjects": { "visualHeader": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }], "title": [{ "properties": { "text": { "expr": { "Literal": { "Value": "\"OBSERVATION WEEK\"" } } } } }] } }
+}

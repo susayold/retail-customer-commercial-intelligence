@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c4_delta",
   "position": {
-    "x": 852,
-    "y": 201,
+    "x": 1078,
+    "y": 244,
     "z": 120,
-    "width": 138,
-    "height": 22,
+    "width": 168,
+    "height": 25,
     "tabOrder": 120
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Mart_Basket"
+                      "Entity": "Mart_Category_Weekly"
                     }
                   },
-                  "Property": "KPI No Prior Period Delta"
+                  "Property": "Category Penetration Delta Label"
                 }
               },
-              "queryRef": "Mart_Basket.KPI No Prior Period Delta",
-              "nativeQueryRef": "KPI No Prior Period Delta",
+              "queryRef": "Mart_Category_Weekly.Category Penetration Delta Label",
+              "nativeQueryRef": "Category Penetration Delta Label",
               "active": true
             }
           ]

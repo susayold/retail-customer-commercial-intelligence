@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c2_icon",
   "position": {
-    "x": 498,
+    "x": 696,
     "y": 137,
     "z": 90,
     "width": 36,

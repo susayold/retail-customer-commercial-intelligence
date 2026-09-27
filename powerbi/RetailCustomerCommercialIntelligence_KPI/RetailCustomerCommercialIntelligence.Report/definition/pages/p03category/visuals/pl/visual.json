@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "pl",
   "position": {
-    "x": 1050,
-    "y": 270,
+    "x": 1330,
+    "y": 320,
     "z": 10,
-    "width": 610,
-    "height": 480,
+    "width": 548,
+    "height": 250,
     "tabOrder": 10
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Mart_Brand_Category"
+                      "Entity": "Mart_Category_Weekly"
                     }
                   },
-                  "Property": "commodity"
+                  "Property": "department"
                 }
               },
-              "queryRef": "Mart_Brand_Category.commodity",
-              "nativeQueryRef": "commodity",
+              "queryRef": "Mart_Category_Weekly.department",
+              "nativeQueryRef": "department",
               "active": true
             }
           ]
@@ -39,33 +39,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Mart_Brand_Category"
+                      "Entity": "Mart_Category_Weekly"
                     }
                   },
-                  "Property": "Private Label Category Spend"
+                  "Property": "Category Penetration"
                 }
               },
-              "queryRef": "Mart_Brand_Category.Private Label Category Spend",
-              "nativeQueryRef": "Private Label Category Spend",
-              "active": true
-            }
-          ]
-        },
-        "Series": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Mart_Brand_Category"
-                    }
-                  },
-                  "Property": "brand_type"
-                }
-              },
-              "queryRef": "Mart_Brand_Category.brand_type",
-              "nativeQueryRef": "brand_type",
+              "queryRef": "Mart_Category_Weekly.Category Penetration",
+              "nativeQueryRef": "Category Penetration",
               "active": true
             }
           ]
@@ -73,6 +54,9 @@
       }
     },
     "visualContainerObjects": {
+      "title": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "text": { "expr": { "Literal": { "Value": "'Category Penetration by Department'" } } }, "fontColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#12396E'" } } } } }, "fontSize": { "expr": { "Literal": { "Value": "'16'" } } } } }],
+      "background": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#FFFFFF'" } } } } }, "transparency": { "expr": { "Literal": { "Value": "0D" } } } } }],
+      "border": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } }, "radius": { "expr": { "Literal": { "Value": "8D" } } } } }],
       "visualHeader": [
         {
           "properties": {

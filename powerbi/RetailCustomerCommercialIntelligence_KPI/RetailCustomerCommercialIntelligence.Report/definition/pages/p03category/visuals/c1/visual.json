@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c1",
   "position": {
-    "x": 32,
+    "x": 250,
     "y": 125,
     "z": 10,
-    "width": 250,
-    "height": 105,
+    "width": 248,
+    "height": 150,
     "tabOrder": 10
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Mart_Category_Weekly"
+                      "Entity": "Mart_Basket"
                     }
                   },
-                  "Property": "Category Spend"
+                  "Property": "Panel Net Spend"
                 }
               },
-              "queryRef": "Mart_Category_Weekly.Category Spend",
-              "nativeQueryRef": "Category Spend",
+              "queryRef": "Mart_Basket.Panel Net Spend",
+              "nativeQueryRef": "Panel Net Spend",
               "active": true
             }
           ]
@@ -48,7 +48,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Category Spend'"
+                  "Value": "'Panel Net Spend'"
                 }
               }
             },

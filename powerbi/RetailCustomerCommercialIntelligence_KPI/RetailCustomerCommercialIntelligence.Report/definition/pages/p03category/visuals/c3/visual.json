@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c3",
   "position": {
-    "x": 568,
+    "x": 802,
     "y": 125,
     "z": 10,
-    "width": 250,
-    "height": 105,
+    "width": 248,
+    "height": 150,
     "tabOrder": 10
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Mart_Brand_Category"
+                      "Entity": "Mart_Basket"
                     }
                   },
-                  "Property": "Private Label Spend"
+                  "Property": "Spend per Basket"
                 }
               },
-              "queryRef": "Mart_Brand_Category.Private Label Spend",
-              "nativeQueryRef": "Private Label Spend",
+              "queryRef": "Mart_Basket.Spend per Basket",
+              "nativeQueryRef": "Spend per Basket",
               "active": true
             }
           ]
@@ -48,7 +48,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Private-Label Spend'"
+                  "Value": "'Spend / Basket'"
                 }
               }
             },

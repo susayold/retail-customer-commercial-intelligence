@@ -1,0 +1,6 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "sidebar_logo",
+  "position": { "x": 52, "y": 22, "z": 20, "width": 86, "height": 86, "tabOrder": 2 },
+  "visual": { "visualType": "image", "objects": { "general": [{ "properties": { "imageUrl": { "expr": { "ResourcePackageItem": { "PackageName": "RegisteredResources", "PackageType": 1, "ItemName": "retail_cart_logo.svg" } } } } }] }, "visualContainerObjects": { "visualHeader": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }] } }
+}

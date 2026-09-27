@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "risk",
   "position": {
-    "x": 32,
-    "y": 800,
+    "x": 1330,
+    "y": 830,
     "z": 10,
-    "width": 1628,
-    "height": 95,
+    "width": 548,
+    "height": 220,
     "tabOrder": 10
   },
   "visual": {
@@ -19,10 +19,10 @@
               {
                 "textRuns": [
                   {
-                    "value": "POCKET OF RISK: DRUG GM / LAWN AND GARDEN SHOP — observed spend -99.58%, buyers -27, baskets -29 in the selected early-vs-late windows. PRIVATE LABEL: 2,496 / 2,500 households bought some private label; only 28 met the ≥60% concentration rule and 15 remained after segment precedence.",
+                    "value": "INSIGHTS & GUARDRAILS\n\n• Category Spend, Category Baskets and Category Buyers are sourced from weekly category rows.\n• Category Penetration is calculated as buying households divided by active panel households at the category-week grain.\n• Use department and commodity slicers to drill into the mix; results are descriptive, not causal.\n• Private-label views remain available in the source model, but are not substituted for category penetration.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
-                      "fontSize": "15px",
+                      "fontSize": "14px",
                       "color": "#17324D"
                     }
                   }

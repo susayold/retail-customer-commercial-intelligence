@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "c4",
   "position": {
-    "x": 836,
+    "x": 1078,
     "y": 125,
     "z": 10,
-    "width": 250,
-    "height": 105,
+    "width": 248,
+    "height": 150,
     "tabOrder": 10
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Mart_Brand_Category"
+                      "Entity": "Mart_Category_Weekly"
                     }
                   },
-                  "Property": "Private Label Share"
+                  "Property": "Category Penetration"
                 }
               },
-              "queryRef": "Mart_Brand_Category.Private Label Share",
-              "nativeQueryRef": "Private Label Share",
+              "queryRef": "Mart_Category_Weekly.Category Penetration",
+              "nativeQueryRef": "Category Penetration",
               "active": true
             }
           ]
@@ -48,7 +48,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Private-Label Share'"
+                  "Value": "'Cat. Penetration'"
                 }
               }
             },

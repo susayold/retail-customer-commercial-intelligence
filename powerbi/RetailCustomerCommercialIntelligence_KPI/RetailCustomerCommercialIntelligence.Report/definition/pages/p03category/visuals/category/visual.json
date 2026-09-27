@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "category",
   "position": {
-    "x": 32,
-    "y": 270,
+    "x": 790,
+    "y": 320,
     "z": 10,
-    "width": 980,
-    "height": 480,
+    "width": 520,
+    "height": 250,
     "tabOrder": 10
   },
   "visual": {
@@ -54,6 +54,9 @@
       }
     },
     "visualContainerObjects": {
+      "title": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "text": { "expr": { "Literal": { "Value": "'Top Categories by Panel Spend'" } } }, "fontColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#12396E'" } } } } }, "fontSize": { "expr": { "Literal": { "Value": "'16'" } } } } }],
+      "background": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#FFFFFF'" } } } } }, "transparency": { "expr": { "Literal": { "Value": "0D" } } } } }],
+      "border": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } }, "radius": { "expr": { "Literal": { "Value": "8D" } } } } }],
       "visualHeader": [
         {
           "properties": {

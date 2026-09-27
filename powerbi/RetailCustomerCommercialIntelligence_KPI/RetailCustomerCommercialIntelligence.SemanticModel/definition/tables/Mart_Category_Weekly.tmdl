@@ -77,3 +77,31 @@ table Mart_Category_Weekly
 	measure 'Category Buyers' = SUM ( Mart_Category_Weekly[buying_households] )
 		formatString: #,##0
 		lineageTag: b4031cb2-7f6d-4540-a9af-51255a628f7c
+
+	measure 'Category Penetration' = DIVIDE ( SUM ( Mart_Category_Weekly[buying_households] ), SUM ( Mart_Category_Weekly[active_panel_households] ) )
+		formatString: 0.0%
+		lineageTag: 4f6b8c21-1a5d-4b90-9e37-2c7d6a8b5f11
+
+	measure 'Spend per Category Basket' = DIVIDE ( [Category Spend], [Category Baskets] )
+		formatString: $#,##0.00
+		lineageTag: 7e2a9c41-5b6d-4f80-a3e9-1c8d7b2a6f55
+
+	measure 'First 13W Category Spend' = VAR w = MINX ( ALL ( Dim_Week ), Dim_Week[week_number] ) RETURN CALCULATE ( [Category Spend], FILTER ( ALL ( Dim_Week ), Dim_Week[week_number] >= w && Dim_Week[week_number] <= w + 12 ) )
+		formatString: $#,##0.00
+		lineageTag: 5b8d2a71-3c6f-4e90-b1a7-9d2c8f6e4b33
+
+	measure 'Last 13W Category Spend' = VAR w = MAXX ( ALL ( Dim_Week ), Dim_Week[week_number] ) RETURN CALCULATE ( [Category Spend], FILTER ( ALL ( Dim_Week ), Dim_Week[week_number] >= w - 12 && Dim_Week[week_number] <= w ) )
+		formatString: $#,##0.00
+		lineageTag: 9c4e7a21-6b8d-4f30-a5e1-2d7c9b6f8a44
+
+	measure 'Category Spend Change %' = DIVIDE ( [Last 13W Category Spend] - [First 13W Category Spend], [First 13W Category Spend] )
+		formatString: 0.0%
+		lineageTag: 2a7d9c51-4e6f-4b80-8c3a-1d5e7f9b2c66
+
+	measure 'Category Penetration Delta Label' = VAR d = [Category Penetration] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", UNICHAR ( 8226 ) & " " & FORMAT ( d, "0.0%" ) & " observed penetration" )
+		formatString: General
+		lineageTag: 6e1a8c42-5d7f-4b90-a3c9-2d8e7f1b6a55
+
+	measure 'Category Spend Delta Label' = VAR d = [Category Spend Change %] RETURN IF ( ISBLANK ( d ), UNICHAR ( 8226 ) & " No prior-period comparison", IF ( d >= 0, UNICHAR ( 9650 ) & " +" & FORMAT ( d, "0.0%" ) & " vs 13W", UNICHAR ( 9660 ) & " " & FORMAT ( d, "0.0%" ) & " vs 13W" ) )
+		formatString: General
+		lineageTag: 8b2c6d41-7e9f-4a50-b3c1-5d8e2f7a9b66
