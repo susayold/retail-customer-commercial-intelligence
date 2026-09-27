@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "s1",
   "position": {
-    "x": 1430,
+    "x": 840,
     "y": 35,
     "z": 10,
-    "width": 230,
+    "width": 180,
     "height": 78,
     "tabOrder": 10
   },
@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Mart_Promotion_Category_Week"
+                      "Entity": "Dim_Week"
                     }
                   },
-                  "Property": "promo_state_group"
+                  "Property": "synthetic_week_start"
                 }
               },
-              "queryRef": "Mart_Promotion_Category_Week.promo_state_group",
-              "nativeQueryRef": "promo_state_group",
+              "queryRef": "Dim_Week.synthetic_week_start",
+              "nativeQueryRef": "synthetic_week_start",
               "active": true
             }
           ]
@@ -54,7 +54,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "\"PROMOTION STATE\""
+                  "Value": "\"OBSERVATION WEEK\""
                 }
               }
             }

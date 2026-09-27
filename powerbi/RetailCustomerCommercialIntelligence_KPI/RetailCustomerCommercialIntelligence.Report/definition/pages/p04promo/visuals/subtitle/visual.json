@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "subtitle",
   "position": {
-    "x": 32,
+    "x": 250,
     "y": 70,
     "z": 10,
-    "width": 1600,
+    "width": 1360,
     "height": 40,
     "tabOrder": 10
   },
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Department and commodity mix, brand type and private-label depth",
+                    "value": "Promotion-state association, dependency and product-store-week activity",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "15px",

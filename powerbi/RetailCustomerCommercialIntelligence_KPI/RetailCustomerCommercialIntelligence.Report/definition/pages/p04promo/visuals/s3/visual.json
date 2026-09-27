@@ -1,0 +1,6 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "s3",
+  "position": { "x": 1200, "y": 35, "z": 10, "width": 150, "height": 78, "tabOrder": 10 },
+  "visual": { "visualType": "slicer", "query": { "queryState": { "Values": { "projections": [{ "field": { "Column": { "Expression": { "SourceRef": { "Entity": "Mart_Promotion_Category_Week" } }, "Property": "commodity" } }, "queryRef": "Mart_Promotion_Category_Week.commodity", "nativeQueryRef": "commodity", "active": true }] } } }, "visualContainerObjects": { "visualHeader": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }], "title": [{ "properties": { "text": { "expr": { "Literal": { "Value": "\"COMMODITY\"" } } } } }] } }
+}

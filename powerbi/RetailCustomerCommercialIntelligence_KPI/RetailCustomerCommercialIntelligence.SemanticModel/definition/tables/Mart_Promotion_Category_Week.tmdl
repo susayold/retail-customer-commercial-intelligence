@@ -50,9 +50,10 @@ table Mart_Promotion_Category_Week
 		mode: import
 		source =
 			let
-				Source = Parquet.Document(Binary.Buffer(File.Contents("D:\data\Codex\_retail_da_stage_20260922\run\05_powerbi_exports\Mart_Promotion_Category_Week.parquet")))
+				Source = Parquet.Document(Binary.Buffer(File.Contents("D:\data\Codex\_retail_da_stage_20260922\run\05_powerbi_exports\Mart_Promotion_Category_Week.parquet"))),
+				CleanStateLabels = Table.TransformColumns(Source, {{"promo_state_group", each if _ = "display_and_mailer" then "Display + Mailer" else if _ = "display_only" then "Display Only" else if _ = "mailer_only" then "Mailer Only" else if _ = "none" then "None" else _, type text}})
 			in
-				Source
+				CleanStateLabels
 
 	annotation PBI_ResultType = Table
 
@@ -67,3 +68,15 @@ table Mart_Promotion_Category_Week
 	measure 'Promo Sales per PSW' = AVERAGEX ( Mart_Promotion_Category_Week, DIVIDE ( Mart_Promotion_Category_Week[panel_sales], Mart_Promotion_Category_Week[product_store_weeks] ) )
 		formatString: $#,##0.0000
 		lineageTag: ef8cd559-4c33-4bdd-928d-5d36072babb2
+
+	measure 'Promoted State Sales Share' = DIVIDE ( CALCULATE ( [Promo Panel Sales], Mart_Promotion_Category_Week[promo_state_group] <> "None" ), [Promo Panel Sales] )
+		formatString: 0.0%
+		lineageTag: 8db3a419-3b5a-4f1e-9f3a-0e2c7d6b5a41
+
+	measure 'Promotion Dependency' = DIVIDE ( CALCULATE ( [Promo Product-Store-Weeks], Mart_Promotion_Category_Week[promo_state_group] <> "None" ), [Promo Product-Store-Weeks] )
+		formatString: 0.0%
+		lineageTag: 4e7c2d9a-5b1f-4a83-b6d0-2f9e8c1a7d35
+
+	measure 'Display + Mailer Activity' = DIVIDE ( CALCULATE ( [Promo Product-Store-Weeks], Mart_Promotion_Category_Week[promo_state_group] IN { "Display + Mailer", "display_and_mailer" } ), [Promo Product-Store-Weeks] )
+		formatString: 0.0%
+		lineageTag: 5a9e1c7d-2f4b-4e83-a6d0-8b3c1e7f9a25

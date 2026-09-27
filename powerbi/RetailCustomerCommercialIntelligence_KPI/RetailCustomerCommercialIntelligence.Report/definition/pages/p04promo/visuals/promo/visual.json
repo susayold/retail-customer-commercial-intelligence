@@ -2,15 +2,15 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "promo",
   "position": {
-    "x": 32,
-    "y": 270,
+    "x": 250,
+    "y": 320,
     "z": 10,
-    "width": 980,
-    "height": 480,
+    "width": 600,
+    "height": 250,
     "tabOrder": 10
   },
   "visual": {
-    "visualType": "barChart",
+    "visualType": "lineClusteredColumnComboChart",
     "query": {
       "queryState": {
         "Category": {
@@ -42,11 +42,26 @@
                       "Entity": "Mart_Promotion_Category_Week"
                     }
                   },
-                  "Property": "Promo Sales per PSW"
+                  "Property": "Promo Panel Sales"
                 }
               },
-              "queryRef": "Mart_Promotion_Category_Week.Promo Sales per PSW",
-              "nativeQueryRef": "Promo Sales per PSW",
+              "queryRef": "Mart_Promotion_Category_Week.Promo Panel Sales",
+              "nativeQueryRef": "Promo Panel Sales",
+              "active": true
+            }
+          ]
+        },
+        "Y2": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": { "SourceRef": { "Entity": "Mart_Promotion_Category_Week" } },
+                  "Property": "Promo Product-Store-Weeks"
+                }
+              },
+              "queryRef": "Mart_Promotion_Category_Week.Promo Product-Store-Weeks",
+              "nativeQueryRef": "Promo Product-Store-Weeks",
               "active": true
             }
           ]
@@ -54,19 +69,8 @@
       }
     },
     "visualContainerObjects": {
-      "visualHeader": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ]
+      "title": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "text": { "expr": { "Literal": { "Value": "'Sales and Product-Store-Weeks by Promotion State'" } } } } }],
+      "visualHeader": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }]
     }
   }
 }

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "trend",
   "position": {
-    "x": 1050,
-    "y": 270,
+    "x": 870,
+    "y": 320,
     "z": 10,
-    "width": 610,
-    "height": 480,
+    "width": 490,
+    "height": 250,
     "tabOrder": 10
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "Dim_Week"
                     }
                   },
-                  "Property": "observation_week"
+                  "Property": "month_label"
                 }
               },
-              "queryRef": "Dim_Week.observation_week",
-              "nativeQueryRef": "observation_week",
+              "queryRef": "Dim_Week.month_label",
+              "nativeQueryRef": "month_label",
               "active": true
             }
           ]
@@ -42,50 +42,25 @@
                       "Entity": "Mart_Promotion_Category_Week"
                     }
                   },
-                  "Property": "Promo Sales per PSW"
+                  "Property": "Promo Product-Store-Weeks"
                 }
               },
-              "queryRef": "Mart_Promotion_Category_Week.Promo Sales per PSW",
-              "nativeQueryRef": "Promo Sales per PSW",
+              "queryRef": "Mart_Promotion_Category_Week.Promo Product-Store-Weeks",
+              "nativeQueryRef": "Promo Product-Store-Weeks",
               "active": true
             }
           ]
         },
         "Series": {
           "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Mart_Promotion_Category_Week"
-                    }
-                  },
-                  "Property": "promo_state_group"
-                }
-              },
-              "queryRef": "Mart_Promotion_Category_Week.promo_state_group",
-              "nativeQueryRef": "promo_state_group",
-              "active": true
-            }
+                { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "Mart_Promotion_Category_Week" } }, "Property": "promo_state_group" } }, "queryRef": "Mart_Promotion_Category_Week.promo_state_group", "nativeQueryRef": "promo_state_group", "active": true }
           ]
         }
       }
     },
     "visualContainerObjects": {
-      "visualHeader": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ]
+      "title": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } }, "text": { "expr": { "Literal": { "Value": "'Promotion-State Activity Over Time'" } } } } }],
+      "visualHeader": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }]
     }
   }
 }
