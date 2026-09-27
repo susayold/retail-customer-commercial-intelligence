@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "INSIGHTS & GUARDRAILS\n\n• Category Spend, Category Baskets and Category Buyers are sourced from weekly category rows.\n• Category Penetration is calculated as buying households divided by active panel households at the category-week grain.\n• Use department and commodity slicers to drill into the mix; results are descriptive, not causal.\n• Private-label views remain available in the source model, but are not substituted for category penetration.",
+                    "value": "INSIGHTS & GUARDRAILS\n\n• Category Spend, Baskets and buying-household counts are sourced from weekly category rows.\n• Buying HH-Week Count is not a unique household count across the full observation window.\n• Category Penetration is calculated at the category-week grain.\n• Use department and commodity slicers to drill into the mix; results are descriptive, not causal.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "14px",
